@@ -289,7 +289,7 @@ export default function LatestJobsSection() {
                 {/* Action CTA Button */}
                 <div className="mt-5 pt-3 border-t border-slate-100">
                   <Link
-                    href={`/lowongan/${job.id}`}
+                    href={`/lowongan-kerja/${job.id}`}
                     className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 hover:bg-teal-700 text-white text-[11px] font-semibold py-2.5 px-4 transition-all shadow-sm"
                   >
                     <span>Lihat Detail</span>
