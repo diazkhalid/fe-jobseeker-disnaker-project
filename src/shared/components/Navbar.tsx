@@ -111,6 +111,12 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const hideNavbar =
+    pathname.startsWith("/dashboard") ||
+    ["login", "registration"].some((route) => pathname.includes(route));
+
+  if (hideNavbar) return null;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -384,7 +390,7 @@ export default function Navbar() {
               /* Buttons Masuk & Daftar */
               <div className="flex items-center gap-2">
                 <Link
-                  href="/masuk"
+                  href="/login"
                   className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-teal-600 transition-colors"
                 >
                   Masuk

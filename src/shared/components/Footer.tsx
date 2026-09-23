@@ -12,9 +12,17 @@ import {
   Globe,
   ShieldCheck,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  const hideFootbar =
+    pathname.startsWith("/dashboard") ||
+    ["login", "registration"].some((route) => pathname.includes(route));
+
+  if (hideFootbar) return null;
 
   return (
     <footer className="relative top-16 bg-slate-900 text-slate-300 font-['Poppins',sans-serif] border-t border-slate-800">
@@ -34,7 +42,7 @@ export default function Footer() {
                   alt="Samawa Karir Logo"
                   width={200}
                   height={100}
-                  className="object-contain"
+                  className="object-contain brightness-0 invert"
                   priority
                 />
               </div>

@@ -181,11 +181,11 @@ export default function HeroSection() {
                 {/* 2. Card Perusahaan / Mitra */}
                 <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-900 p-4 border border-slate-700/60 hover:border-teal-500/50 transition-all duration-300">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-xl bg-slate-700/50 text-slate-300 border border-slate-600/50 group-hover:bg-teal-600 group-hover:text-white transition-colors shrink-0">
+                    <div className="p-2 rounded-xl bg-amber-700/50 text-amber-300 border border-amber-600/50 group-hover:bg-amber-600 group-hover:text-white transition-colors shrink-0">
                       <Building2 className="h-4 w-4" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors">
+                      <h3 className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors">
                         Untuk Perusahaan & Mitra
                       </h3>
                       <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
@@ -194,7 +194,7 @@ export default function HeroSection() {
                       </p>
                       <Link
                         href="/pasang-lowongan"
-                        className="inline-flex items-center gap-1 mt-2.5 text-[11px] font-semibold text-teal-400 hover:text-teal-300"
+                        className="inline-flex items-center gap-1 mt-2.5 text-[11px] font-semibold text-amber-400 hover:text-amber-300"
                       >
                         <span>Pasang Lowongan Kerja</span>
                         <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />

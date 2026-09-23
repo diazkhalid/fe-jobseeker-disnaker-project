@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-app-navy-50: #f3f7fc;
+  --color-app-navy-100: #e6eef8;
+  --color-app-navy-200: #c6d9ee;
+  --color-app-navy-300: #9dbde0;
+  --color-app-navy-400: #6b99ce;
+  --color-app-navy-500: #477bb9;
+  --color-app-navy-600: #2e609f;
+  --color-app-navy-700: #1b4b82;
+  --color-app-navy-800: #0c376c;
+  --color-app-navy-900: #042862;
+}
+
 .debug {
   background-color: red;
 }
