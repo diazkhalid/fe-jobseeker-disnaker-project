@@ -15,6 +15,8 @@ import {
   Plus,
   ArrowLeft,
   Sparkles,
+  SlidersHorizontal,
+  ChevronRight,
 } from "lucide-react";
 
 export default function JobPreferencesPage() {
@@ -168,32 +170,55 @@ export default function JobPreferencesPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
-      {/* HEADER PAGE */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-        <div className="space-y-1">
-          {/* <Link
+    <div className="space-y-8 mx-auto pb-12">
+      {/* BREADCRUMB & HEADER */}
+      <div className="space-y-2">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500">
+          <Link
             href="/dashboard"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-app-navy-700 hover:underline mb-1"
+            className="hover:text-app-navy-700 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Dashboard
-          </Link> */}
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Dashboard
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <Link
+            href="/dashboard/profil"
+            className="hover:text-app-navy-700 transition-colors"
+          >
+            Profil Saya
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="font-semibold text-slate-800">
             Preferensi Pekerjaan
-          </h1>
-          <p className="text-xs text-slate-500">
-            Atur kriteria karir impian Anda agar sistem dapat memberikan
-            rekomendasi lowongan yang presisi.
-          </p>
-        </div>
+          </span>
+        </nav>
 
-        <button
-          onClick={handleSubmit}
-          className="px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center justify-center gap-2 shadow-sm shrink-0"
-        >
-          <Save className="w-4 h-4" />
-          <span>Simpan Preferensi</span>
-        </button>
+        {/* Main Header Content */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+              <SlidersHorizontal className="w-7 h-7 text-app-navy-700" />
+              <span>Preferensi Pekerjaan</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Atur kriteria karir impian Anda agar sistem dapat memberikan
+              rekomendasi lowongan yang presisi.
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <div className="self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="flex items-center gap-2 px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-900 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-app-navy-700/10 active:scale-[0.98] cursor-pointer"
+            >
+              <Save className="w-4 h-4" />
+              <span>Simpan Preferensi</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* BANNER FUNGSI DATA PREFERENSI */}

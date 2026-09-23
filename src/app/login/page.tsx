@@ -119,12 +119,12 @@ export default function LoginPage() {
         </div>
 
         {/* Footer Panel Kiri */}
-        <div className="relative z-10 text-[11px] text-teal-500 flex items-center justify-between">
+        <div className="relative z-10 text-[11px] text-teal-300 flex items-center justify-between">
           <p>
             © {new Date().getFullYear()} Sumbawa Karir. All rights reserved.
           </p>
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-teal-500" />
+            <ShieldCheck className="w-4 h-4 text-teal-300" />
             <span>Terproteksi SSL</span>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function LoginPage() {
             <p className="text-[11px] text-slate-500">
               Belum memiliki akun?{" "}
               <Link
-                href="/register"
+                href="/registration"
                 className="font-bold text-app-navy-700 hover:text-app-navy-800 hover:underline"
               >
                 Daftar Akun Baru

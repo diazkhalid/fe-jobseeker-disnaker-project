@@ -163,8 +163,8 @@ export default function CandidateDashboardPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-app-navy-800/80 text-app-navy-200 text-[10px] font-semibold">
-                <Sparkles className="w-3 h-3 text-app-navy-300" /> Pencari Kerja
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-800/80 text-teal-200 text-[10px] font-semibold">
+                <Sparkles className="w-3 h-3 text-teal-300" /> Pencari Kerja
               </span>
               <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
                 Selamat Datang, Fajar Ardiansyah!

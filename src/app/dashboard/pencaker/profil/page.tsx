@@ -25,6 +25,7 @@ import {
   Building2,
   Sliders,
   Plus,
+  ChevronRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -73,34 +74,53 @@ export default function CandidateProfilePage() {
 
   return (
     <div className="space-y-8">
-      {/* HEADER PAGE & AUKSI UTAMA */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Profil Saya
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Kelola data diri, riwayat pendidikan, pengalaman, dan berkas lamaran
-            Anda.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push("profil/preview")}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors"
+      {/* BREADCRUMB & HEADER */}
+      <div className="space-y-2">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500">
+          <Link
+            href="/dashboard"
+            className="hover:text-app-navy-700 transition-colors"
           >
-            <Eye className="w-4 h-4 text-slate-500" />
-            <span>Preview Profil</span>
-          </button>
-          <button
-            onClick={() => {
-              router.push("profil/edit");
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-app-navy-700 cursor-pointer hover:bg-app-navy-900 text-white font-bold text-xs rounded-xl transition-colors shadow-sm"
-          >
-            <Edit3 className="w-4 h-4" />
-            <span>Edit Profil</span>
-          </button>
+            Dashboard
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="font-semibold text-slate-800">Profil Saya</span>
+        </nav>
+
+        {/* Main Header Content */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+              <User className="w-7 h-7 text-app-navy-700" />
+              <span>Profil Saya</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Kelola data diri, riwayat pendidikan, pengalaman, dan berkas
+              lamaran Anda.
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => router.push("profil/preview")}
+              className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl shadow-sm transition-all"
+            >
+              <Eye className="w-4 h-4 text-slate-500" />
+              <span>Preview Profil</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("profil/edit")}
+              className="flex items-center gap-2 px-4 py-2.5 bg-app-navy-700 hover:bg-app-navy-900 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-app-navy-700/10 active:scale-[0.98] cursor-pointer"
+            >
+              <Edit3 className="w-4 h-4" />
+              <span>Edit Profil</span>
+            </button>
+          </div>
         </div>
       </div>
 

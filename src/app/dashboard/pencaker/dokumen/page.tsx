@@ -18,6 +18,7 @@ import {
   Info,
   X,
   ArrowLeft,
+  ChevronRight,
 } from "lucide-react";
 
 // Tipe Data Dokumen
@@ -236,33 +237,47 @@ export default function DocumentManagementPage() {
 
   return (
     <div className="space-y-8 mx-auto pb-12">
-      {/* HEADER PAGE */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
-        <div className="space-y-1">
-          {/* <Link
-            href="/dashboard/profil"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-app-navy-700 hover:underline mb-1"
+      {/* BREADCRUMB & HEADER */}
+      <div className="space-y-2">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center gap-2 text-xs text-slate-500">
+          <Link
+            href="/dashboard"
+            className="hover:text-app-navy-700 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Profil
-          </Link> */}
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-            Pusat CV & Dokumen Lamaran
-          </h1>
-          <p className="text-xs text-slate-500">
-            Kelola berkas administratif, sertifikat, dan CV Anda untuk
-            mempercepat proses melamar kerja.
-          </p>
+            Dashboard
+          </Link>
+
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="font-semibold text-slate-800">Dokumen & CV</span>
+        </nav>
+
+        {/* Main Header Content */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+              <FileText className="w-7 h-7 text-app-navy-700" />
+              <span>Pusat CV & Dokumen Lamaran</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Kelola berkas administratif, sertifikat, dan CV Anda untuk
+              mempercepat proses melamar kerja.
+            </p>
+          </div>
+
+          {/* Action Button */}
+          <div className="self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setIsUploadModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-app-navy-700 hover:bg-app-navy-900 text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-app-navy-700/10 active:scale-[0.98] cursor-pointer"
+            >
+              <Upload className="w-4 h-4" />
+              <span>Unggah Dokumen Baru</span>
+            </button>
+          </div>
         </div>
-
-        <button
-          onClick={() => setIsUploadModalOpen(true)}
-          className="px-4 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 cursor-pointer text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center justify-center gap-2 shadow-sm shrink-0"
-        >
-          <Upload className="w-4 h-4" />
-          <span>Unggah Dokumen Baru</span>
-        </button>
       </div>
-
       {/* INFO VALIDASI & KETENTUAN UPLOAD */}
       <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl flex items-start gap-3">
         <Info className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
