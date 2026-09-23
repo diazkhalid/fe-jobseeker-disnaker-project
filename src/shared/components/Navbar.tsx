@@ -21,6 +21,7 @@ import {
   Laptop,
   Flame,
   Search,
+  PlusCircle,
 } from "lucide-react";
 
 // Tipe lowongan untuk Dropdown Lowongan Kerja
@@ -121,7 +122,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/85 backdrop-blur-md shadow-sm shadow-slate-900/5 py-3 border-b border-teal-900/5"
+          ? "bg-white/85 backdrop-blur-md shadow-sm shadow-slate-900/5 py-3 border-b border-app-navy-900/5"
           : "bg-white py-4 border-b border-slate-100"
       }`}
     >
@@ -156,7 +157,7 @@ export default function Navbar() {
               {pathname === "/" && (
                 <motion.div
                   layoutId="activeTabNav"
-                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-teal-500/20 -z-10"
+                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-app-navy-500/20 -z-10"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -169,7 +170,7 @@ export default function Navbar() {
                 onMouseEnter={() => setIsJobsDropdownOpen(true)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full transition-all duration-300 ${
                   pathname.startsWith("/lowongan") || isJobsDropdownOpen
-                    ? "text-teal-700 bg-teal-50/80"
+                    ? "text-app-navy-700 bg-app-navy-50/80"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -177,7 +178,7 @@ export default function Navbar() {
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-200 ${
                     isJobsDropdownOpen
-                      ? "rotate-180 text-teal-600"
+                      ? "rotate-180 text-app-navy-600"
                       : "text-slate-400"
                   }`}
                 />
@@ -201,14 +202,14 @@ export default function Navbar() {
                           key={idx}
                           href={cat.href}
                           onClick={() => setIsJobsDropdownOpen(false)}
-                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-teal-50/60 transition-all group"
+                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-app-navy-50/60 transition-all group"
                         >
-                          <div className="p-2 rounded-lg bg-slate-100 group-hover:bg-teal-600 text-slate-700 group-hover:text-white transition-colors mt-0.5">
+                          <div className="p-2 rounded-lg bg-slate-100 group-hover:bg-app-navy-600 text-slate-700 group-hover:text-white transition-colors mt-0.5">
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="text-xs font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+                              <span className="text-xs font-bold text-slate-900 group-hover:text-app-navy-700 transition-colors">
                                 {cat.title}
                               </span>
                               {cat.badge && (
@@ -216,7 +217,7 @@ export default function Navbar() {
                                   className={`text-[9px] font-extrabold px-1.5 py-0.2 rounded-full ${
                                     cat.badge === "Hot"
                                       ? "bg-rose-100 text-rose-600"
-                                      : "bg-teal-100 text-teal-700"
+                                      : "bg-app-navy-100 text-app-navy-700"
                                   }`}
                                 >
                                   {cat.badge}
@@ -248,7 +249,7 @@ export default function Navbar() {
               {pathname === "/perusahaan" && (
                 <motion.div
                   layoutId="activeTabNav"
-                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-teal-500/20 -z-10"
+                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-app-navy-500/20 -z-10"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -267,7 +268,7 @@ export default function Navbar() {
               {pathname === "/informasi-karir" && (
                 <motion.div
                   layoutId="activeTabNav"
-                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-teal-500/20 -z-10"
+                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-app-navy-500/20 -z-10"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -275,7 +276,7 @@ export default function Navbar() {
 
             {/* Tentang Kami */}
             <Link
-              href="/tentang"
+              href="/tentang-kami"
               className={`px-4 py-2 text-xs font-semibold rounded-full transition-all duration-300 relative ${
                 pathname === "/tentang"
                   ? "text-slate-900"
@@ -286,7 +287,7 @@ export default function Navbar() {
               {pathname === "/tentang" && (
                 <motion.div
                   layoutId="activeTabNav"
-                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-teal-500/20 -z-10"
+                  className="absolute inset-0 bg-white rounded-full shadow-sm border border-app-navy-500/20 -z-10"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -298,9 +299,9 @@ export default function Navbar() {
             {/* CTA Pasang Lowongan */}
             <Link
               href="/pasang-lowongan"
-              className="group relative inline-flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-full text-teal-800 bg-teal-50/80 hover:bg-teal-100/80 border border-teal-200 transition-all duration-200"
+              className="group relative inline-flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-full text-app-navy-800 bg-app-navy-50/80 hover:bg-app-navy-100/80 border border-app-navy-200 transition-all duration-200"
             >
-              <Sparkles className="w-3.5 h-3.5 text-teal-600 group-hover:rotate-12 transition-transform" />
+              <PlusCircle className="w-3.5 h-3.5 text-app-navy-600 group-hover:scale-110 transition-transform" />
               <span>Pasang Lowongan</span>
             </Link>
 
@@ -314,7 +315,7 @@ export default function Navbar() {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all focus:outline-none"
                 >
-                  <div className="w-7 h-7 rounded-full bg-slate-900 text-teal-300 flex items-center justify-center text-xs font-bold ring-2 ring-teal-500/30">
+                  <div className="w-7 h-7 rounded-full bg-slate-900 text-app-navy-300 flex items-center justify-center text-xs font-bold ring-2 ring-app-navy-500/30">
                     A
                   </div>
                   <span className="text-xs font-semibold text-slate-800">
@@ -336,7 +337,7 @@ export default function Navbar() {
                       className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-100 py-2 z-50"
                     >
                       <div className="px-4 py-2.5 border-b border-slate-100">
-                        <p className="text-[10px] uppercase font-bold text-teal-600 tracking-wider">
+                        <p className="text-[10px] uppercase font-bold text-app-navy-600 tracking-wider">
                           Pencari Kerja
                         </p>
                         <p className="text-xs font-semibold text-slate-900 truncate">
@@ -347,29 +348,30 @@ export default function Navbar() {
                       <div className="py-1">
                         <Link
                           href="/profil"
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-teal-50/50 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
                         >
-                          <User className="w-4 h-4 text-teal-600" /> Profil Saya
-                        </Link>
-                        <Link
-                          href="/lamaran-saya"
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-teal-50/50 transition-colors"
-                        >
-                          <FileText className="w-4 h-4 text-teal-600" /> Lamaran
+                          <User className="w-4 h-4 text-app-navy-600" /> Profil
                           Saya
                         </Link>
                         <Link
-                          href="/tersimpan"
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-teal-50/50 transition-colors"
+                          href="/lamaran-saya"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
                         >
-                          <Bookmark className="w-4 h-4 text-teal-600" /> Saved
-                          Jobs
+                          <FileText className="w-4 h-4 text-app-navy-600" />{" "}
+                          Lamaran Saya
+                        </Link>
+                        <Link
+                          href="/tersimpan"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
+                        >
+                          <Bookmark className="w-4 h-4 text-app-navy-600" />{" "}
+                          Saved Jobs
                         </Link>
                         <Link
                           href="/pengaturan"
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-teal-50/50 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
                         >
-                          <Settings className="w-4 h-4 text-teal-600" />{" "}
+                          <Settings className="w-4 h-4 text-app-navy-600" />{" "}
                           Pengaturan
                         </Link>
                       </div>
@@ -391,13 +393,13 @@ export default function Navbar() {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-teal-600 transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-slate-700 hover:text-app-navy-600 transition-colors"
                 >
                   Masuk
                 </Link>
                 <Link
                   href="/registration"
-                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-teal-700 rounded-full shadow-md shadow-slate-900/10 transition-all duration-300"
+                  className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-app-navy-700 rounded-full shadow-md shadow-slate-900/10 transition-all duration-300"
                 >
                   Daftar
                 </Link>
@@ -439,7 +441,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                     pathname === "/"
-                      ? "bg-teal-50 text-teal-700 border-l-4 border-teal-600"
+                      ? "bg-app-navy-50 text-app-navy-700 border-l-4 border-app-navy-600"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -455,7 +457,7 @@ export default function Navbar() {
                     <span>Lowongan Kerja</span>
                     <ChevronDown
                       className={`w-4 h-4 text-slate-400 transition-transform ${
-                        isMobileJobsOpen ? "rotate-180 text-teal-600" : ""
+                        isMobileJobsOpen ? "rotate-180 text-app-navy-600" : ""
                       }`}
                     />
                   </button>
@@ -478,9 +480,9 @@ export default function Navbar() {
                                 setIsMobileJobsOpen(false);
                                 setIsMobileMenuOpen(false);
                               }}
-                              className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-600 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-colors"
+                              className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-600 hover:text-app-navy-700 hover:bg-app-navy-50 rounded-lg transition-colors"
                             >
-                              <Icon className="w-3.5 h-3.5 text-teal-600" />
+                              <Icon className="w-3.5 h-3.5 text-app-navy-600" />
                               <span>{cat.title}</span>
                             </Link>
                           );
@@ -496,7 +498,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                     pathname === "/perusahaan"
-                      ? "bg-teal-50 text-teal-700 border-l-4 border-teal-600"
+                      ? "bg-app-navy-50 text-app-navy-700 border-l-4 border-app-navy-600"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -509,7 +511,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                     pathname === "/informasi-karir"
-                      ? "bg-teal-50 text-teal-700 border-l-4 border-teal-600"
+                      ? "bg-app-navy-50 text-app-navy-700 border-l-4 border-app-navy-600"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -522,7 +524,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
                     pathname === "/tentang"
-                      ? "bg-teal-50 text-teal-700 border-l-4 border-teal-600"
+                      ? "bg-app-navy-50 text-app-navy-700 border-l-4 border-app-navy-600"
                       : "text-slate-600 hover:bg-slate-50"
                   }`}
                 >
@@ -535,16 +537,16 @@ export default function Navbar() {
                 <Link
                   href="/pasang-lowongan"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 text-xs font-semibold text-teal-800 bg-teal-50 border border-teal-200/80 rounded-xl"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 text-xs font-semibold text-app-navy-800 bg-app-navy-50 border border-app-navy-200/80 rounded-xl"
                 >
-                  <Sparkles className="w-4 h-4 text-teal-600" />
+                  <Sparkles className="w-4 h-4 text-app-navy-600" />
                   Pasang Lowongan Perusahaan
                 </Link>
 
                 {isLoggedIn ? (
                   <div className="pt-2 border-t border-slate-100">
                     <div className="flex items-center gap-3 px-4 py-2">
-                      <div className="w-8 h-8 rounded-full bg-slate-900 text-teal-300 flex items-center justify-center font-bold text-xs">
+                      <div className="w-8 h-8 rounded-full bg-slate-900 text-app-navy-300 flex items-center justify-center font-bold text-xs">
                         A
                       </div>
                       <div>

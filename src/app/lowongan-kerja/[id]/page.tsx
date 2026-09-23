@@ -182,6 +182,41 @@ export default function JobDetailPageEditorial() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTab, setActiveTab] = useState("ikhtisar");
 
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: document.title,
+      text: "Cek informasi karir menarik ini!",
+      url: window.location.href,
+    };
+
+    // Menggunakan Web Share API jika didukung oleh browser/perangkat
+    if (
+      navigator.share &&
+      navigator.canShare &&
+      navigator.canShare(shareData)
+    ) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        // Abaikan jika user membatalkan pendaftaran/sharing
+        if ((error as Error).name !== "AbortError") {
+          console.error("Gagal membagikan:", error);
+        }
+      }
+    } else {
+      // Fallback ke salin tautan jika Web Share API tidak didukung
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) {
+        console.error("Gagal menyalin tautan:", err);
+      }
+    }
+  };
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -214,13 +249,16 @@ export default function JobDetailPageEditorial() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-6 tracking-wide uppercase">
-            <Link href="/" className="hover:text-teal-700 transition-colors">
+            <Link
+              href="/"
+              className="hover:text-app-navy-700 transition-colors"
+            >
               Beranda
             </Link>
             <span>/</span>
             <Link
               href="/lowongan"
-              className="hover:text-teal-700 transition-colors"
+              className="hover:text-app-navy-700 transition-colors"
             >
               Lowongan
             </Link>
@@ -233,7 +271,7 @@ export default function JobDetailPageEditorial() {
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
             <div className="space-y-4 max-w-3xl">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-teal-900 text-teal-100 rounded">
+                <span className="px-2.5 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-teal-700 text-white rounded-full">
                   {jobDetail.status}
                 </span>
                 <span className="text-[11px] text-slate-500 flex items-center gap-1 font-medium">
@@ -241,8 +279,9 @@ export default function JobDetailPageEditorial() {
                   Batas Pendaftaran: {jobDetail.deadlineDate} (
                   {jobDetail.daysLeft} hari lagi)
                 </span>
-                <span className="text-[11px] text-teal-700 font-medium flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Terverifikasi
+                <span className="text-[11px] text-teal-600 font-medium flex items-center gap-1">
+                  <ShieldCheck className="text-white w-3.5 h-3.5 fill-teal-500" />{" "}
+                  Terverifikasi
                 </span>
               </div>
 
@@ -253,12 +292,12 @@ export default function JobDetailPageEditorial() {
               <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-600">
                 <Link
                   href={`/perusahaan/${jobDetail.company.id}`}
-                  className="font-bold text-slate-900 hover:text-teal-700 flex items-center gap-1.5"
+                  className="font-bold text-slate-900 hover:text-app-navy-700 flex items-center gap-1.5"
                 >
                   <Building2 className="w-4 h-4 text-slate-400" />
                   {jobDetail.company.name}
                   {jobDetail.company.verified && (
-                    <BadgeCheck className="w-3.5 h-3.5 text-teal-600 inline" />
+                    <BadgeCheck className="w-3.5 h-3.5 text-app-navy-600 inline" />
                   )}
                 </Link>
                 <span className="flex items-center gap-1">
@@ -274,7 +313,7 @@ export default function JobDetailPageEditorial() {
                 onClick={() => {
                   router.push(`${params.id}/lamar-kerja`);
                 }}
-                className="px-6 py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs tracking-wide rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-app-navy-700 hover:bg-app-navy-800 text-white font-bold text-xs tracking-wide rounded-lg shadow-sm hover:shadow transition-all flex items-center gap-2"
               >
                 <Send className="w-3.5 h-3.5" />
                 Lamar Posisi Ini
@@ -293,14 +332,15 @@ export default function JobDetailPageEditorial() {
                 />
               </button>
               <button
-                onClick={handleCopyLink}
+                onClick={handleShare}
                 className="p-3 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors"
-                title="Salin Tautan"
+                title="Bagikan Tautan"
+                aria-label="Bagikan Tautan"
               >
-                {copiedLink ? (
+                {copied ? (
                   <Check className="w-4 h-4 text-emerald-600" />
                 ) : (
-                  <Copy className="w-4 h-4" />
+                  <Share2 className="w-4 h-4" />
                 )}
               </button>
             </div>
@@ -317,7 +357,7 @@ export default function JobDetailPageEditorial() {
               onClick={() => scrollToSection(sec.id)}
               className={`py-3.5 text-xs font-bold tracking-wide border-b-2 whitespace-nowrap transition-colors ${
                 activeTab === sec.id
-                  ? "border-teal-700 text-teal-800"
+                  ? "border-app-navy-700 text-app-navy-800"
                   : "border-transparent text-slate-500 hover:text-slate-900"
               }`}
             >
@@ -346,7 +386,7 @@ export default function JobDetailPageEditorial() {
                   <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
                     Estimasi Gaji
                   </span>
-                  <p className="text-xs font-extrabold text-teal-800">
+                  <p className="text-xs font-extrabold text-app-navy-800">
                     {jobDetail.summary.salaryRange}
                   </p>
                 </div>
@@ -427,7 +467,7 @@ export default function JobDetailPageEditorial() {
                       key={idx}
                       className="flex items-start gap-3 text-xs text-slate-700 leading-relaxed"
                     >
-                      <CheckCircle2 className="w-4 h-4 text-teal-700 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-app-navy-700 shrink-0 mt-0.5" />
                       <span>{req}</span>
                     </li>
                   ))}
@@ -497,7 +537,7 @@ export default function JobDetailPageEditorial() {
                 {jobDetail.benefits.map((benefit, idx) => (
                   <div key={idx} className="space-y-1">
                     <h4 className="text-xs font-bold text-slate-900 flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-teal-700" />
+                      <Check className="w-3.5 h-3.5 text-app-navy-700" />
                       {benefit.title}
                     </h4>
                     <p className="text-[11px] text-slate-500 pl-5 leading-relaxed">
@@ -529,7 +569,7 @@ export default function JobDetailPageEditorial() {
                     href={jobDetail.locationDetails.googleMapsUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 hover:text-teal-900 underline underline-offset-4"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-app-navy-700 hover:text-app-navy-900 underline underline-offset-4"
                   >
                     Buka Petunjuk Arah di Google Maps
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -545,7 +585,7 @@ export default function JobDetailPageEditorial() {
                 <div className="border-l border-slate-200 pl-4 ml-2 space-y-6">
                   {jobDetail.recruitmentProcess.map((step) => (
                     <div key={step.step} className="relative space-y-1">
-                      <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-teal-700 ring-4 ring-white" />
+                      <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-app-navy-700 ring-4 ring-white" />
                       <div className="flex items-center justify-between">
                         <h4 className="text-xs font-bold text-slate-800">
                           {step.step}. {step.title}
@@ -617,7 +657,7 @@ export default function JobDetailPageEditorial() {
                   onClick={() => {
                     router.push(`${params.id}/lamar-kerja`);
                   }}
-                  className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs tracking-wide rounded shadow-sm transition-all text-center block"
+                  className="w-full py-3 bg-app-navy-700 hover:bg-app-navy-800 text-white font-bold text-xs tracking-wide rounded shadow-sm transition-all text-center block"
                 >
                   Lamar Sekarang
                 </button>
@@ -666,7 +706,7 @@ export default function JobDetailPageEditorial() {
 
                 <Link
                   href={`/perusahaan/${jobDetail.company.id}`}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-teal-700 hover:underline pt-2"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-app-navy-700 hover:underline pt-2"
                 >
                   <span>Profil Selengkapnya</span>
                   <ArrowUpRight className="w-3 h-3" />
@@ -685,7 +725,7 @@ export default function JobDetailPageEditorial() {
                       href={`/lowongan/${item.id}`}
                       className="block group space-y-1"
                     >
-                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-teal-700 transition-colors">
+                      <h4 className="text-xs font-bold text-slate-800 group-hover:text-app-navy-700 transition-colors">
                         {item.title}
                       </h4>
                       <p className="text-[10px] text-slate-500">
