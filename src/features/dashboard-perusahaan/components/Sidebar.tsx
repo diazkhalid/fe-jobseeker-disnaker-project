@@ -147,7 +147,7 @@ export default function Sidebar() {
       ],
     },
     {
-      title: "Pesan & Komunikasi",
+      title: "Pesan",
       icon: MessageSquare,
       submenu: [
         {
@@ -156,8 +156,8 @@ export default function Sidebar() {
           icon: MailClock,
         },
         {
-          title: "Kirim",
-          href: "/dashboard/perusahaan/pesan/kirim",
+          title: "Buat Pesan",
+          href: "/dashboard/perusahaan/pesan/buat",
           icon: Send,
         },
       ],

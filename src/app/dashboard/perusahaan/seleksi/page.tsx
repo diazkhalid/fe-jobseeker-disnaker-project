@@ -60,7 +60,7 @@ const initialStages: RecruitmentStage[] = [
         applicantCount: 42,
         createdDate: "20 Sep 2026",
         deadline: "10 Okt 2026",
-        avatarBg: "bg-blue-500",
+        avatarBg: "bg-app-navy-500",
         notes: "Tahap penyaringan CV dan portofolio React/Next.js.",
         tags: ["React", "Next.js"],
       },
@@ -172,7 +172,7 @@ const initialStages: RecruitmentStage[] = [
 ];
 
 const STAGE_COLORS = [
-  "bg-blue-500",
+  "bg-app-navy-500",
   "bg-indigo-500",
   "bg-purple-500",
   "bg-amber-500",
@@ -195,7 +195,7 @@ export default function RecruitmentJobsPage() {
   const [isStageModalOpen, setIsStageModalOpen] = useState(false);
   const [newStageName, setNewStageName] = useState("");
   const [newStageDescription, setNewStageDescription] = useState("");
-  const [newStageColor, setNewStageColor] = useState("bg-blue-500");
+  const [newStageColor, setNewStageColor] = useState("bg-app-navy-500");
 
   const totalJobs = stages.reduce((acc, stage) => acc + stage.jobs.length, 0);
 
@@ -273,7 +273,7 @@ export default function RecruitmentJobsPage() {
 
     setNewStageName("");
     setNewStageDescription("");
-    setNewStageColor("bg-blue-500");
+    setNewStageColor("bg-app-navy-500");
     setIsStageModalOpen(false);
   };
 
@@ -283,7 +283,7 @@ export default function RecruitmentJobsPage() {
       <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-slate-200/80 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-app-navy-50 text-app-navy-700 border border-app-navy-100">
               <Sparkles className="w-3 h-3" /> Pipeline Rekrutmen
             </span>
             <span className="text-xs text-slate-400">•</span>
@@ -309,7 +309,7 @@ export default function RecruitmentJobsPage() {
               placeholder="Cari posisi, departemen, atau tag..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
+              className="w-full pl-10 pr-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-app-navy-500/20 focus:border-app-navy-500 transition-all placeholder:text-slate-400"
             />
           </div>
 
@@ -417,7 +417,7 @@ export default function RecruitmentJobsPage() {
                         setSelectedJob(job);
                         setSelectedStage(stage);
                       }}
-                      className="group bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-blue-400 transition-all cursor-pointer relative"
+                      className="group bg-white p-4 rounded-xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-app-navy-400 transition-all cursor-pointer relative"
                     >
                       {/* Urgent Indicator */}
                       {job.isUrgent && (
@@ -435,7 +435,7 @@ export default function RecruitmentJobsPage() {
                           <Briefcase className="w-4 h-4" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors truncate">
+                          <h3 className="text-sm font-bold text-slate-800 group-hover:text-app-navy-600 transition-colors truncate">
                             {job.title}
                           </h3>
                           <p className="text-xs text-slate-500 font-medium truncate flex items-center gap-1 mt-0.5">
@@ -461,7 +461,7 @@ export default function RecruitmentJobsPage() {
                           <div />
                         )}
 
-                        <div className="flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-100 whitespace-nowrap">
+                        <div className="flex items-center gap-1 text-[11px] font-semibold text-app-navy-700 bg-app-navy-50 px-2 py-0.5 rounded border border-app-navy-100 whitespace-nowrap">
                           <Users className="w-3 h-3" />
                           <span>{job.applicantCount} Kandidat</span>
                         </div>
@@ -491,7 +491,7 @@ export default function RecruitmentJobsPage() {
                           </span>
                         </div>
 
-                        <span className="text-[10px] text-slate-400 group-hover:text-blue-600 font-medium transition-colors flex items-center gap-0.5">
+                        <span className="text-[10px] text-slate-400 group-hover:text-app-navy-600 font-medium transition-colors flex items-center gap-0.5">
                           Detail <ChevronRight className="w-3 h-3" />
                         </span>
                       </div>
@@ -535,9 +535,9 @@ export default function RecruitmentJobsPage() {
             </div>
 
             {/* Stage Switcher Banner */}
-            <div className="my-5 p-3.5 bg-blue-50/60 rounded-xl border border-blue-100 flex items-center justify-between">
+            <div className="my-5 p-3.5 bg-app-navy-50/60 rounded-xl border border-app-navy-100 flex items-center justify-between">
               <div>
-                <p className="text-[10px] uppercase font-bold text-blue-600 tracking-wider">
+                <p className="text-[10px] uppercase font-bold text-app-navy-600 tracking-wider">
                   Tahap Seleksi Saat Ini
                 </p>
                 <p className="text-xs font-semibold text-slate-800">
@@ -546,13 +546,13 @@ export default function RecruitmentJobsPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                <ArrowRightLeft className="w-4 h-4 text-blue-500" />
+                <ArrowRightLeft className="w-4 h-4 text-app-navy-500" />
                 <select
                   value={selectedStage.id}
                   onChange={(e) =>
                     handleMoveJob(selectedJob.id, e.target.value)
                   }
-                  className="bg-white text-xs font-medium border border-blue-200 rounded-lg p-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="bg-white text-xs font-medium border border-app-navy-200 rounded-lg p-1.5 focus:outline-none focus:ring-2 focus:ring-app-navy-500"
                 >
                   {stages.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -569,7 +569,7 @@ export default function RecruitmentJobsPage() {
                 onClick={() => setActiveTab("overview")}
                 className={`pb-2.5 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
                   activeTab === "overview"
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-app-navy-600 text-app-navy-600"
                     : "border-transparent text-slate-400 hover:text-slate-600"
                 }`}
               >
@@ -579,7 +579,7 @@ export default function RecruitmentJobsPage() {
                 onClick={() => setActiveTab("notes")}
                 className={`pb-2.5 px-4 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
                   activeTab === "notes"
-                    ? "border-blue-600 text-blue-600"
+                    ? "border-app-navy-600 text-app-navy-600"
                     : "border-transparent text-slate-400 hover:text-slate-600"
                 }`}
               >
@@ -617,16 +617,16 @@ export default function RecruitmentJobsPage() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-center justify-between">
+                  <div className="p-4 bg-app-navy-50/50 rounded-xl border border-app-navy-100 flex items-center justify-between">
                     <div>
-                      <span className="text-xs font-semibold text-blue-900 block">
+                      <span className="text-xs font-semibold text-app-navy-900 block">
                         Jumlah Kandidat Aktif
                       </span>
-                      <span className="text-[11px] text-blue-600">
+                      <span className="text-[11px] text-app-navy-600">
                         Kandidat yang berada pada tahap seleksi ini.
                       </span>
                     </div>
-                    <span className="text-lg font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-xl">
+                    <span className="text-lg font-bold text-app-navy-700 bg-app-navy-100 px-3 py-1 rounded-xl">
                       {selectedJob.applicantCount}
                     </span>
                   </div>
@@ -657,7 +657,7 @@ export default function RecruitmentJobsPage() {
                       rows={5}
                       defaultValue={selectedJob.notes}
                       placeholder="Tuliskan catatan terkait kebutuhan headcount, penyesuaian kriteria, atau catatan recruiter..."
-                      className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                      className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-app-navy-500/20 focus:border-app-navy-500"
                     />
                   </div>
                 </div>
@@ -689,7 +689,7 @@ export default function RecruitmentJobsPage() {
             </button>
 
             <div className="flex items-center gap-2 mb-1">
-              <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+              <div className="p-2 bg-app-navy-50 text-app-navy-600 rounded-lg">
                 <Layers className="w-5 h-5" />
               </div>
               <h2 className="text-lg font-bold text-slate-900">
@@ -712,7 +712,7 @@ export default function RecruitmentJobsPage() {
                   placeholder="Contoh: Tes Psikotes & Portofolio"
                   value={newStageName}
                   onChange={(e) => setNewStageName(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition"
+                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-app-navy-500/20 focus:border-app-navy-500 outline-none transition"
                 />
               </div>
 
@@ -725,7 +725,7 @@ export default function RecruitmentJobsPage() {
                   placeholder="Contoh: Evaluasi logika, kognitif, dan kecocokan portofolio"
                   value={newStageDescription}
                   onChange={(e) => setNewStageDescription(e.target.value)}
-                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition"
+                  className="w-full p-2.5 border border-slate-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-app-navy-500/20 focus:border-app-navy-500 outline-none transition"
                 />
               </div>
 
@@ -759,7 +759,7 @@ export default function RecruitmentJobsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition cursor-pointer"
+                  className="px-4 py-2 bg-app-navy-600 hover:bg-app-navy-700 text-white rounded-xl text-xs font-semibold transition cursor-pointer"
                 >
                   Tambah Tahapan
                 </button>
