@@ -33,6 +33,19 @@ type JobStatus =
   | "Berakhir"
   | "Diarsipkan";
 
+// 10 Tahap Rekrutmen
+export type RecruitmentStage =
+  | "Seleksi Administrasi"
+  | "Tes Tertulis / Tes Kemampuan"
+  | "Tes Praktik / Skill Test"
+  | "Psikotes"
+  | "Wawancara HRD"
+  | "Wawancara User"
+  | "Tes Kesehatan"
+  | "Pemeriksaan Referensi"
+  | "Penawaran Kerja"
+  | "Penerimaan / Onboarding";
+
 interface JobItem {
   id: string;
   position: string;
@@ -42,13 +55,28 @@ interface JobItem {
   createdDate: string;
   deadlineDate: string;
   status: JobStatus;
+  stage: RecruitmentStage;
 }
+
+const STAGE_OPTIONS: RecruitmentStage[] = [
+  "Seleksi Administrasi",
+  "Tes Tertulis / Tes Kemampuan",
+  "Tes Praktik / Skill Test",
+  "Psikotes",
+  "Wawancara HRD",
+  "Wawancara User",
+  "Tes Kesehatan",
+  "Pemeriksaan Referensi",
+  "Penawaran Kerja",
+  "Penerimaan / Onboarding",
+];
 
 export default function MyJobsPage() {
   // State Filter & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("Semua Status");
   const [selectedType, setSelectedType] = useState<string>("Semua Jenis");
+  const [selectedStage, setSelectedStage] = useState<string>("Semua Tahap");
   const [selectedDate, setSelectedDate] = useState<string>("Semua Waktu");
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
 
@@ -67,6 +95,7 @@ export default function MyJobsPage() {
       createdDate: "10 Sep 2026",
       deadlineDate: "30 Sep 2026",
       status: "Aktif",
+      stage: "Tes Praktik / Skill Test",
     },
     {
       id: "JOB-002",
@@ -77,6 +106,7 @@ export default function MyJobsPage() {
       createdDate: "12 Sep 2026",
       deadlineDate: "05 Okt 2026",
       status: "Aktif",
+      stage: "Wawancara User",
     },
     {
       id: "JOB-003",
@@ -87,6 +117,7 @@ export default function MyJobsPage() {
       createdDate: "01 Sep 2026",
       deadlineDate: "20 Sep 2026",
       status: "Berakhir",
+      stage: "Penawaran Kerja",
     },
     {
       id: "JOB-004",
@@ -97,6 +128,7 @@ export default function MyJobsPage() {
       createdDate: "22 Sep 2026",
       deadlineDate: "15 Okt 2026",
       status: "Menunggu verifikasi",
+      stage: "Seleksi Administrasi",
     },
     {
       id: "JOB-005",
@@ -107,6 +139,7 @@ export default function MyJobsPage() {
       createdDate: "23 Sep 2026",
       deadlineDate: "20 Okt 2026",
       status: "Draft",
+      stage: "Seleksi Administrasi",
     },
     {
       id: "JOB-006",
@@ -117,6 +150,7 @@ export default function MyJobsPage() {
       createdDate: "15 Agu 2026",
       deadlineDate: "30 Agu 2026",
       status: "Diarsipkan",
+      stage: "Penerimaan / Onboarding",
     },
     {
       id: "JOB-007",
@@ -127,6 +161,7 @@ export default function MyJobsPage() {
       createdDate: "05 Sep 2026",
       deadlineDate: "25 Sep 2026",
       status: "Ditolak",
+      stage: "Seleksi Administrasi",
     },
     {
       id: "JOB-008",
@@ -137,10 +172,11 @@ export default function MyJobsPage() {
       createdDate: "02 Sep 2026",
       deadlineDate: "01 Okt 2026",
       status: "Ditangguhkan",
+      stage: "Wawancara HRD",
     },
   ]);
 
-  // Helper Warna & Icon Status
+  // Helper Warna Badge Status Lowongan
   const getStatusBadge = (status: JobStatus) => {
     switch (status) {
       case "Aktif":
@@ -162,6 +198,34 @@ export default function MyJobsPage() {
     }
   };
 
+  // Helper Warna Badge Tahap Rekrutmen
+  const getStageBadge = (stage: RecruitmentStage) => {
+    switch (stage) {
+      case "Seleksi Administrasi":
+        return "bg-slate-100 text-slate-700 border-slate-200";
+      case "Tes Tertulis / Tes Kemampuan":
+        return "bg-blue-50 text-blue-700 border-blue-200/80";
+      case "Tes Praktik / Skill Test":
+        return "bg-indigo-50 text-indigo-700 border-indigo-200/80";
+      case "Psikotes":
+        return "bg-violet-50 text-violet-700 border-violet-200/80";
+      case "Wawancara HRD":
+        return "bg-sky-50 text-sky-700 border-sky-200/80";
+      case "Wawancara User":
+        return "bg-cyan-50 text-cyan-700 border-cyan-200/80";
+      case "Tes Kesehatan":
+        return "bg-rose-50 text-rose-700 border-rose-200/80";
+      case "Pemeriksaan Referensi":
+        return "bg-amber-50 text-amber-700 border-amber-200/80";
+      case "Penawaran Kerja":
+        return "bg-orange-50 text-orange-700 border-orange-200/80";
+      case "Penerimaan / Onboarding":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200/80";
+      default:
+        return "bg-slate-100 text-slate-600 border-slate-200";
+    }
+  };
+
   // Filter Logic
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
@@ -175,14 +239,17 @@ export default function MyJobsPage() {
       const matchType =
         selectedType === "Semua Jenis" || job.jobType === selectedType;
 
-      return matchSearch && matchStatus && matchType;
+      const matchStage =
+        selectedStage === "Semua Tahap" || job.stage === selectedStage;
+
+      return matchSearch && matchStatus && matchType && matchStage;
     });
-  }, [jobs, searchQuery, selectedStatus, selectedType]);
+  }, [jobs, searchQuery, selectedStatus, selectedType, selectedStage]);
 
   // Reset ke halaman 1 ketika pencarian/filter berubah
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedStatus, selectedType, selectedDate]);
+  }, [searchQuery, selectedStatus, selectedType, selectedStage, selectedDate]);
 
   // Calculation untuk Pagination
   const totalItems = filteredJobs.length;
@@ -196,7 +263,7 @@ export default function MyJobsPage() {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
 
-  // Actions
+  // Actions Dropdown
   const handleAction = (id: string, actionType: string) => {
     setActiveDropdownId(null);
     switch (actionType) {
@@ -208,6 +275,7 @@ export default function MyJobsPage() {
             id: `JOB-${Math.floor(100 + Math.random() * 900)}`,
             position: `${target.position} (Salinan)`,
             status: "Draft",
+            stage: "Seleksi Administrasi",
             applicantsCount: 0,
             createdDate: "24 Sep 2026",
           };
@@ -253,8 +321,8 @@ export default function MyJobsPage() {
             Lowongan Saya
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Kelola seluruh posisi pekerjaan, pantau pelamar, dan publikasikan
-            lowongan baru.
+            Kelola seluruh posisi pekerjaan, pantau tahap rekrutmen aktif, dan
+            publikasikan lowongan baru.
           </p>
         </div>
 
@@ -271,7 +339,7 @@ export default function MyJobsPage() {
       <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3">
           {/* Search Input */}
-          <div className="lg:col-span-4 relative">
+          <div className="lg:col-span-3 relative">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -282,14 +350,30 @@ export default function MyJobsPage() {
             />
           </div>
 
-          {/* Filter Status */}
+          {/* Filter Tahap Rekrutmen */}
           <div className="lg:col-span-3">
+            <select
+              value={selectedStage}
+              onChange={(e) => setSelectedStage(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 font-medium focus:bg-white focus:border-teal-500 focus:outline-none transition-colors"
+            >
+              <option value="Semua Tahap">Semua Tahap Rekrutmen</option>
+              {STAGE_OPTIONS.map((stg) => (
+                <option key={stg} value={stg}>
+                  {stg}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Filter Status */}
+          <div className="lg:col-span-2">
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 font-medium focus:bg-white focus:border-teal-500 focus:outline-none transition-colors"
             >
-              <option value="Semua Status">Semua Status (All)</option>
+              <option value="Semua Status">Semua Status</option>
               <option value="Aktif">Aktif</option>
               <option value="Menunggu verifikasi">Menunggu Verifikasi</option>
               <option value="Draft">Draft</option>
@@ -301,13 +385,13 @@ export default function MyJobsPage() {
           </div>
 
           {/* Filter Jenis Pekerjaan */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 font-medium focus:bg-white focus:border-teal-500 focus:outline-none transition-colors"
             >
-              <option value="Semua Jenis">Semua Jenis Pekerjaan</option>
+              <option value="Semua Jenis">Semua Jenis</option>
               <option value="Full-time">Full-time</option>
               <option value="Contract">Contract</option>
               <option value="Part-time">Part-time</option>
@@ -339,12 +423,14 @@ export default function MyJobsPage() {
           </span>
           {(searchQuery ||
             selectedStatus !== "Semua Status" ||
-            selectedType !== "Semua Jenis") && (
+            selectedType !== "Semua Jenis" ||
+            selectedStage !== "Semua Tahap") && (
             <button
               onClick={() => {
                 setSearchQuery("");
                 setSelectedStatus("Semua Status");
                 setSelectedType("Semua Jenis");
+                setSelectedStage("Semua Tahap");
                 setSelectedDate("Semua Waktu");
               }}
               className="text-teal-600 hover:text-teal-700 font-semibold"
@@ -362,8 +448,9 @@ export default function MyJobsPage() {
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider">
                 <th className="py-3.5 px-4 min-w-[220px]">Posisi</th>
+                <th className="py-3.5 px-3 min-w-[180px]">Tahap Rekrutmen</th>
                 <th className="py-3.5 px-3">Jenis</th>
-                <th className="py-3.5 px-3 min-w-[150px]">Lokasi</th>
+                <th className="py-3.5 px-3 min-w-[140px]">Lokasi</th>
                 <th className="py-3.5 px-3 text-center">Pelamar</th>
                 <th className="py-3.5 px-3">Tgl Dibuat</th>
                 <th className="py-3.5 px-3">Batas Akhir</th>
@@ -394,6 +481,17 @@ export default function MyJobsPage() {
                       </div>
                     </td>
 
+                    {/* Tahap Rekrutmen Lowongan (Plain Badge, No Dropdown) */}
+                    <td className="py-3.5 px-3 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[0.65rem] font-bold border ${getStageBadge(
+                          job.stage,
+                        )}`}
+                      >
+                        {job.stage}
+                      </span>
+                    </td>
+
                     {/* Jenis Pekerjaan */}
                     <td className="py-3.5 px-3 whitespace-nowrap">
                       <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[0.65rem] font-semibold border border-slate-200/60">
@@ -405,7 +503,7 @@ export default function MyJobsPage() {
                     <td className="py-3.5 px-3">
                       <div className="flex items-center gap-1.5 text-slate-600">
                         <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span className="truncate max-w-[140px] text-[0.7rem]">
+                        <span className="truncate max-w-[130px] text-[0.7rem]">
                           {job.location}
                         </span>
                       </div>
@@ -436,7 +534,7 @@ export default function MyJobsPage() {
                       {job.deadlineDate}
                     </td>
 
-                    {/* Status */}
+                    {/* Status Lowongan */}
                     <td className="py-3.5 px-3 whitespace-nowrap">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold border ${getStatusBadge(
@@ -539,13 +637,14 @@ export default function MyJobsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
                     <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-30" />
                     <p className="text-xs font-semibold">
                       Tidak ada lowongan kerja yang ditemukan
                     </p>
                     <p className="text-[0.65rem] text-slate-400 mt-0.5">
-                      Coba ubah kata kunci pencarian atau filter status Anda.
+                      Coba ubah kata kunci pencarian atau filter status/tahap
+                      Anda.
                     </p>
                   </td>
                 </tr>

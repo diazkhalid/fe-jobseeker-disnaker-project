@@ -13,23 +13,26 @@ import {
   FileText,
   Download,
   Calendar,
-  Send,
-  UserCheck,
-  UserX,
   Star,
   Plus,
   ExternalLink,
-  Globe,
   Sparkles,
   CheckCircle2,
   Clock,
   Building,
-  ShieldCheck,
-  FolderGit2,
-  ChevronRight,
   MessageSquare,
+  UserCheck,
+  UserX,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+
+// Tipe Data Tahap Seleksi Kandidat
+interface SelectionStageRecord {
+  stage: string;
+  date: string;
+  notes?: string;
+  updatedAt: string;
+}
 
 // Tipe Data Kandidat Detail
 interface ApplicantDetail {
@@ -44,6 +47,8 @@ interface ApplicantDetail {
   positionApplied: string;
   appliedDate: string;
   status: string;
+  statusDate: string;
+  selectionHistory: SelectionStageRecord[];
   matchScore: number;
   education: Array<{
     degree: string;
@@ -105,7 +110,22 @@ const DUMMY_APPLICANT: ApplicantDetail = {
     "Frontend Developer dengan pengalaman lebih dari 4 tahun dalam membangun aplikasi web modern, responsif, dan scalable menggunakan React, Next.js, serta Tailwind CSS. Terbiasa memimpin tim kecil dan berkolaborasi dengan UI/UX Designer.",
   positionApplied: "Senior Frontend Developer",
   appliedDate: "20 Mei 2026",
-  status: "Lolos Administrasi",
+  status: "Interview HR",
+  statusDate: "2026-05-25",
+  selectionHistory: [
+    {
+      stage: "Administrasi",
+      date: "2026-05-20",
+      notes: "Berkas dan kualifikasi awal telah diverifikasi.",
+      updatedAt: "20 Mei 2026",
+    },
+    {
+      stage: "Interview HR",
+      date: "2026-05-25",
+      notes: "Jadwal interview via Zoom telah disepakati.",
+      updatedAt: "22 Mei 2026",
+    },
+  ],
   matchScore: 95,
   education: [
     {
@@ -223,7 +243,7 @@ const DUMMY_APPLICANT: ApplicantDetail = {
 };
 
 export default function DetailPelamarPage() {
-  const [applicant] = useState<ApplicantDetail>(DUMMY_APPLICANT);
+  const [applicant, setApplicant] = useState<ApplicantDetail>(DUMMY_APPLICANT);
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState<"profil" | "lamaran" | "dokumen">(
     "profil",
@@ -245,13 +265,75 @@ export default function DetailPelamarPage() {
     setNewNote("");
   };
 
+  // Handler Tolak Pelamar
+  const handleReject = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const newRecord: SelectionStageRecord = {
+      stage: "Ditolak",
+      date: today,
+      notes: "Kandidat ditolak.",
+      updatedAt: new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+    };
+
+    setApplicant((prev) => ({
+      ...prev,
+      status: "Ditolak",
+      statusDate: today,
+      selectionHistory: [newRecord, ...prev.selectionHistory],
+    }));
+  };
+
+  // Handler Terima Pelamar
+  const handleAccept = () => {
+    const today = new Date().toISOString().split("T")[0];
+    const newRecord: SelectionStageRecord = {
+      stage: "Diterima (Hired)",
+      date: today,
+      notes: "Kandidat diterima.",
+      updatedAt: new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+    };
+
+    setApplicant((prev) => ({
+      ...prev,
+      status: "Diterima (Hired)",
+      statusDate: today,
+      selectionHistory: [newRecord, ...prev.selectionHistory],
+    }));
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Diterima (Hired)":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "Ditolak":
+        return "bg-rose-50 text-rose-700 border-rose-200";
+      case "Offering Letter":
+        return "bg-purple-50 text-purple-700 border-purple-200";
+      case "Interview HR":
+      case "Interview User":
+        return "bg-amber-50 text-amber-700 border-amber-200";
+      case "Psikotes & Skill Test":
+        return "bg-indigo-50 text-indigo-700 border-indigo-200";
+      default:
+        return "bg-blue-50 text-blue-700 border-blue-200";
+    }
+  };
+
   return (
-    <div className="bg-slate-50/50 text-slate-800 text-[13px]">
+    <div className="bg-slate-50/50 text-slate-800 text-[13px] min-h-screen">
       <div className="mx-auto space-y-4">
         {/* Top Navigation & Back Button */}
         <div className="flex items-center justify-between">
           <Link
-            href="/perusahaan/pelamar"
+            href="/dashboard/perusahaan/pelamar"
             className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-teal-600 transition-colors font-medium"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Daftar Pelamar
@@ -266,7 +348,11 @@ export default function DetailPelamarPage() {
               }`}
             >
               <Star
-                className={`w-3.5 h-3.5 ${isFavorite ? "fill-amber-400 text-amber-400" : "text-slate-400"}`}
+                className={`w-3.5 h-3.5 ${
+                  isFavorite
+                    ? "fill-amber-400 text-amber-400"
+                    : "text-slate-400"
+                }`}
               />
               {isFavorite ? "Favorit" : "Tandai Favorit"}
             </button>
@@ -286,7 +372,12 @@ export default function DetailPelamarPage() {
                   <h1 className="text-lg md:text-xl font-bold text-slate-900">
                     {applicant.name}
                   </h1>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border flex items-center gap-1 ${getStatusColor(
+                      applicant.status,
+                    )}`}
+                  >
+                    <CheckCircle2 className="w-3 h-3" />
                     {applicant.status}
                   </span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -314,16 +405,19 @@ export default function DetailPelamarPage() {
               </div>
             </div>
 
-            {/* Sticky Actions Bar for Recruiter */}
-            <div className="flex items-center gap-1.5 flex-wrap md:flex-nowrap pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white text-[11px] font-medium rounded-lg hover:bg-emerald-700 transition-all shadow-sm">
-                <UserCheck className="w-3.5 h-3.5" /> Loloskan
+            {/* Quick Action Buttons: Tolak / Terima */}
+            <div className="flex items-center gap-2 flex-wrap md:flex-nowrap pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <button
+                onClick={handleReject}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-semibold rounded-lg hover:bg-rose-100 transition-all shadow-sm"
+              >
+                <UserX className="w-3.5 h-3.5 text-rose-600" /> Tolak
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-medium rounded-lg hover:bg-rose-100 transition-all">
-                <UserX className="w-3.5 h-3.5" /> Tolak
-              </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-50 text-teal-700 border border-teal-200 text-[11px] font-medium rounded-lg hover:bg-teal-100 transition-all">
-                <Calendar className="w-3.5 h-3.5" /> Jadwalkan Interview
+              <button
+                onClick={handleAccept}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white text-[11px] font-semibold rounded-lg hover:bg-emerald-700 transition-all shadow-sm"
+              >
+                <UserCheck className="w-3.5 h-3.5" /> Terima
               </button>
               <button
                 className="p-1.5 text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-all"
@@ -400,12 +494,10 @@ export default function DetailPelamarPage() {
                   <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
                     {applicant.experience.map((exp, idx) => (
                       <div key={idx} className="relative group">
-                        {/* Bullet / Node */}
-                        <div className="absolute -left-6 top-1.5 w-4 h-4 rounded-full bg-white border-2 border-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <div className="w-1.5 h-1.5 rounded-full bg-teal-600"></div>
+                        <div className="absolute -left-[1.4rem] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <div className="w-1 h-1 rounded-full bg-teal-600"></div>
                         </div>
 
-                        {/* Content Card */}
                         <div className="bg-slate-50/70 hover:bg-slate-50 border border-slate-100 p-3 rounded-lg transition-all space-y-1">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <h4 className="font-semibold text-slate-900 text-[13px]">
@@ -439,12 +531,10 @@ export default function DetailPelamarPage() {
                   <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
                     {applicant.education.map((edu, idx) => (
                       <div key={idx} className="relative group">
-                        {/* Bullet / Node */}
-                        <div className="absolute -left-6 top-1.5 w-4 h-4 rounded-full bg-white border-2 border-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <div className="w-1.5 h-1.5 rounded-full bg-teal-600"></div>
+                        <div className="absolute -left-[1.4rem] top-1.5 w-4 h-4 rounded-full bg-white border-2 border-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <div className="w-1 h-1 rounded-full bg-teal-600"></div>
                         </div>
 
-                        {/* Content Card */}
                         <div className="bg-slate-50/70 hover:bg-slate-50 border border-slate-100 p-3 rounded-lg transition-all space-y-1">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <h4 className="font-semibold text-slate-900 text-[13px]">
@@ -469,7 +559,6 @@ export default function DetailPelamarPage() {
 
                 {/* Keahlian & Bahasa */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Keahlian */}
                   <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                       Keahlian / Skills
@@ -486,7 +575,6 @@ export default function DetailPelamarPage() {
                     </div>
                   </div>
 
-                  {/* Bahasa */}
                   <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-2">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                       Penguasaan Bahasa
@@ -584,10 +672,10 @@ export default function DetailPelamarPage() {
                     </div>
                     <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-100">
                       <p className="text-[10px] text-slate-400">
-                        Status Saat Ini
+                        Tahap & Tanggal Saat Ini
                       </p>
                       <p className="font-semibold text-teal-600">
-                        {applicant.status}
+                        {applicant.status} ({applicant.statusDate})
                       </p>
                     </div>
                   </div>
@@ -667,8 +755,47 @@ export default function DetailPelamarPage() {
             )}
           </div>
 
-          {/* Right Sidebar Area (Catatan Recruiter & Quick Action) */}
+          {/* Right Sidebar Area (Timeline Tahapan, Catatan Recruiter & Quick Action) */}
           <div className="space-y-4">
+            {/* Timeline Histori Tahapan Seleksi */}
+            <div className="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-teal-600" /> Histori
+                  Seleksi
+                </h3>
+              </div>
+
+              <div className="relative pl-5 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 pt-1">
+                {applicant.selectionHistory.map((item, idx) => (
+                  <div key={idx} className="relative">
+                    <div
+                      className={`absolute -left-[1.05rem] top-1 w-3 h-3 rounded-full border-2 bg-white ${
+                        idx === 0
+                          ? "border-teal-600 bg-teal-600"
+                          : "border-slate-300"
+                      }`}
+                    />
+                    <div className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-slate-800 text-[12px]">
+                          {item.stage}
+                        </span>
+                        <span className="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded font-mono">
+                          {item.date}
+                        </span>
+                      </div>
+                      {item.notes && (
+                        <p className="text-[11px] text-slate-500 italic">
+                          {`"${item.notes}"`}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Quick CV Download Action */}
             <div className="bg-teal-900 text-white p-4 rounded-xl shadow-sm space-y-3">
               <div className="flex items-center gap-2">

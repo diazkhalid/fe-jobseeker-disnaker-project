@@ -30,6 +30,8 @@ import {
   UserCog,
   ShieldCheck,
   BellRing,
+  Send,
+  MailClock,
 } from "lucide-react";
 
 interface SubMenuItem {
@@ -146,9 +148,19 @@ export default function Sidebar() {
     },
     {
       title: "Pesan & Komunikasi",
-      href: "/dashboard/perusahaan/pesan",
       icon: MessageSquare,
-      badge: 4,
+      submenu: [
+        {
+          title: "Riwayat",
+          href: "/dashboard/perusahaan/pesan",
+          icon: MailClock,
+        },
+        {
+          title: "Kirim",
+          href: "/dashboard/perusahaan/pesan/kirim",
+          icon: Send,
+        },
+      ],
     },
     {
       title: "Laporan Rekrutmen",
