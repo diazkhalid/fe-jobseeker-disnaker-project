@@ -7,31 +7,21 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  Building2,
   Briefcase,
+  Building2,
   Users,
   GitMerge,
-  MessageSquare,
   BarChart3,
-  Bell,
-  Settings,
-  HelpCircle,
-  LogOut,
+  Info,
   ChevronDown,
-  PlusCircle,
-  FileText,
-  Archive,
-  UserCheck,
-  UserPlus,
-  Clock,
-  Calendar,
   CheckCircle2,
   ListOrdered,
-  UserCog,
+  Calendar,
+  Newspaper,
+  GraduationCap,
+  Sparkles,
   ShieldCheck,
-  BellRing,
-  Send,
-  MailClock,
+  FileCheck2,
 } from "lucide-react";
 
 interface SubMenuItem {
@@ -49,11 +39,9 @@ interface MenuItem {
   submenu?: SubMenuItem[];
 }
 
-export default function Sidebar() {
+export default function SidebarAdmin() {
   const pathname = usePathname();
-  const [openSubmenu, setOpenSubmenu] = useState<string | null>(
-    "Lowongan Kerja",
-  );
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>("Lowongan");
 
   const toggleSubmenu = (title: string) => {
     setOpenSubmenu((prev) => (prev === title ? null : title));
@@ -62,146 +50,94 @@ export default function Sidebar() {
   const menuItems: MenuItem[] = [
     {
       title: "Dashboard",
-      href: "/dashboard/perusahaan",
+      href: "/dashboard/admin",
       icon: LayoutDashboard,
     },
     {
-      title: "Profil Perusahaan",
-      href: "/dashboard/perusahaan/profil",
-      icon: Building2,
-    },
-    {
-      title: "Lowongan Kerja",
+      title: "Lowongan",
       icon: Briefcase,
       submenu: [
         {
           title: "Semua Lowongan",
-          href: "/dashboard/perusahaan/lowongan",
+          href: "/dashboard/admin/lowongan",
           icon: Briefcase,
         },
+        // {
+        //   title: "Verifikasi Lowongan",
+        //   href: "/dashboard/admin/lowongan/verifikasi",
+        //   icon: FileCheck2,
+        //   badge: 5,
+        // },
+      ],
+    },
+    {
+      title: "Perusahaan",
+      icon: Building2,
+      submenu: [
         {
-          title: "Buat Lowongan",
-          href: "/dashboard/perusahaan/lowongan/buat",
-          icon: PlusCircle,
+          title: "Semua Perusahaan",
+          href: "/dashboard/admin/perusahaan",
+          icon: Building2,
         },
-        // {
-        //   title: "Draft Lowongan",
-        //   href: "/dashboard/perusahaan/lowongan/draft",
-        //   icon: FileText,
-        //   badge: 2,
-        // },
-        // {
-        //   title: "Arsip Lowongan",
-        //   href: "/dashboard/perusahaan/lowongan/arsip",
-        //   icon: Archive,
-        // },
+        {
+          title: "Verifikasi Perusahaan",
+          href: "/dashboard/admin/perusahaan/verifikasi",
+          icon: ShieldCheck,
+          badge: 3,
+        },
       ],
     },
     {
       title: "Pelamar",
+      href: "/dashboard/admin/pelamar",
       icon: Users,
-      badge: "New",
-      submenu: [
-        {
-          title: "Semua Pelamar",
-          href: "/dashboard/perusahaan/pelamar",
-          icon: Users,
-        },
-        {
-          title: "Pelamar Baru",
-          href: "/dashboard/perusahaan/pelamar/baru",
-          icon: UserPlus,
-          badge: 12,
-        },
-        {
-          title: "Dalam Proses Seleksi",
-          href: "/dashboard/perusahaan/pelamar/proses",
-          icon: Clock,
-        },
-        {
-          title: "Kandidat Diterima",
-          href: "/dashboard/perusahaan/pelamar/diterima",
-          icon: UserCheck,
-        },
-      ],
     },
     {
-      title: "Proses Seleksi",
+      title: "Rekrutmen",
       icon: GitMerge,
       submenu: [
         {
           title: "Tahapan Rekrutmen",
-          href: "/dashboard/perusahaan/seleksi",
+          href: "/dashboard/admin/rekrutmen/tahapan",
           icon: ListOrdered,
         },
-        // {
-        //   title: "Jadwal Seleksi",
-        //   href: "/dashboard/perusahaan/seleksi/jadwal",
-        //   icon: Calendar,
-        // },
-        // {
-        //   title: "Hasil Seleksi",
-        //   href: "/dashboard/perusahaan/seleksi/hasil",
-        //   icon: CheckCircle2,
-        // },
-      ],
-    },
-    {
-      title: "Pesan",
-      icon: MessageSquare,
-      submenu: [
         {
-          title: "Riwayat",
-          href: "/dashboard/perusahaan/pesan",
-          icon: MailClock,
-        },
-        {
-          title: "Buat Pesan",
-          href: "/dashboard/perusahaan/pesan/buat",
-          icon: Send,
+          title: "Jadwal Rekrutmen",
+          href: "/dashboard/admin/rekrutmen/jadwal",
+          icon: Calendar,
         },
       ],
     },
     {
-      title: "Laporan Rekrutmen",
-      href: "/dashboard/perusahaan/laporan",
+      title: "Laporan & Statistik",
+      href: "/dashboard/admin/laporan",
       icon: BarChart3,
     },
     {
-      title: "Notifikasi",
-      href: "/dashboard/perusahaan/notifikasi",
-      icon: Bell,
-    },
-    {
-      title: "Pengaturan",
-      icon: Settings,
+      title: "Informasi",
+      icon: Info,
       submenu: [
         {
-          title: "Pengaturan Akun",
-          href: "/dashboard/perusahaan/pengaturan/akun",
-          icon: Settings,
+          title: "Berita",
+          href: "/dashboard/admin/informasi/berita",
+          icon: Newspaper,
         },
         {
-          title: "Pengguna & Tim",
-          href: "/dashboard/perusahaan/pengaturan/tim",
-          icon: UserCog,
+          title: "Pelatihan",
+          href: "/dashboard/admin/informasi/pelatihan",
+          icon: GraduationCap,
         },
         {
-          title: "Keamanan",
-          href: "/dashboard/perusahaan/pengaturan/keamanan",
-          icon: ShieldCheck,
-        },
-        {
-          title: "Preferensi Notifikasi",
-          href: "/dashboard/perusahaan/pengaturan/notifikasi",
-          icon: BellRing,
+          title: "Job Fair",
+          href: "/dashboard/admin/informasi/job-fair",
+          icon: Sparkles,
         },
       ],
     },
   ];
 
   return (
-    <aside className="w-[15%] h-screen bg-white text-slate-700 flex flex-col border-r border-slate-200 sticky top-0 left-0 z-40 select-none">
+    <aside className="w-64 h-screen bg-white text-slate-700 flex flex-col border-r border-slate-200 sticky top-0 left-0 z-40 select-none">
       {/* BRAND / LOGO */}
       <div className="pl-5">
         <Link href="/" className="flex items-center gap-3 group">
@@ -237,7 +173,7 @@ export default function Sidebar() {
               {hasSubmenu ? (
                 <button
                   onClick={() => toggleSubmenu(item.title)}
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[0.75rem] font-medium transition-all duration-200 group ${
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 group ${
                     isParentActive
                       ? "bg-teal-50/80 text-teal-700 font-semibold"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -270,7 +206,7 @@ export default function Sidebar() {
               ) : (
                 <Link
                   href={item.href || "#"}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-[0.75rem] font-medium transition-all duration-200 group ${
+                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 group ${
                     pathname === item.href
                       ? "bg-teal-600 text-white font-semibold shadow-sm shadow-teal-600/20"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
@@ -339,7 +275,7 @@ export default function Sidebar() {
                             </div>
 
                             {sub.badge && (
-                              <span className="px-1.5 py-0.2 text-[0.55rem] font-bold rounded-md bg-teal-100 text-teal-700">
+                              <span className="px-1.5 py-0.2 text-[0.55rem] font-bold rounded-md bg-amber-100 text-amber-700 border border-amber-200">
                                 {sub.badge}
                               </span>
                             )}
@@ -354,29 +290,6 @@ export default function Sidebar() {
           );
         })}
       </div>
-
-      {/* BOTTOM SECTION: HELP & LOGOUT */}
-      {/* <div className="p-3 border-t border-slate-100 space-y-1">
-        <Link
-          href="/dashboard/perusahaan/bantuan"
-          className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[0.75rem] font-medium transition-colors ${
-            pathname === "/dashboard/perusahaan/bantuan"
-              ? "bg-teal-50 text-teal-700"
-              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-          }`}
-        >
-          <HelpCircle className="w-4 h-4 text-slate-400" />
-          <span>Pusat Bantuan</span>
-        </Link>
-
-        <button
-          onClick={() => console.log("Logout diklik")}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[0.75rem] font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          <span>Keluar</span>
-        </button>
-      </div> */}
     </aside>
   );
 }

@@ -278,6 +278,9 @@ export default function LoginPage() {
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
+              onClick={() => {
+                router.push("/dashboard/perusahaan");
+              }}
               className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl text-[11px] font-bold text-slate-700 transition-all inline-flex items-center justify-center gap-2 shadow-sm"
             >
               <FcGoogle className="w-4 h-4" />
@@ -286,6 +289,9 @@ export default function LoginPage() {
 
             <button
               type="button"
+              onClick={() => {
+                router.push("/dashboard/admin");
+              }}
               className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl text-[11px] font-bold text-slate-700 transition-all inline-flex items-center justify-center gap-2 shadow-sm"
             >
               <FaFacebook className="w-4 h-4 text-[#1877F2]" />
