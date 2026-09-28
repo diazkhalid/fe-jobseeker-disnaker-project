@@ -56,58 +56,60 @@ export default function SidebarAdmin() {
     {
       title: "Lowongan",
       icon: Briefcase,
-      submenu: [
-        {
-          title: "Semua Lowongan",
-          href: "/dashboard/admin/lowongan",
-          icon: Briefcase,
-        },
-        // {
-        //   title: "Verifikasi Lowongan",
-        //   href: "/dashboard/admin/lowongan/verifikasi",
-        //   icon: FileCheck2,
-        //   badge: 5,
-        // },
-      ],
+      href: "/dashboard/admin/lowongan",
+      // submenu: [
+      //   {
+      //     title: "Semua Lowongan",
+      //     href: "/dashboard/admin/lowongan",
+      //     icon: Briefcase,
+      //   },
+      //   {
+      //     title: "Verifikasi Lowongan",
+      //     href: "/dashboard/admin/lowongan/verifikasi",
+      //     icon: FileCheck2,
+      //     badge: 5,
+      //   },
+      // ],
     },
     {
       title: "Perusahaan",
+      href: "/dashboard/admin/perusahaan",
       icon: Building2,
-      submenu: [
-        {
-          title: "Semua Perusahaan",
-          href: "/dashboard/admin/perusahaan",
-          icon: Building2,
-        },
-        {
-          title: "Verifikasi Perusahaan",
-          href: "/dashboard/admin/perusahaan/verifikasi",
-          icon: ShieldCheck,
-          badge: 3,
-        },
-      ],
+      // submenu: [
+      //   {
+      //     title: "Semua Perusahaan",
+      //     href: "/dashboard/admin/perusahaan",
+      //     icon: Building2,
+      //   },
+      //   {
+      //     title: "Verifikasi Perusahaan",
+      //     href: "/dashboard/admin/perusahaan/verifikasi",
+      //     icon: ShieldCheck,
+      //     badge: 3,
+      //   },
+      // ],
     },
     {
       title: "Pelamar",
       href: "/dashboard/admin/pelamar",
       icon: Users,
     },
-    {
-      title: "Rekrutmen",
-      icon: GitMerge,
-      submenu: [
-        {
-          title: "Tahapan Rekrutmen",
-          href: "/dashboard/admin/rekrutmen/tahapan",
-          icon: ListOrdered,
-        },
-        {
-          title: "Jadwal Rekrutmen",
-          href: "/dashboard/admin/rekrutmen/jadwal",
-          icon: Calendar,
-        },
-      ],
-    },
+    // {
+    //   title: "Rekrutmen",
+    //   icon: GitMerge,
+    //   submenu: [
+    //     {
+    //       title: "Tahapan Rekrutmen",
+    //       href: "/dashboard/admin/rekrutmen/tahapan",
+    //       icon: ListOrdered,
+    //     },
+    //     {
+    //       title: "Jadwal Rekrutmen",
+    //       href: "/dashboard/admin/rekrutmen/jadwal",
+    //       icon: Calendar,
+    //     },
+    //   ],
+    // },
     {
       title: "Laporan & Statistik",
       href: "/dashboard/admin/laporan",
@@ -117,16 +119,16 @@ export default function SidebarAdmin() {
       title: "Informasi",
       icon: Info,
       submenu: [
-        {
-          title: "Berita",
-          href: "/dashboard/admin/informasi/berita",
-          icon: Newspaper,
-        },
-        {
-          title: "Pelatihan",
-          href: "/dashboard/admin/informasi/pelatihan",
-          icon: GraduationCap,
-        },
+        // {
+        //   title: "Berita",
+        //   href: "/dashboard/admin/informasi/berita",
+        //   icon: Newspaper,
+        // },
+        // {
+        //   title: "Pelatihan",
+        //   href: "/dashboard/admin/informasi/pelatihan",
+        //   icon: GraduationCap,
+        // },
         {
           title: "Job Fair",
           href: "/dashboard/admin/informasi/job-fair",
