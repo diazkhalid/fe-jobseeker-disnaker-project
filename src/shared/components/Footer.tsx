@@ -34,12 +34,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Brand & Disnakertrans Identity (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
-            {/* Logo Samawa Karir Image */}
+            {/* Logo SIMNAKER Image */}
             <Link href="/" className="inline-flex items-center gap-2.5 group">
               <div className="relative h-[50px] w-[120px] overflow-hidden rounded-xl group-hover:border-teal-500 transition-colors shrink-0">
                 <Image
-                  src="/images/karir-logo-0-dark.png"
-                  alt="Samawa Karir Logo"
+                  src="/images/karir-logo-1.png"
+                  alt="SIMNAKER Logo"
                   width={200}
                   height={100}
                   className="object-contain brightness-0 invert"
@@ -230,8 +230,8 @@ export default function Footer() {
         <div className="mt-10 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-[11px] text-slate-500">
           <p>
             © {currentYear}{" "}
-            <span className="font-semibold text-slate-300">Samawa Karir</span>.
-            Hak Cipta Dilindungi Undang-Undang.
+            <span className="font-semibold text-slate-300">SIMNAKER</span>. Hak
+            Cipta Dilindungi Undang-Undang.
           </p>
           <p className="text-slate-500">
             Dikelola oleh{" "}

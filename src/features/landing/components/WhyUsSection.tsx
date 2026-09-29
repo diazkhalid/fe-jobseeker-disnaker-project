@@ -71,7 +71,7 @@ export default function WhyUsSection() {
               <span>Keunggulan Platform</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Mengapa Menggunakan Samawa Karir?
+              Mengapa Menggunakan SIMNAKER?
             </h2>
           </div>
 

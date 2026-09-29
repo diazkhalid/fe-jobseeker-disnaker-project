@@ -32,16 +32,29 @@ interface Job {
 }
 
 const mockJobs: Job[] = [
+  // {
+  //   id: "1",
+  //   title: "Senior Mine Operations Engineer",
+  //   company: "PT Amman Mineral Nusa Tenggara",
+  //   companyLogo: "/images/companies/amman.png",
+  //   isVerified: true,
+  //   location: "Maluk / Sumbawa Barat",
+  //   type: "Full-time",
+  //   education: "S1 Teknik Pertambangan",
+  //   salary: "Rp 15.000.000 - Rp 25.000.000",
+  //   publishedAt: "2 jam yang lalu",
+  //   deadline: "15 Okt 2026",
+  // },
   {
     id: "1",
     title: "Senior Mine Operations Engineer",
-    company: "PT Amman Mineral Nusa Tenggara",
-    companyLogo: "/images/companies/amman.png",
+    company: "PT Sumbawa Sejahtera Mining",
+    companyLogo: "",
     isVerified: true,
-    location: "Maluk / Sumbawa Barat",
+    location: "Sumbawa Besar",
     type: "Full-time",
     education: "S1 Teknik Pertambangan",
-    salary: "Rp 15.000.000 - Rp 25.000.000",
+    salary: "Rp 12.000.000 - Rp 20.000.000",
     publishedAt: "2 jam yang lalu",
     deadline: "15 Okt 2026",
   },
@@ -157,7 +170,7 @@ export default function LatestJobsSection() {
           </div>
 
           <Link
-            href="/lowongan"
+            href="/lowongan-kerja"
             className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold text-teal-700 hover:text-teal-800 transition-colors group shrink-0"
           >
             <span>Lihat Semua Lowongan</span>
@@ -248,7 +261,7 @@ export default function LatestJobsSection() {
 
                   {/* Job Title */}
                   <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-teal-700 transition-colors line-clamp-2 leading-snug">
-                    <Link href={`/lowongan/${job.id}`}>{job.title}</Link>
+                    <Link href={`/lowongan-kerja/${job.id}`}>{job.title}</Link>
                   </h3>
 
                   {/* Tags: Type & Education */}

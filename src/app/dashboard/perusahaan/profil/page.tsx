@@ -95,7 +95,7 @@ export default function ProfilePage() {
         <div className="flex items-center gap-4">
           <div className="relative w-16 h-16 rounded-2xl border border-slate-200 bg-slate-50 p-1 shrink-0 overflow-hidden group">
             <Image
-              src="/images/karir-logo-0.png"
+              src="/images/karir-logo-1.png"
               alt="Logo Perusahaan"
               fill
               className="object-contain p-1"
@@ -581,7 +581,7 @@ export default function ProfilePage() {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="relative aspect-video rounded-xl border border-slate-200 bg-slate-100 overflow-hidden group">
                   <Image
-                    src="/images/karir-logo-0.png"
+                    src="/images/karir-logo-1.png"
                     alt="Kantor 1"
                     fill
                     className="object-cover"

@@ -41,7 +41,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Pemerintahan & Jasa",
         image:
           "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=sumbawa-besar",
+        href: "/lowongan-kerja?lokasi=sumbawa-besar",
       },
       {
         name: "Unter Iwes",
@@ -50,7 +50,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Pendidikan & Perdagangan",
         image:
           "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=unter-iwes",
+        href: "/lowongan-kerja?lokasi=unter-iwes",
       },
       {
         name: "Moyo Utara",
@@ -59,7 +59,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Perikanan & Peternakan",
         image:
           "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=moyo-utara",
+        href: "/lowongan-kerja?lokasi=moyo-utara",
       },
     ],
   },
@@ -76,7 +76,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Pariwisata & Logistik Pelabuhan",
         image:
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=labuhan-badas",
+        href: "/lowongan-kerja?lokasi=labuhan-badas",
       },
       {
         name: "Utan",
@@ -85,7 +85,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Perikanan & Budidaya Laut",
         image:
           "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=utan",
+        href: "/lowongan-kerja?lokasi=utan",
       },
       {
         name: "Tarano",
@@ -94,7 +94,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Hasil Laut & Olahan",
         image:
           "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=tarano",
+        href: "/lowongan-kerja?lokasi=tarano",
       },
     ],
   },
@@ -111,7 +111,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Perdagangan & Perikanan",
         image:
           "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=alas",
+        href: "/lowongan-kerja?lokasi=alas",
       },
       {
         name: "Alas Barat",
@@ -120,7 +120,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Pertanian & Logistik Lintas",
         image:
           "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=alas-barat",
+        href: "/lowongan-kerja?lokasi=alas-barat",
       },
       {
         name: "Buer",
@@ -129,7 +129,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Agrobisnis & UMKM",
         image:
           "https://images.unsplash.com/photo-1595838725982-12499d638c4c?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=buer",
+        href: "/lowongan-kerja?lokasi=buer",
       },
     ],
   },
@@ -146,7 +146,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Pertanian & Agrobisnis",
         image:
           "https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=plampang",
+        href: "/lowongan-kerja?lokasi=plampang",
       },
       {
         name: "Empang",
@@ -155,7 +155,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Perkebunan & Jagung",
         image:
           "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=empang",
+        href: "/lowongan-kerja?lokasi=empang",
       },
       {
         name: "Maronge",
@@ -164,7 +164,7 @@ const zonesData: RegionZone[] = [
         topIndustry: "Peternakan & Jagung",
         image:
           "https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&w=600&q=80",
-        href: "/lowongan?lokasi=maronge",
+        href: "/lowongan-kerja?lokasi=maronge",
       },
     ],
   },
@@ -323,7 +323,7 @@ export default function JobsByLocationSection() {
         </div>
 
         {/* Bottom Banner Info Peta Interaktif */}
-        <div className="mt-7 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white flex flex-col md:flex-row items-center justify-between gap-4">
+        {/* <div className="mt-7 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-teal-500/20 text-teal-400 rounded-xl border border-teal-500/30">
               <Sparkles className="h-5 w-5" />
@@ -346,7 +346,7 @@ export default function JobsByLocationSection() {
             <span>Buka Peta Interaktif</span>
             <ChevronRight className="h-3.5 w-3.5" />
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );

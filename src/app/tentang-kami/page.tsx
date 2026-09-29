@@ -42,7 +42,7 @@ export default function TentangKamiPage() {
               Membangun Ekosistem Ketenagakerjaan Digital Sumbawa
             </h1>
             <p className="text-slate-300 text-[0.8rem] sm:text-[0.9rem] leading-relaxed font-normal">
-              Samawa Karir hadir sebagai jembatan transformasi digital yang
+              SIMNAKER hadir sebagai jembatan transformasi digital yang
               menghubungkan pencari kerja, penyedia kerja, dan pemerintah daerah
               untuk menciptakan lapangan kerja yang inklusif, transparan, dan
               berkelanjutan.
@@ -58,11 +58,11 @@ export default function TentangKamiPage() {
                 <HeartHandshake className="w-6 h-6" />
               </div>
               <h2 className="text-lg font-bold text-slate-900">
-                Tentang Samawa Karir
+                Tentang SIMNAKER
               </h2>
               <p className="text-[0.8rem] text-slate-600 leading-relaxed">
                 <strong className="text-slate-900 font-semibold">
-                  Samawa Karir
+                  SIMNAKER
                 </strong>{" "}
                 adalah portal resmi layanan informasi dan fasilitasi
                 ketenagakerjaan terpadu di Kabupaten Sumbawa. Platform ini
@@ -277,7 +277,7 @@ export default function TentangKamiPage() {
           <div className="lg:col-span-2 bg-white p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-app-navy-600" />
-              Cara Kerja Samawa Karir
+              Cara Kerja SIMNAKER
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative">

@@ -63,7 +63,7 @@ const mockEventsData: Record<string, CareerEventDetail> = {
     category: "Job Fair",
     organizer: {
       name: "Dinas Tenaga Kerja & Transmigrasi Sumbawa",
-      logo: "/images/karir-logo-0.png",
+      logo: "/images/karir-logo-1.png",
       phone: "+62 812-3456-7890",
       email: "disnakertrans@sumbawakab.go.id",
       address: "Jl. Lintas Sumbawa - Bima Km 3, Sumbawa Besar",
@@ -74,7 +74,7 @@ const mockEventsData: Record<string, CareerEventDetail> = {
     location: "Gedung Wanita Sumbawa Besar",
     isOnline: false,
     status: "Pendaftaran Buka",
-    banner: "/images/karir-logo-0.png",
+    banner: "/images/karir-logo-1.png",
     quota: "1.000+ Kuota Peserta",
     registeredCount: 640,
     totalQuota: 1000,

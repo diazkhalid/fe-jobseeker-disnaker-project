@@ -167,7 +167,7 @@ export default function Navbar({ onToggleMobileSidebar }: NavbarProps) {
           >
             <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
               <Image
-                src="/images/karir-logo-0.png"
+                src="/images/karir-logo-1.png"
                 alt="Avatar Perusahaan"
                 fill
                 className="object-cover"

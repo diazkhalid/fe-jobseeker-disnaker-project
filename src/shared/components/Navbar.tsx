@@ -128,12 +128,12 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* 1. LOGO SAMAWA KARIR (GAMBAR LOGO) */}
+          {/* 1. LOGO SIMNAKER (GAMBAR LOGO) */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
               <Image
-                src="/images/karir-logo-0.png"
-                alt="Samawa Karir Logo"
+                src="/images/karir-logo-1.png"
+                alt="SIMNAKER Logo"
                 width={200}
                 height={100}
                 className="h-12 w-auto object-contain"

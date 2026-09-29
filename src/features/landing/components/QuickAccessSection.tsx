@@ -40,7 +40,7 @@ export default function QuickAccessSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* 1. HERO FEATURE CARD (Span 6) - Cari Lowongan */}
           <Link
-            href="/lowongan"
+            href="/lowongan-kerja"
             className="group relative lg:col-span-6 flex flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 sm:p-7 shadow-xl shadow-slate-950/10 transition-all duration-300 hover:-translate-y-1"
           >
             {/* Background Accent Glow */}
@@ -89,7 +89,7 @@ export default function QuickAccessSection() {
           <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {/* 2. CARD: Pasang Lowongan (Span 2 / Full di right column) */}
             <Link
-              href="/pasang-lowongan"
+              href="/dashboard/perusahaan/lowongan/buat"
               className="group sm:col-span-2 flex flex-col justify-between rounded-3xl bg-white p-5 border border-slate-200/90 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/60 hover:shadow-md"
             >
               <div>
@@ -148,7 +148,7 @@ export default function QuickAccessSection() {
 
             {/* 4. CARD: Agenda Job Fair */}
             <Link
-              href="/job-fair"
+              href="/informasi-karir"
               className="group flex flex-col justify-between rounded-3xl bg-white p-5 border border-slate-200/90 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-400/60 hover:shadow-md"
             >
               <div>

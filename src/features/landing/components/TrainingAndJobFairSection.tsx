@@ -50,7 +50,7 @@ export default function TrainingAndJobFairSection() {
       statusLabel: "Pendaftaran Dibuka",
       image:
         "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&auto=format&fit=crop&q=80",
-      link: "/agenda/job-fair-sumbawa-2026",
+      link: "/informasi-karir/job-fair-sumbawa-2026",
     },
     {
       id: "ev-2",
@@ -65,7 +65,7 @@ export default function TrainingAndJobFairSection() {
       statusLabel: "Pendaftaran Dibuka",
       image:
         "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&auto=format&fit=crop&q=80",
-      link: "/agenda/bootcamp-frontend",
+      link: "/informasi-karir/job-fair-sumbawa-2026",
     },
     {
       id: "ev-3",

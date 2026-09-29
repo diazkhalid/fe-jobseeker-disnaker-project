@@ -145,7 +145,7 @@ export default function SidebarAdmin() {
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative w-30 h-20 shrink-0">
             <Image
-              src="/images/karir-logo-0.png"
+              src="/images/karir-logo-1.png"
               alt="Logo App"
               fill
               className="object-contain group-hover:scale-105 transition-transform duration-200"

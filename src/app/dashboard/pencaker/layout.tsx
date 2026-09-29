@@ -29,7 +29,7 @@ const primaryNavItems = [
   { label: "Dashboard", href: "/dashboard/pencaker", icon: LayoutDashboard },
   {
     label: "Cari Lowongan",
-    href: "/dashboard/pencaker/lowongan",
+    href: "/lowongan-kerja",
     icon: Search,
   },
   { label: "Lamaran Saya", href: "/dashboard/pencaker/lamaran", icon: Send },
@@ -103,12 +103,12 @@ const allNavItems = [
     icon: Settings,
     category: "Akun",
   },
-  {
-    label: "Bantuan",
-    href: "/dashboard/pencaker/bantuan",
-    icon: HelpCircle,
-    category: "Akun",
-  },
+  // {
+  //   label: "Bantuan",
+  //   href: "/dashboard/pencaker/bantuan",
+  //   icon: HelpCircle,
+  //   category: "Akun",
+  // },
 ];
 
 // --- DUMMY NOTIFICATIONS ---
@@ -156,8 +156,8 @@ export default function CandidateHeaderLayout({
               <Link href="/" className="flex items-center gap-3 group">
                 <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                   <Image
-                    src="/images/karir-logo-0.png"
-                    alt="Samawa Karir Logo"
+                    src="/images/karir-logo-1.png"
+                    alt="SIMNAKER Logo"
                     width={200}
                     height={100}
                     className="h-10 w-auto object-contain"

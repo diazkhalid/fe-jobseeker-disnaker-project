@@ -60,7 +60,7 @@ export default function LoginPage() {
         <div className="relative z-10">
           <Link href="/" className="inline-block">
             <Image
-              src="/images/karir-logo-0.png"
+              src="/images/karir-logo-1.png"
               alt="Logo Sumbawa Karir"
               width={180}
               height={50}
@@ -139,7 +139,7 @@ export default function LoginPage() {
             <div className="lg:hidden mb-6">
               <Link href="/">
                 <Image
-                  src="/images/karir-logo-0.png"
+                  src="/images/karir-logo-1.png"
                   alt="Logo Sumbawa Karir"
                   width={160}
                   height={45}

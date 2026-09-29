@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-0">
         <Image
           src="/images/hero-0.jpg"
-          alt="Samawa Karir Disnakertrans Sumbawa"
+          alt="SIMNAKER Disnakertrans Sumbawa"
           fill
           priority
           className="object-cover object-center scale-105"

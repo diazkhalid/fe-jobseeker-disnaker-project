@@ -27,13 +27,13 @@ interface Company {
 const companyData: Company[] = [
   {
     id: "c1",
-    name: "PT AMNT (Aman Mineral)",
-    logo: "/images/companies/amman.png",
+    name: "PT Sumbawa Sejahtera Mining",
+    logo: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=120&auto=format&fit=crop&q=80",
     industry: "Pertambangan & Energi",
-    location: "Sumbawa Barat",
+    location: "Sumbawa Besar",
     verified: true,
-    activeJobs: 12,
-    slug: "pt-aman-mineral",
+    activeJobs: 8,
+    slug: "pt-sumbawa-sejahtera-mining",
   },
   {
     id: "c2",

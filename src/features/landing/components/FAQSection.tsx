@@ -20,16 +20,16 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     id: "faq-1",
-    question: "Apa itu Samawa Karir?",
+    question: "Apa itu SIMNAKER?",
     answer:
-      "Samawa Karir adalah platform portal informasi lowongan kerja digital terpadu untuk Kabupaten Sumbawa yang menghubungkan pencari kerja lokal secara langsung dengan perusahaan terpercaya dan instansi resmi.",
+      "SIMNAKER adalah platform portal informasi lowongan kerja digital terpadu untuk Kabupaten Sumbawa yang menghubungkan pencari kerja lokal secara langsung dengan perusahaan terpercaya dan instansi resmi.",
     accent: "teal",
   },
   {
     id: "faq-2",
     question: "Apakah pendaftaran pencari kerja gratis?",
     answer:
-      "Ya, pendaftaran dan seluruh fasilitas pencarian hingga pengajuan lamaran bagi pencari kerja di Samawa Karir dapat diakses 100% gratis tanpa dipungut biaya apapun.",
+      "Ya, pendaftaran dan seluruh fasilitas pencarian hingga pengajuan lamaran bagi pencari kerja di SIMNAKER dapat diakses 100% gratis tanpa dipungut biaya apapun.",
     accent: "amber",
   },
   {
@@ -97,7 +97,7 @@ export default function FAQSection() {
           </h2>
           <p className="mt-1.5 text-xs sm:text-sm text-slate-600">
             Temukan jawaban cepat mengenai penggunaan platform, proses melamar,
-            dan verifikasi di Samawa Karir.
+            dan verifikasi di SIMNAKER.
           </p>
         </div>
 

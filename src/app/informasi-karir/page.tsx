@@ -55,7 +55,7 @@ const mockEvents: CareerEvent[] = [
     location: "Gedung Wanita Sumbawa Besar",
     isOnline: false,
     status: "Pendaftaran Buka",
-    thumbnail: "/images/karir-logo-0.png",
+    thumbnail: "/images/karir-logo-1.png",
     quota: "50+ Perusahaan & 1.000+ Lowongan",
     description:
       "Bursa kerja terbesar di Sumbawa menghadirkan puluhan perusahaan lokal dan nasional dari berbagai industri.",
@@ -73,7 +73,7 @@ const mockEvents: CareerEvent[] = [
     isOnline: false,
     status: "Pendaftaran Buka",
     quota: "30 Peserta (Gratis & Sertifikat)",
-    thumbnail: "/images/karir-logo-0.png",
+    thumbnail: "/images/karir-logo-1.png",
     description:
       "Program sertifikasi gratis untuk menguasai pemasaran digital, strategi iklan, dan manajemen toko online.",
   },
@@ -90,7 +90,7 @@ const mockEvents: CareerEvent[] = [
     isOnline: true,
     status: "Pendaftaran Buka",
     quota: "500 Peserta",
-    thumbnail: "/images/karir-logo-0.png",
+    thumbnail: "/images/karir-logo-1.png",
     description:
       "Pelajari cara menyusun resume profesional yang dilirik HRD serta simulasi wawancara kerja yang efektif.",
   },
@@ -107,7 +107,7 @@ const mockEvents: CareerEvent[] = [
     isOnline: true,
     status: "Akan Datang",
     quota: "25 Peserta Terpilih",
-    thumbnail: "/images/karir-logo-0.png",
+    thumbnail: "/images/karir-logo-1.png",
     description:
       "Pelatihan koding intensif membangun aplikasi web modern berbasis Next.js dan Tailwind CSS.",
   },
@@ -124,7 +124,7 @@ const mockEvents: CareerEvent[] = [
     isOnline: false,
     status: "Selesai",
     quota: "150 Peserta",
-    thumbnail: "/images/karir-logo-0.png",
+    thumbnail: "/images/karir-logo-1.png",
     description:
       "Pembekalan wawasan standar K3 dan kualifikasi teknis yang dibutuhkan industri tambang modern.",
   },
@@ -167,7 +167,6 @@ export default function InformasiKarirPage() {
   // Logika Filter Agenda Ketenagakerjaan
   const filteredEvents = useMemo(() => {
     return mockEvents.filter((event) => {
-      // 1. Text Search (Judul / Penyelenggara)
       if (
         searchQuery &&
         !event.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -176,17 +175,14 @@ export default function InformasiKarirPage() {
         return false;
       }
 
-      // 2. Filter Jenis Kegiatan
       if (selectedCategory && event.category !== selectedCategory) {
         return false;
       }
 
-      // 3. Filter Status Pendaftaran
       if (selectedStatus.length > 0 && !selectedStatus.includes(event.status)) {
         return false;
       }
 
-      // 4. Filter Lokasi
       if (
         locationQuery &&
         !event.location.toLowerCase().includes(locationQuery.toLowerCase())
@@ -194,7 +190,6 @@ export default function InformasiKarirPage() {
         return false;
       }
 
-      // 5. Filter Tanggal
       if (filterDate && event.startDate < filterDate) {
         return false;
       }
@@ -238,28 +233,28 @@ export default function InformasiKarirPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 relative top-16 font-[Poppins]">
+    <div className="min-h-screen bg-slate-50 text-slate-800 relative top-18 font-[Poppins]">
       {/* HEADER & SEARCH AREA */}
       <div className="bg-white border-b border-slate-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <div className="space-y-2 text-center sm:text-left">
-            <nav className="flex items-center gap-2 text-xs text-slate-500 justify-center sm:justify-start">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div className="space-y-1.5 text-center sm:text-left">
+            <nav className="flex items-center gap-1.5 text-[13px] text-slate-500 justify-center sm:justify-start">
               <Link
                 href="/dashboard"
                 className="hover:text-teal-700 transition-colors"
               >
                 Dashboard
               </Link>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronRight className="w-3 h-3 text-slate-400" />
               <span className="font-semibold text-slate-800">
                 Informasi Karir
               </span>
             </nav>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
               Agenda <span className="text-teal-700">Ketenagakerjaan</span>{" "}
               Sumbawa
             </h1>
-            <p className="text-sm sm:text-base text-slate-600 max-w-2xl">
+            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
               Ikuti job fair, pelatihan keterampilan gratis, dan seminar
               peningkatan kapasitas karir untuk melesatkan potensi profesional
               Anda.
@@ -267,29 +262,29 @@ export default function InformasiKarirPage() {
           </div>
 
           {/* SEARCH BAR */}
-          <div className="relative bg-white p-2.5 rounded-3xl border border-slate-200 shadow-lg shadow-slate-100 flex flex-col sm:flex-row items-center gap-3">
+          <div className="relative bg-white p-2 rounded-3xl border border-slate-200 shadow-lg shadow-slate-100 flex flex-col sm:flex-row items-center gap-2.5">
             <div className="relative flex-1 w-full">
-              <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari nama agenda, job fair, atau penyelenggara..."
-                className="w-full pl-12 pr-4 py-3.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
+                className="w-full pl-11 pr-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
               />
             </div>
-            <div className="relative w-full sm:w-60 shrink-0">
-              <MapPin className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <div className="relative w-full sm:w-56 shrink-0">
+              <MapPin className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
                 placeholder="Lokasi kegiatan..."
-                className="w-full pl-11 pr-4 py-3.5 text-sm bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-3 text-xs bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
               />
             </div>
-            <button className="w-full sm:w-auto px-8 py-3.5 bg-teal-700 hover:bg-teal-800 text-white text-sm font-bold rounded-2xl shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-2.5 shrink-0">
-              <Search className="w-4.5 h-4.5" />
+            <button className="w-full sm:w-auto px-7 py-3 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-2xl shadow-md shadow-teal-700/20 transition-all flex items-center justify-center gap-2 shrink-0">
+              <Search className="w-4 h-4" />
               <span>Cari Agenda</span>
             </button>
           </div>
@@ -302,14 +297,14 @@ export default function InformasiKarirPage() {
                 <button
                   key={idx}
                   onClick={() => setSelectedCategory(preset.category)}
-                  className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 ${
+                  className={`px-3.5 py-2 rounded-2xl text-[11px] font-bold transition-all flex items-center gap-1.5 shrink-0 ${
                     active
                       ? "bg-teal-700 text-white shadow-md shadow-teal-700/15"
                       : "bg-white hover:bg-slate-100 text-slate-600 border border-slate-200/80"
                   }`}
                 >
                   <Tag
-                    className={`w-3.5 h-3.5 ${active ? "text-amber-300" : "text-slate-400"}`}
+                    className={`w-3 h-3 ${active ? "text-amber-300" : "text-slate-400"}`}
                   />
                   <span>{preset.label}</span>
                 </button>
@@ -320,13 +315,13 @@ export default function InformasiKarirPage() {
       </div>
 
       {/* CONTENT AREA */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 items-start">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
           {/* SIDEBAR FILTER */}
-          <aside className="lg:col-span-1 bg-white p-7 rounded-3xl border border-slate-100 shadow-sm space-y-7 sticky top-24">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2.5">
-                <Filter className="w-5 h-5 text-teal-700" />
+          <aside className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-6 sticky top-24">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Filter className="w-4 h-4 text-teal-700" />
                 Filter Kegiatan
               </h2>
               <button
@@ -335,13 +330,13 @@ export default function InformasiKarirPage() {
                 aria-label="Reset Filter"
                 className="p-1.5 text-slate-400 hover:text-teal-700 hover:bg-teal-50 rounded-lg transition-all"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-3.5 h-3.5" />
               </button>
             </div>
 
             {/* FILTER JENIS KEGIATAN */}
-            <div className="space-y-3">
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+            <div className="space-y-2.5">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                 Jenis Kegiatan
               </label>
               {[
@@ -352,16 +347,16 @@ export default function InformasiKarirPage() {
               ].map((cat) => (
                 <label
                   key={cat.value}
-                  className="flex items-center gap-3 cursor-pointer select-none group"
+                  className="flex items-center gap-2.5 cursor-pointer select-none group"
                 >
                   <input
                     type="radio"
                     name="categoryFilter"
                     checked={selectedCategory === cat.value}
                     onChange={() => setSelectedCategory(cat.value)}
-                    className="h-4.5 w-4.5 text-teal-700 focus:ring-teal-600 border-slate-300 cursor-pointer"
+                    className="h-4 w-4 text-teal-700 focus:ring-teal-600 border-slate-300 cursor-pointer"
                   />
-                  <span className="text-xs text-slate-700 group-hover:text-slate-950 transition-colors font-medium">
+                  <span className="text-[11px] text-slate-700 group-hover:text-slate-950 transition-colors font-medium">
                     {cat.label}
                   </span>
                 </label>
@@ -369,22 +364,22 @@ export default function InformasiKarirPage() {
             </div>
 
             {/* FILTER STATUS PENDAFTARAN */}
-            <div className="space-y-3 pt-4 border-t border-slate-100">
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+            <div className="space-y-2.5 pt-3.5 border-t border-slate-100">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                 Status Pendaftaran
               </label>
               {["Pendaftaran Buka", "Akan Datang", "Selesai"].map((st) => (
                 <label
                   key={st}
-                  className="flex items-center gap-3 cursor-pointer select-none group"
+                  className="flex items-center gap-2.5 cursor-pointer select-none group"
                 >
                   <input
                     type="checkbox"
                     checked={selectedStatus.includes(st)}
                     onChange={() => toggleStatusFilter(st)}
-                    className="h-4.5 w-4.5 rounded border-slate-300 text-teal-700 focus:ring-teal-600 cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-teal-700 focus:ring-teal-600 cursor-pointer"
                   />
-                  <span className="text-xs text-slate-700 group-hover:text-slate-950 transition-colors font-medium">
+                  <span className="text-[11px] text-slate-700 group-hover:text-slate-950 transition-colors font-medium">
                     {st}
                   </span>
                 </label>
@@ -392,27 +387,27 @@ export default function InformasiKarirPage() {
             </div>
 
             {/* FILTER TANGGAL MULAI */}
-            <div className="space-y-3 pt-4 border-t border-slate-100">
-              <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+            <div className="space-y-2.5 pt-3.5 border-t border-slate-100">
+              <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                 Mulai Dari Tanggal
               </label>
               <div className="relative">
-                <Calendar className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="date"
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
+                  className="w-full pl-9 pr-2.5 py-2 text-[11px] bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:bg-white transition-all"
                 />
               </div>
             </div>
           </aside>
 
           {/* MAIN EVENT LIST AREA */}
-          <main className="lg:col-span-3 space-y-6">
+          <main className="lg:col-span-3 space-y-5">
             {/* TOP STATUS BAR */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between gap-3">
-              <p className="text-xs sm:text-sm text-slate-500">
+            <div className="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between gap-3">
+              <p className="text-[11px] sm:text-xs text-slate-500">
                 Menampilkan{" "}
                 <span className="font-bold text-teal-800">
                   {filteredEvents.length}
@@ -423,23 +418,23 @@ export default function InformasiKarirPage() {
 
             {/* EVENT CARDS LIST */}
             {filteredEvents.length > 0 ? (
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {filteredEvents.map((evt) => (
                   <div
                     key={evt.id}
-                    className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:border-teal-100 transition-all duration-300 flex flex-col md:flex-row gap-6 items-start group"
+                    className="bg-white rounded-3xl border border-slate-100 p-5 shadow-sm hover:shadow-xl hover:border-teal-100 transition-all duration-300 flex flex-col md:flex-row gap-5 items-start group"
                   >
                     {/* Thumbnail Kegiatan */}
-                    <div className="w-full md:w-52 h-44 rounded-2xl bg-slate-50 border border-slate-200 relative overflow-hidden shrink-0 flex items-center justify-center p-4">
+                    <div className="w-full md:w-48 h-40 rounded-2xl bg-slate-50 border border-slate-200 relative overflow-hidden shrink-0 flex items-center justify-center p-3">
                       <Image
                         src={evt.thumbnail}
                         alt={evt.title}
-                        width={120}
-                        height={120}
+                        width={110}
+                        height={110}
                         className="object-contain group-hover:scale-105 transition-transform duration-300"
                       />
                       <span
-                        className={`absolute top-3 left-3 px-2.5 py-1 rounded-full border text-[10px] font-extrabold uppercase tracking-wider ${getStatusBadge(
+                        className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full border text-[9px] font-extrabold uppercase tracking-wider ${getStatusBadge(
                           evt.status,
                         )}`}
                       >
@@ -448,16 +443,16 @@ export default function InformasiKarirPage() {
                     </div>
 
                     {/* Informasi Detail Kegiatan */}
-                    <div className="flex-1 space-y-3.5 w-full">
+                    <div className="flex-1 space-y-3 w-full">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
-                          className={`px-3 py-1 rounded-full border text-[11px] font-extrabold ${getCategoryBadge(
+                          className={`px-2.5 py-0.5 rounded-full border text-[10px] font-extrabold ${getCategoryBadge(
                             evt.category,
                           )}`}
                         >
                           {evt.category}
                         </span>
-                        <span className="text-xs text-slate-400 font-medium">
+                        <span className="text-[11px] text-slate-400 font-medium">
                           Oleh:{" "}
                           <strong className="text-slate-700">
                             {evt.organizer}
@@ -465,32 +460,32 @@ export default function InformasiKarirPage() {
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                      <h3 className="text-base font-extrabold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
                         {evt.title}
                       </h3>
 
-                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
                         {evt.description}
                       </p>
 
                       {/* Detail Metadata (Tanggal, Lokasi, Kuota) */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
-                        <div className="flex items-center gap-2">
-                          <CalendarDays className="w-4 h-4 text-teal-700 shrink-0" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-600 pt-2 border-t border-slate-100">
+                        <div className="flex items-center gap-1.5">
+                          <CalendarDays className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                           <span className="font-semibold">
                             {evt.displayDate}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-teal-700 shrink-0" />
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                           <span>{evt.time}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-teal-700 shrink-0" />
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                           <span className="truncate">{evt.location}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-teal-700 shrink-0" />
+                        <div className="flex items-center gap-1.5">
+                          <Users className="w-3.5 h-3.5 text-teal-700 shrink-0" />
                           <span className="font-medium text-teal-800">
                             {evt.quota}
                           </span>
@@ -498,13 +493,13 @@ export default function InformasiKarirPage() {
                       </div>
 
                       {/* Tombol Lihat Detail */}
-                      <div className="pt-3 flex justify-end border-t border-slate-50">
+                      <div className="pt-2.5 flex justify-end border-t border-slate-50">
                         <Link
                           href={`/informasi-karir/${evt.slug}`}
-                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold rounded-xl shadow-md shadow-teal-700/15 transition-all group-hover:translate-x-0.5"
+                          className="inline-flex items-center gap-1.5 px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-[11px] font-bold rounded-xl shadow-md shadow-teal-700/15 transition-all group-hover:translate-x-0.5"
                         >
                           <span>Lihat Detail</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-3.5 h-3.5" />
                         </Link>
                       </div>
                     </div>
@@ -513,22 +508,22 @@ export default function InformasiKarirPage() {
               </div>
             ) : (
               /* EMPTY STATE */
-              <div className="bg-white rounded-3xl border border-slate-100 p-16 text-center space-y-4 shadow-sm">
-                <div className="w-20 h-20 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
-                  <CalendarDays className="w-10 h-10" />
+              <div className="bg-white rounded-3xl border border-slate-100 p-12 text-center space-y-3.5 shadow-sm">
+                <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
+                  <CalendarDays className="w-8 h-8" />
                 </div>
                 <div className="max-w-md mx-auto space-y-1">
-                  <h3 className="text-lg font-bold text-slate-900">
+                  <h3 className="text-base font-bold text-slate-900">
                     Agenda Tidak Ditemukan
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-[11px] text-slate-500">
                     Tidak ada kegiatan ketenagakerjaan yang sesuai dengan
                     pencarian atau filter yang Anda terapkan.
                   </p>
                 </div>
                 <button
                   onClick={handleResetFilters}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-xl transition-all"
                 >
                   Tampilkan Semua Kegiatan
                 </button>

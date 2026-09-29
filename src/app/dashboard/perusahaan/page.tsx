@@ -231,7 +231,7 @@ export default function DashboardOverviewPage() {
             <div className="flex items-center gap-3">
               <div className="relative w-12 h-12 rounded-xl border border-slate-200 bg-slate-50 p-1 shrink-0 overflow-hidden">
                 <Image
-                  src="/images/karir-logo-0.png"
+                  src="/images/karir-logo-1.png"
                   alt="Logo Perusahaan"
                   fill
                   className="object-contain p-1"
