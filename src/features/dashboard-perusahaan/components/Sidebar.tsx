@@ -107,22 +107,22 @@ export default function Sidebar() {
           href: "/dashboard/perusahaan/pelamar",
           icon: Users,
         },
-        {
-          title: "Pelamar Baru",
-          href: "/dashboard/perusahaan/pelamar/baru",
-          icon: UserPlus,
-          badge: 12,
-        },
-        {
-          title: "Dalam Proses Seleksi",
-          href: "/dashboard/perusahaan/pelamar/proses",
-          icon: Clock,
-        },
-        {
-          title: "Kandidat Diterima",
-          href: "/dashboard/perusahaan/pelamar/diterima",
-          icon: UserCheck,
-        },
+        // {
+        //   title: "Pelamar Baru",
+        //   href: "/dashboard/perusahaan/pelamar/baru",
+        //   icon: UserPlus,
+        //   badge: 12,
+        // },
+        // {
+        //   title: "Dalam Proses Seleksi",
+        //   href: "/dashboard/perusahaan/pelamar/proses",
+        //   icon: Clock,
+        // },
+        // {
+        //   title: "Kandidat Diterima",
+        //   href: "/dashboard/perusahaan/pelamar/diterima",
+        //   icon: UserCheck,
+        // },
       ],
     },
     {
