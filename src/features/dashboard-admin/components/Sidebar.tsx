@@ -89,11 +89,11 @@ export default function SidebarAdmin() {
       //   },
       // ],
     },
-    // {
-    //   title: "Pelamar",
-    //   href: "/dashboard/admin/pelamar",
-    //   icon: Users,
-    // },
+    {
+      title: "Pelamar",
+      href: "/dashboard/admin/pelamar",
+      icon: Users,
+    },
     // {
     //   title: "Rekrutmen",
     //   icon: GitMerge,

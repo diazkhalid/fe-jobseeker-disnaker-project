@@ -28,6 +28,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Breadcrumbs from "@/shared/components/Breadcrumbs";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
@@ -77,16 +78,7 @@ export default function CandidateProfilePage() {
       {/* BREADCRUMB & HEADER */}
       <div className="space-y-2">
         {/* Breadcrumb Navigation */}
-        <nav className="flex items-center gap-2 text-xs text-slate-500">
-          <Link
-            href="/dashboard"
-            className="hover:text-app-navy-700 transition-colors"
-          >
-            Dashboard
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="font-semibold text-slate-800">Profil Saya</span>
-        </nav>
+        <Breadcrumbs></Breadcrumbs>
 
         {/* Main Header Content */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

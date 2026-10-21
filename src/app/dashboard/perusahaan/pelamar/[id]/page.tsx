@@ -25,6 +25,7 @@ import {
   UserX,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import Breadcrumbs from "@/shared/components/Breadcrumbs";
 
 // Tipe Data Tahap Seleksi Kandidat
 interface SelectionStageRecord {
@@ -332,12 +333,7 @@ export default function DetailPelamarPage() {
       <div className="mx-auto space-y-4">
         {/* Top Navigation & Back Button */}
         <div className="flex items-center justify-between">
-          <Link
-            href="/dashboard/perusahaan/pelamar"
-            className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-teal-600 transition-colors font-medium"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke Daftar Pelamar
-          </Link>
+          <Breadcrumbs></Breadcrumbs>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsFavorite(!isFavorite)}
