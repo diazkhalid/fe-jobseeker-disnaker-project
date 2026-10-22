@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/shared/components/Navbar";
 import { poppins } from "@/shared/fonts";
 import Footer from "@/shared/components/Footer";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "SIMNAKER",
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`h-full antialiased ${poppins.className}`}>
-      <body className="min-h-full flex flex-col">
-        <Navbar></Navbar>
-        {children}
-        <Footer></Footer>
-      </body>
+      <Providers>
+        <body className="min-h-full flex flex-col">
+          <Navbar></Navbar>
+          {children}
+          <Footer></Footer>
+        </body>
+      </Providers>
     </html>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -16,14 +16,18 @@ import {
   CheckCircle2,
   Briefcase,
   GraduationCap,
+  CircleAlert,
 } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { ACCOUNT_TYPE } from "@/shared/types/account_type.type";
+import { register } from "@/features/auth/services/auth.service";
+import { useToast } from "@/shared/contexts/ToastContext";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
-  const [accountType, setAccountType] = useState<"jobseeker" | "company">(
-    "jobseeker",
-  );
+  const router = useRouter();
+  const [accountType, setAccountType] = useState<ACCOUNT_TYPE>("job_seeker");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -38,7 +42,9 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { addToast } = useToast();
+
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -56,15 +62,37 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    // Simulasi proses registrasi
-    setTimeout(() => {
+    const payload = {
+      full_name: fullName,
+      email,
+      phone,
+      password,
+      account_type: accountType,
+      terms_accepted: agreeTerms,
+      privacy_accepted: agreePrivacy,
+    };
+
+    const result = await register(payload);
+
+    if (result?.status !== 201) {
+      if (result?.status === 409) {
+        if ("message" in result) {
+          setErrorMsg(result.message);
+          setIsLoading(false);
+          return;
+        }
+      }
+      setErrorMsg("Kesalahan pada server!");
       setIsLoading(false);
-      window.location.href = "/login";
-    }, 1200);
+      return;
+    }
+    addToast("Registrasi Berhasil", "success", 3000, "top-right");
+    setIsLoading(false);
+    router.push("/login");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex text-slate-800">
+    <div className="h-screen bg-slate-50 flex text-slate-800">
       {/* SISI KIRI: HERO / BRANDING PANEL (Tampil di Layar Medium Ke Atas) */}
       <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative overflow-hidden text-white">
         {/* BACKGROUND IMAGE WITH NEXT/IMAGE */}
@@ -193,9 +221,9 @@ export default function RegisterPage() {
             <div className="grid grid-cols-2 gap-2 bg-slate-200/60 p-1 rounded-xl">
               <button
                 type="button"
-                onClick={() => setAccountType("jobseeker")}
+                onClick={() => setAccountType("job_seeker")}
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all ${
-                  accountType === "jobseeker"
+                  accountType === "job_seeker"
                     ? "bg-white text-app-navy-700 shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
@@ -221,7 +249,8 @@ export default function RegisterPage() {
 
           {/* ALERT ERROR */}
           {errorMsg && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs font-semibold">
+            <div className="flex gap-2 p-3 bg-red-50 border items-center border-red-200 rounded-xl text-red-600 text-xs font-semibold">
+              <CircleAlert size={16} />
               {errorMsg}
             </div>
           )}
@@ -234,13 +263,13 @@ export default function RegisterPage() {
                 htmlFor="fullName"
                 className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider"
               >
-                {accountType === "jobseeker"
+                {accountType === "job_seeker"
                   ? "Nama Lengkap"
                   : "Nama Perusahaan / Instansi"}
               </label>
               <div className="relative rounded-xl shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  {accountType === "jobseeker" ? (
+                  {accountType === "job_seeker" ? (
                     <User className="h-4 w-4" />
                   ) : (
                     <Building2 className="h-4 w-4" />
@@ -253,7 +282,7 @@ export default function RegisterPage() {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder={
-                    accountType === "jobseeker"
+                    accountType === "job_seeker"
                       ? "Masukkan nama lengkap Anda"
                       : "Masukkan nama resmi perusahaan"
                   }
