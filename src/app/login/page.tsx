@@ -20,6 +20,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/services/auth.service";
 import { useToast } from "@/shared/contexts/ToastContext";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,6 +31,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errMsg, setErrMsg] = useState<String>("");
   const { addToast } = useToast();
+  const [token, setToken] = useLocalStorage<string | null>(
+    "access-token",
+    null,
+  );
 
   const userDashboardPath: Record<string, string> = {
     job_seeker: "/dashboard/pencaker",
@@ -61,6 +66,7 @@ export default function LoginPage() {
       setIsLoading(false);
       return;
     }
+    setToken(result.data.data.access_token);
     addToast("Login berhasil", "success");
     setIsLoading(false);
     const userAccountType = result.data.data.user.account_type;

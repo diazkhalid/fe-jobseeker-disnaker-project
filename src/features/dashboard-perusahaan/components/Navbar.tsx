@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -18,6 +18,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
 
 interface NavbarProps {
   onToggleMobileSidebar?: () => void;
@@ -26,6 +27,12 @@ interface NavbarProps {
 export default function Navbar({ onToggleMobileSidebar }: NavbarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const { user } = useAuthUser();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   return (
     <header className="sticky top-0 z-30 w-full h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 flex items-center justify-between font-['Poppins',sans-serif]">

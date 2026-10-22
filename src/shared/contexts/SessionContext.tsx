@@ -10,7 +10,7 @@ import React, {
   ReactNode,
 } from "react";
 import { useToast } from "./ToastContext";
-import { sessionRequest } from "@/shared/services/session.service";
+import { me } from "@/features/auth/services/auth.service";
 
 // 1. Definisikan interface untuk tipe data User Anda (Sesuaikan dengan payload API Anda)
 interface UserData {
@@ -59,7 +59,7 @@ export const AuthUserProvider = ({ children }: AuthUserProviderProps) => {
       try {
         console.log(token);
 
-        const authenticatedUser = await sessionRequest(token);
+        const authenticatedUser = await me(token);
 
         // PENCEGAHAN CRASH: Cek apakah response valid dan tidak gagal
         console.log(authenticatedUser);

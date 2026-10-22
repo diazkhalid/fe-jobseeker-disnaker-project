@@ -37,3 +37,21 @@ export async function login(data: loginDto) {
     return handleServiceError(error);
   }
 }
+
+export async function me(token: string) {
+  try {
+    const response = await axios.get(API_ENDPOINTS.AUTH.ME, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return {
+      success: true,
+      status: response.status,
+      message: response.statusText,
+      data: response.data,
+    };
+  } catch (error: any) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}
