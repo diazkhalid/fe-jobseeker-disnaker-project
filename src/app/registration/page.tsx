@@ -24,6 +24,9 @@ import { ACCOUNT_TYPE } from "@/shared/types/account_type.type";
 import { register } from "@/features/auth/services/auth.service";
 import { useToast } from "@/shared/contexts/ToastContext";
 import { useRouter } from "next/navigation";
+import Modal from "@/shared/components/Modal";
+import TermsAndConditionsContent from "@/features/auth/components/TermsAndConditionsContents";
+import PrivacyPolicyContent from "@/features/auth/components/PrivacyPolicyContents";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -37,7 +40,9 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeTermsOpen, setIsAgreeTermsOpen] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [agreePrivacyOpen, setIsAgreePrivacyOpen] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -91,8 +96,30 @@ export default function RegisterPage() {
     router.push("/login");
   };
 
+  const closeAgreeTermsModal = () => {
+    setIsAgreeTermsOpen(false);
+  };
+
+  const closeAgreePrivacyModal = () => {
+    setIsAgreePrivacyOpen(false);
+  };
+
   return (
     <div className="h-screen bg-slate-50 flex text-slate-800">
+      <Modal isOpen={agreeTermsOpen} onClose={closeAgreeTermsModal}>
+        <TermsAndConditionsContent
+          hasAgreed={agreeTerms}
+          setHasAgreed={setAgreeTerms}
+          onCloseModal={closeAgreeTermsModal}
+        ></TermsAndConditionsContent>
+      </Modal>
+      <Modal isOpen={agreePrivacyOpen} onClose={closeAgreePrivacyModal}>
+        <PrivacyPolicyContent
+          hasAgreed={agreePrivacy}
+          setHasAgreed={setAgreePrivacy}
+          onCloseModal={closeAgreePrivacyModal}
+        ></PrivacyPolicyContent>
+      </Modal>
       {/* SISI KIRI: HERO / BRANDING PANEL (Tampil di Layar Medium Ke Atas) */}
       <div className="hidden lg:flex lg:w-1/2 p-12 flex-col justify-between relative overflow-hidden text-white">
         {/* BACKGROUND IMAGE WITH NEXT/IMAGE */}
@@ -420,12 +447,16 @@ export default function RegisterPage() {
                 />
                 <span className="text-[11px] font-medium text-slate-600 leading-tight">
                   Saya menyetujui{" "}
-                  <Link
-                    href="/syarat-ketentuan"
+                  <span
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsAgreeTermsOpen(true);
+                    }}
                     className="font-bold text-app-navy-700 hover:underline"
                   >
                     Syarat dan Ketentuan
-                  </Link>{" "}
+                  </span>{" "}
                   yang berlaku di portal Sumbawa Karir.
                 </span>
               </label>
@@ -439,12 +470,16 @@ export default function RegisterPage() {
                 />
                 <span className="text-[11px] font-medium text-slate-600 leading-tight">
                   Saya telah membaca dan menyetujui{" "}
-                  <Link
-                    href="/kebijakan-privasi"
+                  <span
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsAgreePrivacyOpen(true);
+                    }}
                     className="font-bold text-app-navy-700 hover:underline"
                   >
                     Kebijakan Privasi
-                  </Link>
+                  </span>
                   .
                 </span>
               </label>

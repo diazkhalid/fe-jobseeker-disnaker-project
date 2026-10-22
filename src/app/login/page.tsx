@@ -13,10 +13,13 @@ import {
   Briefcase,
   GraduationCap,
   TrendingUp,
+  CircleAlert,
 } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
+import { login } from "@/features/auth/services/auth.service";
+import { useToast } from "@/shared/contexts/ToastContext";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -25,15 +28,37 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState<String>("");
+  const { addToast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
+    const payload = {
+      email: identifier,
+      password,
+    };
+
+    const result = await login(payload);
+    console.log(result);
+    if (result?.status !== 200) {
+      if (result?.status === 403) {
+        if ("message" in result) {
+          setErrMsg(
+            (result.message as String) +
+              ". Silahkan cek email anda untuk melakukan verifikasi!",
+          );
+          setIsLoading(false);
+          return;
+        }
+      }
+      setErrMsg("Kesalahan pada server");
       setIsLoading(false);
-      window.location.href = "/dashboard/pencaker";
-    }, 1200);
+      return;
+    }
+    addToast("Login berhasil", "success");
+    setIsLoading(false);
   };
 
   return (
@@ -156,6 +181,13 @@ export default function LoginPage() {
               Silakan masukkan kredensial akun Anda untuk mengakses portal.
             </p>
           </div>
+          {/* ALERT ERROR */}
+          {errMsg && (
+            <div className="flex gap-2 p-3 bg-red-50 border items-center border-red-200 rounded-xl text-red-600 text-xs font-semibold">
+              <CircleAlert size={16} />
+              {errMsg}
+            </div>
+          )}
 
           {/* Form Utama */}
           <form onSubmit={handleSubmit} className="space-y-4">

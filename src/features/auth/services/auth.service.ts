@@ -25,12 +25,15 @@ export async function register(data: registerDto) {
   }
 }
 
-export async function login(body: loginDto) {
+export async function login(data: loginDto) {
   try {
-    const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, body);
+    const formData = new FormData();
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, formData);
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    handleServiceError(error);
+    return handleServiceError(error);
   }
 }
