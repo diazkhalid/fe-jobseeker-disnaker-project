@@ -31,6 +31,10 @@ export default function LoginPage() {
   const [errMsg, setErrMsg] = useState<String>("");
   const { addToast } = useToast();
 
+  const userDashboardPath: Record<string, string> = {
+    job_seeker: "/dashboard/pencaker",
+  };
+
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -59,6 +63,8 @@ export default function LoginPage() {
     }
     addToast("Login berhasil", "success");
     setIsLoading(false);
+    const userAccountType = result.data.data.user.account_type;
+    router.push(userDashboardPath[userAccountType]);
   };
 
   return (
