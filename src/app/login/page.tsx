@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/services/auth.service";
 import { useToast } from "@/shared/contexts/ToastContext";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
+import { userDashboardPath } from "@/shared/utils/userDashboardPath";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,10 +36,6 @@ export default function LoginPage() {
     "access-token",
     null,
   );
-
-  const userDashboardPath: Record<string, string> = {
-    job_seeker: "/dashboard/pencaker",
-  };
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();

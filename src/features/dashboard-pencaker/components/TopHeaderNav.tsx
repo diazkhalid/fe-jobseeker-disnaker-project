@@ -29,11 +29,7 @@ export default function TopHeaderNav() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  const { user } = useAuthUser();
-
-  useEffect(() => {
-    console.log(user?.data);
-  }, [user]);
+  const { user, isLoading } = useAuthUser();
 
   const handleLogout = () => {
     if (confirm("Apakah Anda yakin ingin keluar dari akun?")) {
@@ -164,10 +160,12 @@ export default function TopHeaderNav() {
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-xs font-bold text-slate-800 leading-none">
-                    {user?.data?.full_name}
+                    {user?.full_name}
                   </p>
                   <p className="text-[10px] text-slate-500 mt-0.5">
-                    {accountTypeMap[user?.data?.account_type]}
+                    {user?.account_type
+                      ? accountTypeMap[user?.account_type]
+                      : "-"}
                   </p>
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />

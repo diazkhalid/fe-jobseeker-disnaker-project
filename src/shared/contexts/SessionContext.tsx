@@ -15,9 +15,14 @@ import { me } from "@/features/auth/services/auth.service";
 // 1. Definisikan interface untuk tipe data User Anda (Sesuaikan dengan payload API Anda)
 interface UserData {
   id: string;
-  name: string;
+  full_name: string;
   email: string;
-  role?: string;
+  phone: string;
+  account_type: string;
+  status: string;
+  email_verified_at: string;
+  phone_verified_at: string;
+  created_at: string;
   [key: string]: any; // fallback untuk property opsional lainnya
 }
 
@@ -80,7 +85,7 @@ export const AuthUserProvider = ({ children }: AuthUserProviderProps) => {
 
         // Jika sukses dan data tersedia
         if (authenticatedUser?.data) {
-          setUser(authenticatedUser.data);
+          setUser(authenticatedUser.data.data);
         } else {
           setUser(null);
         }
