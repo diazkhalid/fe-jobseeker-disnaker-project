@@ -2,9 +2,13 @@ import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import React, { useState, useEffect } from "react";
 import {
   getJobSeekerProfile,
+  updateJobSeekerProfile,
   updateJobSeekerProfilePicture,
 } from "../services/profile.service";
-import { JobSeekerProfileData } from "../types/userProfile.type";
+import {
+  JobSeekerProfileData,
+  UpdateJobSeekerProfileDto,
+} from "../types/userProfile.type";
 import { useToast } from "@/shared/contexts/ToastContext";
 export function useJobSeekerProfile() {
   const [token] = useLocalStorage("access-token", null);
@@ -17,6 +21,30 @@ export function useJobSeekerProfile() {
 
   const { addToast } = useToast();
 
+  const [updateJobSeekerProfileForm, setUpdateJobSeekerProfileForm] =
+    useState<UpdateJobSeekerProfileDto>({
+      date_of_birth: null,
+      gender: null,
+      address: null,
+      province_code: null,
+      province_name: null,
+      regency_code: null,
+      regency_name: null,
+      district_code: null,
+      district_name: null,
+      village_code: null,
+      village_name: null,
+      postal_code: null,
+      highest_education: null,
+      headline: null,
+      summary: null,
+      profile_photo_url: null,
+      portfolio_url: null,
+      linkedin_url: null,
+      github_url: null,
+      template_code: null,
+    });
+
   useEffect(() => {
     const fetch = async () => {
       if (!token) return;
@@ -26,6 +54,7 @@ export function useJobSeekerProfile() {
       }
 
       setJobSeekerProfile(result.data.data);
+      setUpdateJobSeekerProfileForm(result.data.data);
     };
     fetch();
   }, [token, triggerUpdate]);
@@ -48,6 +77,52 @@ export function useJobSeekerProfile() {
     await handleUpdateJobSeekerProfilePicture();
   };
 
+  const handleChangeUpdateJobSeekerProfileForm = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { name, value, type } = e.target;
+
+    let newValue: string | number | boolean | File | null = value;
+
+    if (e.target instanceof HTMLInputElement) {
+      switch (type) {
+        case "checkbox":
+          newValue = e.target.checked;
+          break;
+
+        case "number":
+          newValue = value === "" ? "" : Number(value);
+          break;
+
+        case "file":
+          newValue = e.target.files?.[0] ?? null;
+          break;
+
+        default:
+          newValue = value;
+      }
+    }
+
+    setUpdateJobSeekerProfileForm((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+  };
+
+  const handleSubmitUpdateJobSeekerProfile = async () => {
+    if (!token) return;
+    const result = await updateJobSeekerProfile(
+      token,
+      updateJobSeekerProfileForm,
+    );
+    if (result.status !== 200) {
+      return;
+    }
+    setTriggerUpdate(!triggerUpdate);
+  };
+
   return {
     jobSeekerProfile,
     setJobSeekerProfile,
@@ -55,5 +130,9 @@ export function useJobSeekerProfile() {
     setJobSeekerProfilePictureFile,
     handleUpdateJobSeekerProfilePicture,
     handleSaveChanges,
+    updateJobSeekerProfileForm,
+    setUpdateJobSeekerProfileForm,
+    handleSubmitUpdateJobSeekerProfile,
+    handleChangeUpdateJobSeekerProfileForm,
   };
 }

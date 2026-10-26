@@ -35,6 +35,9 @@ export default function CandidateEditProfilePage() {
     jobSeekerProfilePictureFile,
     setJobSeekerProfilePictureFile,
     handleSaveChanges,
+    updateJobSeekerProfileForm,
+    handleSubmitUpdateJobSeekerProfile,
+    handleChangeUpdateJobSeekerProfileForm,
   } = useJobSeekerProfile();
 
   // --- STATE DATA PRIBADI ---
@@ -292,13 +295,9 @@ export default function CandidateEditProfilePage() {
                 </label>
                 <input
                   type="text"
+                  name="full_name"
                   value={personalData.fullName}
-                  onChange={(e) =>
-                    setPersonalData({
-                      ...personalData,
-                      fullName: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
                 />
@@ -306,17 +305,13 @@ export default function CandidateEditProfilePage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Nama Panggilan
+                  Headline
                 </label>
                 <input
                   type="text"
-                  value={personalData.nickname}
-                  onChange={(e) =>
-                    setPersonalData({
-                      ...personalData,
-                      nickname: e.target.value,
-                    })
-                  }
+                  name="headline"
+                  value={updateJobSeekerProfileForm.headline ?? ""}
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                 />
               </div>
@@ -327,10 +322,9 @@ export default function CandidateEditProfilePage() {
                 </label>
                 <input
                   type="email"
+                  name="email"
                   value={personalData.email}
-                  onChange={(e) =>
-                    setPersonalData({ ...personalData, email: e.target.value })
-                  }
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
                 />
@@ -342,10 +336,9 @@ export default function CandidateEditProfilePage() {
                 </label>
                 <input
                   type="text"
+                  name="phone"
                   value={personalData.phone}
-                  onChange={(e) =>
-                    setPersonalData({ ...personalData, phone: e.target.value })
-                  }
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
                 />
@@ -356,14 +349,13 @@ export default function CandidateEditProfilePage() {
                   Jenis Kelamin *
                 </label>
                 <select
-                  value={personalData.gender}
-                  onChange={(e) =>
-                    setPersonalData({ ...personalData, gender: e.target.value })
-                  }
+                  value={updateJobSeekerProfileForm.gender ?? ""}
+                  name="gender"
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white"
                 >
-                  <option value="Laki-laki">Laki-laki</option>
-                  <option value="Perempuan">Perempuan</option>
+                  <option value="male">Laki-laki</option>
+                  <option value="female">Perempuan</option>
                 </select>
               </div>
 
@@ -374,13 +366,9 @@ export default function CandidateEditProfilePage() {
                   </label>
                   <input
                     type="text"
-                    value={personalData.birthPlace}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        birthPlace: e.target.value,
-                      })
-                    }
+                    name="date_of_birth"
+                    value={updateJobSeekerProfileForm.date_of_birth ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   />
                 </div>
@@ -390,17 +378,25 @@ export default function CandidateEditProfilePage() {
                   </label>
                   <input
                     type="date"
-                    value={personalData.birthDate}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        birthDate: e.target.value,
-                      })
-                    }
+                    name="date_of_birth"
+                    value={updateJobSeekerProfileForm.date_of_birth ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   />
                 </div>
               </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Ringkasan Professional
+              </label>
+              <textarea
+                rows={5}
+                name="summary"
+                value={updateJobSeekerProfileForm.summary ?? ""}
+                onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
+              />
             </div>
           </div>
 
@@ -416,63 +412,78 @@ export default function CandidateEditProfilePage() {
                 </label>
                 <textarea
                   rows={2}
-                  value={personalData.address}
-                  onChange={(e) =>
-                    setPersonalData({
-                      ...personalData,
-                      address: e.target.value,
-                    })
-                  }
+                  name="address"
+                  value={updateJobSeekerProfileForm.address ?? ""}
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Kecamatan */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Kecamatan
                   </label>
-                  <input
-                    type="text"
-                    value={personalData.district}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        district: e.target.value,
-                      })
-                    }
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
-                  />
+                  <select
+                    value={updateJobSeekerProfileForm.district_code ?? ""}
+                    name="district_code"
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
+                  >
+                    <option value="">Pilih Kecamatan</option>
+                    <option value="01">Kecamatan 1</option>
+                    <option value="02">Kecamatan 2</option>
+                    {/* Tambahkan option lainnya sesuai kebutuhan */}
+                  </select>
                 </div>
+
+                {/* Kabupaten / Kota */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Kabupaten / Kota
                   </label>
-                  <input
-                    type="text"
-                    value={personalData.regency}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        regency: e.target.value,
-                      })
-                    }
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
-                  />
+                  <select
+                    value={updateJobSeekerProfileForm.regency_code ?? ""}
+                    name="regency_code"
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
+                  >
+                    <option value="">Pilih Kabupaten / Kota</option>
+                    <option value="Kabupaten/Kota 1">Kabupaten/Kota 1</option>
+                    <option value="Kabupaten/Kota 2">Kabupaten/Kota 2</option>
+                    {/* Tambahkan option lainnya sesuai kebutuhan */}
+                  </select>
                 </div>
+
+                {/* Provinsi */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Provinsi
                   </label>
+                  <select
+                    value={updateJobSeekerProfileForm.province_code ?? ""}
+                    name="province_code"
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
+                  >
+                    <option value="">Pilih Provinsi</option>
+                    <option value="DKI Jakarta">DKI Jakarta</option>
+                    <option value="Jawa Barat">Jawa Barat</option>
+                    <option value="Jawa Tengah">Jawa Tengah</option>
+                    <option value="Jawa Timur">Jawa Timur</option>
+                    {/* Tambahkan option lainnya sesuai kebutuhan */}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Kode Pos
+                  </label>
                   <input
                     type="text"
-                    value={personalData.province}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        province: e.target.value,
-                      })
-                    }
+                    name="postal_code"
+                    value={updateJobSeekerProfileForm.postal_code ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   />
                 </div>
@@ -494,13 +505,9 @@ export default function CandidateEditProfilePage() {
                   <FaLinkedin className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="url"
-                    value={personalData.linkedin}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        linkedin: e.target.value,
-                      })
-                    }
+                    name="linkedin_url"
+                    value={updateJobSeekerProfileForm.linkedin_url ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                     placeholder="https://linkedin.com/in/..."
                   />
@@ -515,13 +522,9 @@ export default function CandidateEditProfilePage() {
                   <FaGithub className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="url"
-                    value={personalData.github}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        github: e.target.value,
-                      })
-                    }
+                    name="github_url"
+                    value={updateJobSeekerProfileForm.github_url ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                     placeholder="https://github.com/..."
                   />
@@ -536,13 +539,9 @@ export default function CandidateEditProfilePage() {
                   <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                   <input
                     type="url"
-                    value={personalData.portfolio}
-                    onChange={(e) =>
-                      setPersonalData({
-                        ...personalData,
-                        portfolio: e.target.value,
-                      })
-                    }
+                    name="portfolio_url"
+                    value={updateJobSeekerProfileForm.portfolio_url ?? ""}
+                    onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                     placeholder="https://..."
                   />

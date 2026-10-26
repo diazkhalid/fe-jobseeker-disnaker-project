@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
+import APP_CONFIG from "@/shared/global/app_config";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
@@ -209,7 +210,7 @@ export default function CandidateProfilePage() {
                 <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner">
                   {jobSeekerProfile?.profile_photo_url ? (
                     <Image
-                      src={jobSeekerProfile?.profile_photo_url}
+                      src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
                       alt="Foto Profil"
                       fill
                       className="object-cover"
