@@ -1,6 +1,6 @@
-import { ACCOUNT_TYPE } from "@/shared/types/account_type.type";
+import { ACCOUNT_TYPE } from "@/shared/types/accountType.type";
 
-export interface registerDto {
+export interface RegisterDto {
   full_name: string;
   email: string;
   phone: string;
@@ -10,7 +10,7 @@ export interface registerDto {
   privacy_accepted: boolean;
 }
 
-export interface loginDto {
+export interface LoginDto {
   email: string;
   password: string;
 }

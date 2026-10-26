@@ -1,9 +1,9 @@
 import API_ENDPOINTS from "@/shared/global/api_endpoints";
 import { handleServiceError } from "@/shared/utils/handleServiceError";
 import axios from "axios";
-import { loginDto, registerDto } from "../types/authDto.type";
+import { LoginDto, RegisterDto } from "../types/authDto.type";
 
-export async function register(data: registerDto) {
+export async function register(data: RegisterDto) {
   try {
     const formData = new FormData();
     formData.append("full_name", data.full_name);
@@ -25,7 +25,7 @@ export async function register(data: registerDto) {
   }
 }
 
-export async function login(data: loginDto) {
+export async function login(data: LoginDto) {
   try {
     const formData = new FormData();
     formData.append("email", data.email);

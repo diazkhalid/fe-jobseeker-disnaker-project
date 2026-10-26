@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { ACCOUNT_TYPE } from "@/shared/types/account_type.type";
+import { ACCOUNT_TYPE } from "@/shared/types/accountType.type";
 import { register } from "@/features/auth/services/auth.service";
 import { useToast } from "@/shared/contexts/ToastContext";
 import { useRouter } from "next/navigation";
