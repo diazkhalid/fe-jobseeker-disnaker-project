@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -26,15 +26,23 @@ import {
   Sliders,
   Plus,
   ChevronRight,
+  Mars,
+  Venus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
+import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
   const router = useRouter();
   const { user } = useAuthUser();
+  const { jobSeekerProfile } = useJobSeekerProfile();
+
+  useEffect(() => {
+    console.log(jobSeekerProfile);
+  }, [jobSeekerProfile]);
 
   // Status kelengkapan profil (misal 85%)
   const profileCompleteness = 85;
@@ -199,23 +207,39 @@ export default function CandidateProfilePage() {
             <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-6 shadow-sm">
               <div className="flex flex-col items-center text-center space-y-3">
                 <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner">
-                  <Image
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80"
-                    alt="Foto Fajar Ardiansyah"
-                    fill
-                    className="object-cover"
-                  />
+                  {jobSeekerProfile?.profile_photo_url ? (
+                    <Image
+                      src={jobSeekerProfile?.profile_photo_url}
+                      alt="Foto Profil"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                      {user?.full_name.charAt(0)}
+                    </span>
+                  )}
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">
                     {user?.full_name}
                   </h3>
                   <p className="text-xs font-semibold text-app-navy-700 mt-0.5">
-                    Geologist / Mining Specialist
+                    {jobSeekerProfile?.headline ?? (
+                      <span className="text-slate-400 font-normal">
+                        Data belum diisi
+                      </span>
+                    )}
                   </p>
-                  <p className="text-[11px] text-slate-400 mt-1 flex items-center justify-center gap-1">
-                    <MapPin className="w-3 h-3" /> Sumbawa Barat, NTB
-                  </p>
+                  {jobSeekerProfile?.address ? (
+                    <p className="text-[11px] text-slate-400 mt-1 flex items-center justify-center gap-1">
+                      <MapPin className="w-3 h-3" /> {jobSeekerProfile?.address}
+                    </p>
+                  ) : (
+                    <p className="text-[11px] text-slate-400 mt-1 flex items-center justify-center gap-1">
+                      <MapPin className="w-3 h-3" /> Data belum diisi
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -234,11 +258,27 @@ export default function CandidateProfilePage() {
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>14 Mei 1998 (28 Tahun)</span>
+                    <span>
+                      {jobSeekerProfile?.date_of_birth ?? (
+                        <span className="text-slate-400 font-normal">
+                          Data belum diisi
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
-                    <User className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>Laki-laki</span>
+                    {jobSeekerProfile?.gender === "female" ? (
+                      <Venus className="w-4 h-4 text-slate-400 shrink-0" />
+                    ) : (
+                      <Mars className="w-4 h-4 text-slate-400 shrink-0" />
+                    )}
+                    <span>
+                      {jobSeekerProfile?.gender ?? (
+                        <span className="text-slate-400 font-normal">
+                          Data belum diisi
+                        </span>
+                      )}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -320,10 +360,9 @@ export default function CandidateProfilePage() {
                 Ringkasan Profesional
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Geologist berpengalaman selama lebih dari 4 tahun di industri
-                eksplorasi pertambangan emas dan tembaga. Memiliki keahlian kuat
-                dalam pemetaan geologi, eksplorasi lapangan, analisis data
-                geokimia, serta kepatuhan K3LH di lokasi tambang.
+                {jobSeekerProfile?.summary ?? (
+                  <span className="text-slate-400">Data belum disi</span>
+                )}
               </p>
             </div>
 
@@ -336,9 +375,9 @@ export default function CandidateProfilePage() {
                     Pengalaman Kerja
                   </h3>
                 </div>
-                <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
+                {/* <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
                   <Plus className="w-3.5 h-3.5" /> Tambah
-                </button>
+                </button> */}
               </div>
 
               <div className="space-y-4">
@@ -376,9 +415,9 @@ export default function CandidateProfilePage() {
                     Pendidikan
                   </h3>
                 </div>
-                <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
+                {/* <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
                   <Plus className="w-3.5 h-3.5" /> Tambah
-                </button>
+                </button> */}
               </div>
 
               <div className="space-y-4">
@@ -479,30 +518,36 @@ export default function CandidateProfilePage() {
             <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                  Portofolio Proyek
+                  Link Portofolio Proyek
                 </h3>
-                <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
-                  <Plus className="w-3.5 h-3.5" /> Tambah
-                </button>
+                {/* Jika link belum ada, tampilkan tombol Tambah, atau jika sudah ada tampilkan Ubah */}
+                {/* <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
+                  <Plus className="w-3.5 h-3.5" /> Edit Link
+                </button> */}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 border border-slate-200 rounded-xl space-y-2">
-                  <h4 className="text-xs font-bold text-slate-900">
-                    Pemetaan Geologi Daerah Batu Hijau
-                  </h4>
-                  <p className="text-[11px] text-slate-500 line-clamp-2">
-                    Laporan lengkap inventarisasi potensi mineral batuan
-                    tembaga-emas porphyry.
-                  </p>
+              {jobSeekerProfile?.portfolio_url ? (
+                <div>
                   <a
-                    href="#"
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-app-navy-700 hover:underline pt-1"
+                    href={jobSeekerProfile?.portfolio_url} // Ganti dengan URL/link proyek Anda
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors group"
                   >
-                    Lihat Proyek <ExternalLink className="w-3 h-3" />
+                    <div className="flex items-center gap-2.5 truncate pr-2">
+                      <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-app-navy-700 shrink-0" />
+                      <span className="text-xs font-semibold text-slate-700 group-hover:text-app-navy-700 truncate">
+                        {jobSeekerProfile?.portfolio_url}
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-bold text-app-navy-700 shrink-0">
+                      Buka Link
+                    </span>
                   </a>
                 </div>
-              </div>
+              ) : (
+                <span className="text-slate-400 text-xs">Data belum diisi</span>
+              )}
             </div>
           </div>
         </div>

@@ -20,11 +20,22 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
+import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
+import APP_CONFIG from "@/shared/global/app_config";
 
 export default function CandidateEditProfilePage() {
   const [activeTab, setActiveTab] = useState<
     "pribadi" | "pendidikan" | "pengalaman" | "keahlian"
   >("pribadi");
+  const { user } = useAuthUser();
+
+  const {
+    jobSeekerProfile,
+    jobSeekerProfilePictureFile,
+    setJobSeekerProfilePictureFile,
+    handleSaveChanges,
+  } = useJobSeekerProfile();
 
   // --- STATE DATA PRIBADI ---
   const [personalData, setPersonalData] = useState({
@@ -218,18 +229,42 @@ export default function CandidateEditProfilePage() {
             </h3>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80"
-                  alt="Foto Profil"
-                  fill
-                  className="object-cover"
-                />
+                {jobSeekerProfile?.profile_photo_url ? (
+                  <Image
+                    src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                    alt="Foto Profil"
+                    fill
+                    className="object-cover"
+                  />
+                ) : jobSeekerProfilePictureFile ? (
+                  <Image
+                    src={URL.createObjectURL(jobSeekerProfilePictureFile)}
+                    alt="Preview Foto Profil"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                    {user?.full_name.charAt(0)}
+                  </span>
+                )}
               </div>
               <div className="space-y-2 text-center sm:text-left">
                 <div className="flex items-center gap-2">
                   <label className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl cursor-pointer transition-colors inline-flex items-center gap-2">
                     <Upload className="w-3.5 h-3.5" /> Unggah Foto Baru
-                    <input type="file" className="hidden" accept="image/*" />
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+
+                        if (file) {
+                          setJobSeekerProfilePictureFile(file);
+                        }
+                      }}
+                    />
                   </label>
                   <button
                     type="button"
@@ -518,7 +553,8 @@ export default function CandidateEditProfilePage() {
 
           <div className="border-t border-slate-100 pt-6 flex justify-end">
             <button
-              type="submit"
+              type="button"
+              onClick={handleSaveChanges}
               className="px-6 py-2.5 bg-app-navy-600 hover:bg-app-navy-700 text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center gap-2 shadow-sm"
             >
               <Save className="w-4 h-4" />
