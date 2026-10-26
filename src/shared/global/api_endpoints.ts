@@ -7,6 +7,9 @@ const API_ENDPOINTS = {
     LOGIN: `${baseURL}/auth/login`,
     ME: `${baseURL}/me`,
   },
+  OPTIONS: {
+    DISTRICTS: `${baseURL}/option/districts`,
+  },
   JOB_SEEKER: {
     PROFILE: {
       GET_BY_ID: (id: string) => `${baseURL}/profiles/${id}`,

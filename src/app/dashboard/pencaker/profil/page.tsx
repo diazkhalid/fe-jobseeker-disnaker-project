@@ -34,6 +34,8 @@ import Breadcrumbs from "@/shared/components/Breadcrumbs";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
 import APP_CONFIG from "@/shared/global/app_config";
+import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
+import { userGenderMap } from "@/shared/utils/userGenderMap";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
@@ -260,7 +262,9 @@ export default function CandidateProfilePage() {
                   <div className="flex items-center gap-3 text-slate-600">
                     <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
                     <span>
-                      {jobSeekerProfile?.date_of_birth ?? (
+                      {formatDateWithMonthName(
+                        jobSeekerProfile?.date_of_birth,
+                      ) ?? (
                         <span className="text-slate-400 font-normal">
                           Data belum diisi
                         </span>
@@ -274,7 +278,9 @@ export default function CandidateProfilePage() {
                       <Mars className="w-4 h-4 text-slate-400 shrink-0" />
                     )}
                     <span>
-                      {jobSeekerProfile?.gender ?? (
+                      {jobSeekerProfile?.gender ? (
+                        userGenderMap[jobSeekerProfile?.gender as string]
+                      ) : (
                         <span className="text-slate-400 font-normal">
                           Data belum diisi
                         </span>
@@ -519,36 +525,98 @@ export default function CandidateProfilePage() {
             <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                  Link Portofolio Proyek
+                  Tautan Profesional & Portofolio
                 </h3>
-                {/* Jika link belum ada, tampilkan tombol Tambah, atau jika sudah ada tampilkan Ubah */}
-                {/* <button className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1">
-                  <Plus className="w-3.5 h-3.5" /> Edit Link
-                </button> */}
               </div>
 
-              {jobSeekerProfile?.portfolio_url ? (
+              <div className="space-y-3">
+                {/* Portofolio URL */}
                 <div>
-                  <a
-                    href={jobSeekerProfile?.portfolio_url} // Ganti dengan URL/link proyek Anda
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors group"
-                  >
-                    <div className="flex items-center gap-2.5 truncate pr-2">
-                      <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-app-navy-700 shrink-0" />
-                      <span className="text-xs font-semibold text-slate-700 group-hover:text-app-navy-700 truncate">
-                        {jobSeekerProfile?.portfolio_url}
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-1">
+                    Portofolio Proyek
+                  </label>
+                  {jobSeekerProfile?.portfolio_url ? (
+                    <a
+                      href={jobSeekerProfile?.portfolio_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5 truncate pr-2">
+                        <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-app-navy-700 shrink-0" />
+                        <span className="text-xs font-semibold text-slate-700 group-hover:text-app-navy-700 truncate">
+                          {jobSeekerProfile?.portfolio_url}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-bold text-app-navy-700 shrink-0">
+                        Buka Link
                       </span>
-                    </div>
-                    <span className="text-[11px] font-bold text-app-navy-700 shrink-0">
-                      Buka Link
+                    </a>
+                  ) : (
+                    <span className="text-slate-400 text-xs italic">
+                      Portofolio belum diisi
                     </span>
-                  </a>
+                  )}
                 </div>
-              ) : (
-                <span className="text-slate-400 text-xs">Data belum diisi</span>
-              )}
+
+                {/* LinkedIn URL */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-1">
+                    LinkedIn
+                  </label>
+                  {jobSeekerProfile?.linkedin_url ? (
+                    <a
+                      href={jobSeekerProfile?.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5 truncate pr-2">
+                        <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-app-navy-700 shrink-0" />
+                        <span className="text-xs font-semibold text-slate-700 group-hover:text-app-navy-700 truncate">
+                          {jobSeekerProfile?.linkedin_url}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-bold text-app-navy-700 shrink-0">
+                        Buka Link
+                      </span>
+                    </a>
+                  ) : (
+                    <span className="text-slate-400 text-xs italic">
+                      LinkedIn belum diisi
+                    </span>
+                  )}
+                </div>
+
+                {/* GitHub URL */}
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-500 mb-1">
+                    GitHub
+                  </label>
+                  {jobSeekerProfile?.github_url ? (
+                    <a
+                      href={jobSeekerProfile?.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 border border-slate-200 rounded-xl flex items-center justify-between hover:bg-slate-50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-2.5 truncate pr-2">
+                        <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-app-navy-700 shrink-0" />
+                        <span className="text-xs font-semibold text-slate-700 group-hover:text-app-navy-700 truncate">
+                          {jobSeekerProfile?.github_url}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-bold text-app-navy-700 shrink-0">
+                        Buka Link
+                      </span>
+                    </a>
+                  ) : (
+                    <span className="text-slate-400 text-xs italic">
+                      GitHub belum diisi
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>

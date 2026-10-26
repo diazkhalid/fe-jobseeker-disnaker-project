@@ -10,6 +10,8 @@ import {
   UpdateJobSeekerProfileDto,
 } from "../types/userProfile.type";
 import { useToast } from "@/shared/contexts/ToastContext";
+import { Districts } from "@/shared/types/districtsList.type";
+import { getDistrictOptions } from "@/shared/services/options.service";
 export function useJobSeekerProfile() {
   const [token] = useLocalStorage("access-token", null);
   const [triggerUpdate, setTriggerUpdate] = useState(true);
@@ -21,18 +23,23 @@ export function useJobSeekerProfile() {
 
   const { addToast } = useToast();
 
+  const [districtsList, setDistrictsList] = useState<Districts[] | null>(null);
+
   const [updateJobSeekerProfileForm, setUpdateJobSeekerProfileForm] =
     useState<UpdateJobSeekerProfileDto>({
+      full_name: "",
+      phone: "",
       date_of_birth: null,
+      birth_place: null,
       gender: null,
       address: null,
-      province_code: null,
+      // province_code: null,
       province_name: null,
       regency_code: null,
       regency_name: null,
       district_code: null,
       district_name: null,
-      village_code: null,
+      // village_code: null,
       village_name: null,
       postal_code: null,
       highest_education: null,
@@ -54,10 +61,22 @@ export function useJobSeekerProfile() {
       }
 
       setJobSeekerProfile(result.data.data);
-      setUpdateJobSeekerProfileForm(result.data.data);
+      const { created_at, updated_at, ...profileData } = result.data.data;
+      setUpdateJobSeekerProfileForm(profileData);
     };
     fetch();
   }, [token, triggerUpdate]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const result = await getDistrictOptions();
+      if (result.status !== 200) {
+        return;
+      }
+      setDistrictsList(result.data.data);
+    };
+    fetch();
+  }, []);
 
   const handleUpdateJobSeekerProfilePicture = async () => {
     if (!token) return;
@@ -71,10 +90,6 @@ export function useJobSeekerProfile() {
       return;
     }
     setTriggerUpdate(!triggerUpdate);
-  };
-
-  const handleSaveChanges = async () => {
-    await handleUpdateJobSeekerProfilePicture();
   };
 
   const handleChangeUpdateJobSeekerProfileForm = (
@@ -113,14 +128,25 @@ export function useJobSeekerProfile() {
 
   const handleSubmitUpdateJobSeekerProfile = async () => {
     if (!token) return;
+
     const result = await updateJobSeekerProfile(
       token,
       updateJobSeekerProfileForm,
     );
     if (result.status !== 200) {
+      addToast("Gagal mengubah data", "warning");
       return;
     }
+    addToast("Berhasil mengubah data", "success");
     setTriggerUpdate(!triggerUpdate);
+  };
+
+  const handleSaveChanges = async () => {
+    if (jobSeekerProfilePictureFile) {
+      await handleUpdateJobSeekerProfilePicture();
+    }
+
+    await handleSubmitUpdateJobSeekerProfile();
   };
 
   return {
@@ -134,5 +160,6 @@ export function useJobSeekerProfile() {
     setUpdateJobSeekerProfileForm,
     handleSubmitUpdateJobSeekerProfile,
     handleChangeUpdateJobSeekerProfileForm,
+    districtsList,
   };
 }

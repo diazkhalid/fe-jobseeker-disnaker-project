@@ -38,6 +38,7 @@ export default function CandidateEditProfilePage() {
     updateJobSeekerProfileForm,
     handleSubmitUpdateJobSeekerProfile,
     handleChangeUpdateJobSeekerProfileForm,
+    districtsList,
   } = useJobSeekerProfile();
 
   // --- STATE DATA PRIBADI ---
@@ -232,17 +233,17 @@ export default function CandidateEditProfilePage() {
             </h3>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shrink-0">
-                {jobSeekerProfile?.profile_photo_url ? (
-                  <Image
-                    src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
-                    alt="Foto Profil"
-                    fill
-                    className="object-cover"
-                  />
-                ) : jobSeekerProfilePictureFile ? (
+                {jobSeekerProfilePictureFile ? (
                   <Image
                     src={URL.createObjectURL(jobSeekerProfilePictureFile)}
                     alt="Preview Foto Profil"
+                    fill
+                    className="object-cover"
+                  />
+                ) : jobSeekerProfile?.profile_photo_url ? (
+                  <Image
+                    src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                    alt="Foto Profil"
                     fill
                     className="object-cover"
                   />
@@ -296,8 +297,9 @@ export default function CandidateEditProfilePage() {
                 <input
                   type="text"
                   name="full_name"
-                  value={personalData.fullName}
-                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                  disabled
+                  value={updateJobSeekerProfileForm.full_name ?? ""}
+                  // onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
                 />
@@ -323,8 +325,9 @@ export default function CandidateEditProfilePage() {
                 <input
                   type="email"
                   name="email"
-                  value={personalData.email}
-                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                  disabled
+                  value={user?.email}
+                  // onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
                 />
@@ -337,7 +340,7 @@ export default function CandidateEditProfilePage() {
                 <input
                   type="text"
                   name="phone"
-                  value={personalData.phone}
+                  value={updateJobSeekerProfileForm.phone}
                   onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   required
@@ -354,6 +357,7 @@ export default function CandidateEditProfilePage() {
                   onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white"
                 >
+                  <option value="">Pilih jenis kelamin</option>
                   <option value="male">Laki-laki</option>
                   <option value="female">Perempuan</option>
                 </select>
@@ -366,8 +370,8 @@ export default function CandidateEditProfilePage() {
                   </label>
                   <input
                     type="text"
-                    name="date_of_birth"
-                    value={updateJobSeekerProfileForm.date_of_birth ?? ""}
+                    name="birth_place"
+                    value={updateJobSeekerProfileForm.birth_place ?? ""}
                     onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   />
@@ -379,7 +383,10 @@ export default function CandidateEditProfilePage() {
                   <input
                     type="date"
                     name="date_of_birth"
-                    value={updateJobSeekerProfileForm.date_of_birth ?? ""}
+                    value={
+                      updateJobSeekerProfileForm.date_of_birth?.split("T")[0] ??
+                      ""
+                    }
                     onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
                   />
@@ -397,6 +404,28 @@ export default function CandidateEditProfilePage() {
                 onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                 className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600"
               />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Pendidikan Terakhir
+                </label>
+                <select
+                  value={updateJobSeekerProfileForm.highest_education ?? ""}
+                  name="highest_education"
+                  onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
+                >
+                  <option value="">Pilih Pendidikan Terakhir</option>
+                  <option value="SD">SD</option>
+                  <option value="SMP">SMP</option>
+                  <option value="SMA">SMA</option>
+                  <option value="S-1">S-1</option>
+                  <option value="S-2">S-2</option>
+                  <option value="S-3">S-3</option>
+                  {/* Tambahkan option lainnya sesuai kebutuhan */}
+                </select>
+              </div>
             </div>
           </div>
 
@@ -432,9 +461,14 @@ export default function CandidateEditProfilePage() {
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
                   >
                     <option value="">Pilih Kecamatan</option>
-                    <option value="01">Kecamatan 1</option>
-                    <option value="02">Kecamatan 2</option>
-                    {/* Tambahkan option lainnya sesuai kebutuhan */}
+                    {districtsList?.map((district) => (
+                      <option
+                        key={`${district.code}`}
+                        value={`${district.code}`}
+                      >
+                        {district.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -444,14 +478,13 @@ export default function CandidateEditProfilePage() {
                     Kabupaten / Kota
                   </label>
                   <select
-                    value={updateJobSeekerProfileForm.regency_code ?? ""}
-                    name="regency_code"
+                    value={updateJobSeekerProfileForm.regency_name ?? ""}
+                    name="regency_name"
                     onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
                   >
                     <option value="">Pilih Kabupaten / Kota</option>
-                    <option value="Kabupaten/Kota 1">Kabupaten/Kota 1</option>
-                    <option value="Kabupaten/Kota 2">Kabupaten/Kota 2</option>
+                    <option value="Kabupaten Sumbawa">Kabupaten Sumbawa</option>
                     {/* Tambahkan option lainnya sesuai kebutuhan */}
                   </select>
                 </div>
@@ -462,16 +495,15 @@ export default function CandidateEditProfilePage() {
                     Provinsi
                   </label>
                   <select
-                    value={updateJobSeekerProfileForm.province_code ?? ""}
-                    name="province_code"
+                    value={updateJobSeekerProfileForm.province_name ?? ""}
+                    name="province_name"
                     onChange={(e) => handleChangeUpdateJobSeekerProfileForm(e)}
                     className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
                   >
                     <option value="">Pilih Provinsi</option>
-                    <option value="DKI Jakarta">DKI Jakarta</option>
-                    <option value="Jawa Barat">Jawa Barat</option>
-                    <option value="Jawa Tengah">Jawa Tengah</option>
-                    <option value="Jawa Timur">Jawa Timur</option>
+                    <option value="Nusa Tenggara Barat">
+                      Nusa Tenggara Barat
+                    </option>
                     {/* Tambahkan option lainnya sesuai kebutuhan */}
                   </select>
                 </div>

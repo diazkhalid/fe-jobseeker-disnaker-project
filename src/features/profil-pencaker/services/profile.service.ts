@@ -25,10 +25,15 @@ export async function updateJobSeekerProfile(
 ) {
   try {
     const formData = new FormData();
-    //   formData.append("photo", data.photo);
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, String(value));
+      }
+    });
 
     const response = await axios.put(
-      API_ENDPOINTS.JOB_SEEKER.PROFILE.UPDATE_PICTURE,
+      API_ENDPOINTS.JOB_SEEKER.PROFILE.UPDATE,
       formData,
       {
         headers: {

@@ -1,16 +1,19 @@
 export interface JobSeekerProfileData {
   id: number;
+  full_name: string;
+  phone: string;
   user_id: number;
   date_of_birth: string | null;
+  birth_place: string | null;
   gender: string | null;
   address: string | null;
-  province_code: string | null;
+  // province_code: string | null;
   province_name: string | null;
   regency_code: string | null;
   regency_name: string | null;
   district_code: string | null;
   district_name: string | null;
-  village_code: string | null;
+  // village_code: string | null;
   village_name: string | null;
   postal_code: string | null;
   highest_education: string | null;
