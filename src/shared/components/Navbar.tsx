@@ -22,7 +22,11 @@ import {
   Flame,
   Search,
   PlusCircle,
+  LucideLayoutDashboard,
 } from "lucide-react";
+import { useAuthUser } from "../contexts/SessionContext";
+import { accountTypeMap } from "../utils/userAccountTypeMap";
+import { userDashboardPath } from "../utils/userDashboardPath";
 
 // Tipe lowongan untuk Dropdown Lowongan Kerja
 const jobCategories = [
@@ -85,6 +89,19 @@ export default function Navbar() {
 
   // Reference & Click Outside listener untuk dropdown desktop
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { user, isLoading } = useAuthUser();
+
+  useEffect(() => {
+    const checkLogin = () => {
+      if (isLoading) return;
+      if (user) {
+        setIsLoggedIn(true);
+        return;
+      }
+    };
+    checkLogin();
+  }, [user, isLoading]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -297,13 +314,15 @@ export default function Navbar() {
           {/* 3. RIGHT SECTION: CTA & AUTH (DESKTOP) */}
           <div className="hidden lg:flex items-center gap-3">
             {/* CTA Pasang Lowongan */}
-            <Link
-              href="/pasang-lowongan"
-              className="group relative inline-flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-full text-app-navy-800 bg-app-navy-50/80 hover:bg-app-navy-100/80 border border-app-navy-200 transition-all duration-200"
-            >
-              <PlusCircle className="w-3.5 h-3.5 text-app-navy-600 group-hover:scale-110 transition-transform" />
-              <span>Pasang Lowongan</span>
-            </Link>
+            {user?.account_type === "company" && (
+              <Link
+                href="/pasang-lowongan"
+                className="group relative inline-flex items-center gap-2 px-4 py-2 text-xs font-medium rounded-full text-app-navy-800 bg-app-navy-50/80 hover:bg-app-navy-100/80 border border-app-navy-200 transition-all duration-200"
+              >
+                <PlusCircle className="w-3.5 h-3.5 text-app-navy-600 group-hover:scale-110 transition-transform" />
+                <span>Pasang Lowongan</span>
+              </Link>
+            )}
 
             <div className="h-4 w-[1px] bg-slate-200 mx-1" />
 
@@ -319,7 +338,7 @@ export default function Navbar() {
                     A
                   </div>
                   <span className="text-xs font-semibold text-slate-800">
-                    Ahmad
+                    {user?.full_name}
                   </span>
                   <ChevronDown
                     className={`w-3.5 h-3.5 text-slate-400 transition-transform ${
@@ -338,14 +357,21 @@ export default function Navbar() {
                     >
                       <div className="px-4 py-2.5 border-b border-slate-100">
                         <p className="text-[10px] uppercase font-bold text-app-navy-600 tracking-wider">
-                          Pencari Kerja
+                          {accountTypeMap[user?.account_type as string]}
                         </p>
                         <p className="text-xs font-semibold text-slate-900 truncate">
-                          ahmad@example.com
+                          {user?.email}
                         </p>
                       </div>
 
                       <div className="py-1">
+                        <Link
+                          href={`${userDashboardPath[user?.account_type as string]}`}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
+                        >
+                          <LucideLayoutDashboard className="w-4 h-4 text-app-navy-600" />{" "}
+                          Dashboard
+                        </Link>
                         <Link
                           href="/profil"
                           className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
@@ -534,14 +560,16 @@ export default function Navbar() {
 
               {/* Mobile CTA & Auth */}
               <div className="pt-3 border-t border-slate-100 space-y-2">
-                <Link
-                  href="/pasang-lowongan"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 text-xs font-semibold text-app-navy-800 bg-app-navy-50 border border-app-navy-200/80 rounded-xl"
-                >
-                  <Sparkles className="w-4 h-4 text-app-navy-600" />
-                  Pasang Lowongan Perusahaan
-                </Link>
+                {user?.account_type === "company" && (
+                  <Link
+                    href="/pasang-lowongan"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 text-xs font-semibold text-app-navy-800 bg-app-navy-50 border border-app-navy-200/80 rounded-xl"
+                  >
+                    <Sparkles className="w-4 h-4 text-app-navy-600" />
+                    Pasang Lowongan Perusahaan
+                  </Link>
+                )}
 
                 {isLoggedIn ? (
                   <div className="pt-2 border-t border-slate-100">
@@ -551,10 +579,10 @@ export default function Navbar() {
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-slate-900">
-                          Ahmad
+                          {user?.full_name}
                         </p>
                         <p className="text-[10px] text-slate-400">
-                          ahmad@example.com
+                          {user?.email}
                         </p>
                       </div>
                     </div>
@@ -564,7 +592,7 @@ export default function Navbar() {
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="block px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 rounded-lg"
                       >
-                        Profil Saya
+                        Dashboard
                       </Link>
                       <button
                         onClick={() => {

@@ -22,6 +22,7 @@ import {
   primaryNavItems,
 } from "../utils/navConfig.util";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
+import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 
 export default function TopHeaderNav() {
   const pathname = usePathname() || "/dashboard";
@@ -36,10 +37,6 @@ export default function TopHeaderNav() {
       alert("Logout berhasil!");
       // TODO: panggil proses logout/auth provider di sini.
     }
-  };
-
-  const accountTypeMap: Record<string, string> = {
-    job_seeker: "Pencari Kerja",
   };
 
   return (

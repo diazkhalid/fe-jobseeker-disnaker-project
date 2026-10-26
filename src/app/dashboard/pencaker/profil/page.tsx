@@ -29,10 +29,12 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
   const router = useRouter();
+  const { user } = useAuthUser();
 
   // Status kelengkapan profil (misal 85%)
   const profileCompleteness = 85;
@@ -206,7 +208,7 @@ export default function CandidateProfilePage() {
                 </div>
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">
-                    Fajar Ardiansyah, S.T.
+                    {user?.full_name}
                   </h3>
                   <p className="text-xs font-semibold text-app-navy-700 mt-0.5">
                     Geologist / Mining Specialist
@@ -224,11 +226,11 @@ export default function CandidateProfilePage() {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-3 text-slate-600">
                     <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span className="truncate">fajar.dev@sumbawa.go.id</span>
+                    <span className="truncate">{user?.email}</span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <Phone className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span>+62 812-3456-7890</span>
+                    <span>{user?.phone}</span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <Calendar className="w-4 h-4 text-slate-400 shrink-0" />

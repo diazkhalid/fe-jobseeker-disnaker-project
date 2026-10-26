@@ -22,6 +22,7 @@ import { login } from "@/features/auth/services/auth.service";
 import { useToast } from "@/shared/contexts/ToastContext";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { userDashboardPath } from "@/shared/utils/userDashboardPath";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,6 +37,8 @@ export default function LoginPage() {
     "access-token",
     null,
   );
+
+  const { setToggleUpdateAuth } = useAuthUser();
 
   const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
@@ -66,6 +69,7 @@ export default function LoginPage() {
     setToken(result.data.data.access_token);
     addToast("Login berhasil", "success");
     setIsLoading(false);
+    setToggleUpdateAuth((prev) => !prev);
     const userAccountType = result.data.data.user.account_type;
     router.push(userDashboardPath[userAccountType]);
   };

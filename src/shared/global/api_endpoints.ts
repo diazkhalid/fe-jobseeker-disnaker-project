@@ -7,6 +7,15 @@ const API_ENDPOINTS = {
     LOGIN: `${baseURL}/auth/login`,
     ME: `${baseURL}/me`,
   },
+  JOB_SEEKER: {
+    PROFILE: {
+      GET_BY_ID: (id: string) => `${baseURL}/profiles/${id}`,
+      GET_BY_AUTH: `${baseURL}/profiles/me`,
+      UPDATE: `${baseURL}/profiles/me`,
+      UPDATE_PICTURE: `${baseURL}/profiles/me/photo`,
+      DELETE_PICTURE: `${baseURL}/profiles/me/photo`,
+    },
+  },
 };
 
 export default API_ENDPOINTS;
