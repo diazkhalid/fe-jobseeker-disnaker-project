@@ -1,4 +1,4 @@
-export const jobFields: string[] = [
+export const jobFieldsDummyData: string[] = [
   "Teknologi Informasi & Rekayasa Perangkat Lunak",
   "Data Science, Analitik Data & Kecerdasan Buatan",
   "Keuangan, Akuntansi & Perbankan",
@@ -44,7 +44,7 @@ export const jobFields: string[] = [
   "Kewirausahaan & Usaha Mikro, Kecil, dan Menengah",
 ];
 
-export const industries: string[] = [
+export const industriesDummyData: string[] = [
   // Teknologi dan digital
   "Teknologi / Perangkat Lunak",
   "SaaS (Software as a Service)",
@@ -321,7 +321,7 @@ export const industries: string[] = [
   "Lainnya",
 ];
 
-export const preferredPositions: string[] = [
+export const preferredPositionsDummyData: string[] = [
   // Teknologi informasi & rekayasa perangkat lunak
   "Frontend Developer",
   "Frontend Engineer",
