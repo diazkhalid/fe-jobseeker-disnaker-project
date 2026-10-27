@@ -23,6 +23,8 @@ import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import APP_CONFIG from "@/shared/global/app_config";
+import { useJobSeekerEducation } from "@/features/profil-pencaker/hooks/useUserEducation.hook";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CandidateEditProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -41,37 +43,18 @@ export default function CandidateEditProfilePage() {
     districtsList,
   } = useJobSeekerProfile();
 
-  // --- STATE DATA PRIBADI ---
-  const [personalData, setPersonalData] = useState({
-    fullName: "Fajar Ardiansyah, S.T.",
-    nickname: "Fajar",
-    email: "fajar.dev@sumbawa.go.id",
-    phone: "+62 812-3456-7890",
-    gender: "Laki-laki",
-    birthPlace: "Sumbawa Besar",
-    birthDate: "1998-05-14",
-    address: "Jl. Raya Lintas Sumbawa - Taliwang No. 45",
-    district: "Unter Iwes",
-    regency: "Kabupaten Sumbawa",
-    province: "Nusa Tenggara Barat",
-    linkedin: "https://linkedin.com/in/fajar-ardiansyah",
-    github: "https://github.com/fajarardiansyah",
-    portfolio: "https://fajarardiansyah.dev",
-  });
+  const {
+    jobSeekerEducation,
+    setJobSeekerEducation,
+    createJobSeekerEducationForm,
+    setCreateJobSeekerEducationForm,
+    handleChangeCreateJobSeekerEducationForm,
+    handleCreateJobSeekerEducation,
+    resetCreateJobSeekerEducationForm,
+    handleDeleteJobSeekerEducation,
+  } = useJobSeekerEducation();
 
   // --- STATE PENDIDIKAN ---
-  const [educations, setEducations] = useState([
-    {
-      id: 1,
-      degree: "S1",
-      institution: "Universitas Mataram",
-      major: "Teknik Geologi",
-      startYear: "2018",
-      endYear: "2022",
-      gpa: "3.72",
-      status: "Lulus",
-    },
-  ]);
 
   // --- STATE PENGALAMAN ---
   const [hasNoExperience, setHasNoExperience] = useState(false);
@@ -122,12 +105,6 @@ export default function CandidateEditProfilePage() {
   const handleSavePersonalData = (e: React.FormEvent) => {
     e.preventDefault();
     alert("Data Pribadi berhasil diperbarui!");
-  };
-
-  const handleDeleteEducation = (id: number) => {
-    if (confirm("Apakah Anda yakin ingin menghapus pendidikan ini?")) {
-      setEducations(educations.filter((item) => item.id !== id));
-    }
   };
 
   const handleDeleteExperience = (id: number) => {
@@ -619,44 +596,60 @@ export default function CandidateEditProfilePage() {
           </div>
 
           <div className="space-y-4">
-            {educations.map((edu) => (
-              <div
-                key={edu.id}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-app-navy-100 text-app-navy-800 font-bold text-[10px] rounded">
-                      {edu.degree}
-                    </span>
-                    <h4 className="text-xs font-bold text-slate-900">
-                      {edu.institution}
-                    </h4>
+            {jobSeekerEducation && jobSeekerEducation.length > 0 ? (
+              jobSeekerEducation.map((edu) => (
+                <div
+                  key={edu.id}
+                  className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 bg-app-navy-100 text-app-navy-800 font-bold text-[10px] rounded">
+                        {edu.degree}
+                      </span>
+                      <h4 className="text-xs font-bold text-slate-900">
+                        {edu.institution}
+                      </h4>
+                    </div>
+                    <p className="text-xs font-semibold text-slate-700">
+                      {edu.major}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      Tahun {edu.start_date} - {edu.end_date} • IPK/Nilai:{" "}
+                      {edu.grade}
+                    </p>
                   </div>
-                  <p className="text-xs font-semibold text-slate-700">
-                    {edu.major}
-                  </p>
-                  <p className="text-[11px] text-slate-500">
-                    Tahun {edu.startYear} - {edu.endYear} • IPK/Nilai: {edu.gpa}{" "}
-                    • Status: {edu.status}
-                  </p>
+                  <div className="flex items-center gap-2 self-end sm:self-center">
+                    {/* <button
+                      onClick={() => setIsEducationModalOpen(true)}
+                      className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button> */}
+                    <button
+                      onClick={() =>
+                        handleDeleteJobSeekerEducation(edu.id.toString())
+                      }
+                      className="p-2 bg-white border border-slate-200 rounded-lg text-rose-600 hover:bg-rose-50"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 self-end sm:self-center">
-                  <button
-                    onClick={() => setIsEducationModalOpen(true)}
-                    className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteEducation(edu.id)}
-                    className="p-2 bg-white border border-slate-200 rounded-lg text-rose-600 hover:bg-rose-50"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 px-4 rounded-xl border border-dashed border-slate-300 bg-slate-50">
+                <p className="text-xs font-medium text-slate-500 mb-2">
+                  Belum ada riwayat pendidikan yang ditambahkan.
+                </p>
+                {/* <button
+                  onClick={() => setIsEducationModalOpen(true)}
+                  className="text-xs font-semibold text-app-navy-800 hover:underline"
+                >
+                  + Tambah Pendidikan
+                </button> */}
               </div>
-            ))}
+            )}
           </div>
         </div>
       )}
@@ -877,102 +870,144 @@ export default function CandidateEditProfilePage() {
       {/* ========================================================================= */}
 
       {/* MODAL TAMBAH PENDIDIKAN */}
-      {isEducationModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Tambah Riwayat Pendidikan
-              </h3>
-              <button onClick={() => setIsEducationModalOpen(false)}>
-                <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-              </button>
-            </div>
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Jenjang Pendidikan
-                </label>
-                <select className="w-full p-2.5 rounded-xl border border-slate-200">
-                  <option>SMA / SMK</option>
-                  <option>D3</option>
-                  <option>D4 / S1</option>
-                  <option>S2</option>
-                </select>
+      <AnimatePresence>
+        {isEducationModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Tambah Riwayat Pendidikan
+                </h3>
+                <button onClick={() => setIsEducationModalOpen(false)}>
+                  <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
+                </button>
               </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Nama Institusi / Universitas
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: Universitas Mataram"
-                />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Jurusan / Program Studi
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: Teknik Geologi"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              <div className="space-y-3 text-xs">
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">
-                    Tahun Masuk
+                    Jenjang Pendidikan
+                  </label>
+                  <select
+                    name="degree"
+                    value={createJobSeekerEducationForm.degree}
+                    onChange={handleChangeCreateJobSeekerEducationForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                  >
+                    <option value={""}>Pilih Jenjang</option>
+                    <option value={"SMA"}>SMA</option>
+                    <option value={"Diploma"}>Diploma</option>
+                    <option value={"S1"}>S1</option>
+                    <option value={"S2"}>S2</option>
+                    <option value={"S3"}>S3</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Nama Institusi / Universitas
                   </label>
                   <input
-                    type="number"
+                    name="institution"
+                    value={createJobSeekerEducationForm.institution}
+                    type="text"
+                    onChange={handleChangeCreateJobSeekerEducationForm}
                     className="w-full p-2.5 rounded-xl border border-slate-200"
-                    placeholder="2018"
+                    placeholder="Contoh: Universitas Mataram"
                   />
                 </div>
                 <div>
                   <label className="block font-bold text-slate-700 mb-1">
-                    Tahun Lulus
+                    Jurusan / Program Studi
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    name="major"
+                    value={createJobSeekerEducationForm.major}
+                    onChange={handleChangeCreateJobSeekerEducationForm}
                     className="w-full p-2.5 rounded-xl border border-slate-200"
-                    placeholder="2022"
+                    placeholder="Contoh: Teknik Geologi"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Tahun Masuk
+                    </label>
+                    <input
+                      type="text"
+                      name="start_date"
+                      value={createJobSeekerEducationForm.start_date}
+                      onChange={handleChangeCreateJobSeekerEducationForm}
+                      className="w-full p-2.5 rounded-xl border border-slate-200"
+                      placeholder="2018"
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Tahun Lulus
+                    </label>
+                    <input
+                      type="text"
+                      name="end_date"
+                      value={createJobSeekerEducationForm.end_date}
+                      onChange={handleChangeCreateJobSeekerEducationForm}
+                      className="w-full p-2.5 rounded-xl border border-slate-200"
+                      placeholder="2022"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    IPK / Nilai Akhir
+                  </label>
+                  <input
+                    type="text"
+                    name="grade"
+                    value={createJobSeekerEducationForm.grade}
+                    onChange={handleChangeCreateJobSeekerEducationForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                    placeholder="Contoh: 3.72"
                   />
                 </div>
               </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  IPK / Nilai Akhir
-                </label>
-                <input
-                  type="text"
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: 3.72"
-                />
+
+              <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    resetCreateJobSeekerEducationForm();
+                    setIsEducationModalOpen(false);
+                  }}
+                  className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={() => {
+                    handleCreateJobSeekerEducation();
+                    resetCreateJobSeekerEducationForm();
+                    setIsEducationModalOpen(false);
+                  }}
+                  className="px-4 py-2 bg-app-navy-600 text-white rounded-xl text-xs font-bold"
+                >
+                  Simpan
+                </button>
               </div>
-            </div>
-            <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
-              <button
-                onClick={() => setIsEducationModalOpen(false)}
-                className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600"
-              >
-                Batal
-              </button>
-              <button
-                onClick={() => {
-                  alert("Pendidikan baru disimpan");
-                  setIsEducationModalOpen(false);
-                }}
-                className="px-4 py-2 bg-app-navy-600 text-white rounded-xl text-xs font-bold"
-              >
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* MODAL TAMBAH PENGALAMAN */}
       {isExperienceModalOpen && (

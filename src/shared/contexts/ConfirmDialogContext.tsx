@@ -1,4 +1,5 @@
 // context/ConfirmContext.tsx
+"use client";
 import React, {
   createContext,
   useContext,
@@ -97,7 +98,7 @@ export const ConfirmProvider = ({ children }: ConfirmProviderProps) => {
                 <button
                   type="button"
                   onClick={handleConfirm}
-                  className="w-full py-2.5 bg-secondary-600 hover:bg-secondary-600/95 text-white font-semibold text-xs rounded-xl shadow-sm transition-all cursor-pointer transform active:scale-[0.99]"
+                  className="w-full py-2.5 bg-app-navy-600 hover:bg-secondary-600/95 text-white font-semibold text-xs rounded-xl shadow-sm transition-all cursor-pointer transform active:scale-[0.99]"
                 >
                   Ya, Lanjutkan
                 </button>

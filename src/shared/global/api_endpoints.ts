@@ -18,6 +18,12 @@ const API_ENDPOINTS = {
       UPDATE_PICTURE: `${baseURL}/profiles/me/photo`,
       DELETE_PICTURE: `${baseURL}/profiles/me/photo`,
     },
+    EDUCATION: {
+      CREATE: `${baseURL}/educations`,
+      FIND_BY_AUTH: `${baseURL}/educations`,
+      UPDATE: (id: string) => `${baseURL}/educations/${id}`,
+      DELETE: (id: string) => `${baseURL}/educations/${id}`,
+    },
   },
 };
 
