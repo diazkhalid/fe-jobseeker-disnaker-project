@@ -9,6 +9,7 @@ const API_ENDPOINTS = {
   },
   OPTIONS: {
     DISTRICTS: `${baseURL}/option/districts`,
+    DOCUMENT_CATEGORY: `${baseURL}/option/category_documents`,
   },
   JOB_SEEKER: {
     PROFILE: {
@@ -41,6 +42,12 @@ const API_ENDPOINTS = {
       FIND_BY_AUTH: `${baseURL}/certifications`,
       UPDATE: (id: string) => `${baseURL}/certifications/${id}`,
       DELETE: (id: string) => `${baseURL}/certifications/${id}`,
+    },
+    DOCUMENT: {
+      CREATE: `${baseURL}/documents`,
+      FIND_BY_AUTH: `${baseURL}/documents`,
+      UPDATE: (id: string) => `${baseURL}/documents/${id}`,
+      DELETE: (id: string) => `${baseURL}/documents/${id}`,
     },
   },
 };

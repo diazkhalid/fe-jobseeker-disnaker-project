@@ -20,102 +20,32 @@ import {
   ArrowLeft,
   ChevronRight,
 } from "lucide-react";
-
-// Tipe Data Dokumen
-interface DocumentItem {
-  id: string;
-  name: string;
-  category: "cv" | "akademik" | "sertifikat" | "portofolio" | "pendukung";
-  categoryLabel: string;
-  size: string;
-  sizeInMB: number;
-  uploadDate: string;
-  isMain?: boolean;
-  isRequired?: boolean;
-  fileUrl?: string;
-  format: string;
-}
+import { useJobSeekerDocument } from "@/features/document-pencaker/hooks/useUserDocument.hook";
+import { JobSeekerDocumentData } from "@/features/document-pencaker/types/userDocument.type";
+import { JobSeekerDocumentCategoryData } from "@/features/document-pencaker/types/documentCategory.type";
 
 export default function DocumentManagementPage() {
-  // State untuk daftar dokumen
-  const [documents, setDocuments] = useState<DocumentItem[]>([
-    {
-      id: "doc-1",
-      name: "CV_Fajar_Ardiansyah_2026.pdf",
-      category: "cv",
-      categoryLabel: "CV Utama",
-      size: "1.2 MB",
-      sizeInMB: 1.2,
-      uploadDate: "2026-05-10",
-      isMain: true,
-      isRequired: true,
-      format: "PDF",
-    },
-    {
-      id: "doc-2",
-      name: "CV_Fajar_ATS_Friendly.pdf",
-      category: "cv",
-      categoryLabel: "CV Alternatif",
-      size: "850 KB",
-      sizeInMB: 0.85,
-      uploadDate: "2026-05-12",
-      isMain: false,
-      isRequired: false,
-      format: "PDF",
-    },
-    {
-      id: "doc-3",
-      name: "Surat_Lamaran_Umum.pdf",
-      category: "pendukung",
-      categoryLabel: "Surat Lamaran",
-      size: "420 KB",
-      sizeInMB: 0.42,
-      uploadDate: "2026-05-11",
-      isMain: false,
-      isRequired: false,
-      format: "PDF",
-    },
-    {
-      id: "doc-4",
-      name: "Ijazah_S1_Teknik_Geologi.pdf",
-      category: "akademik",
-      categoryLabel: "Ijazah",
-      size: "2.4 MB",
-      sizeInMB: 2.4,
-      uploadDate: "2026-05-01",
-      isMain: false,
-      isRequired: true,
-      format: "PDF",
-    },
-    {
-      id: "doc-5",
-      name: "Transkrip_Nilai_Legaliz.pdf",
-      category: "akademik",
-      categoryLabel: "Transkrip Nilai",
-      size: "1.8 MB",
-      sizeInMB: 1.8,
-      uploadDate: "2026-05-01",
-      isMain: false,
-      isRequired: true,
-      format: "PDF",
-    },
-    {
-      id: "doc-6",
-      name: "Portofolio_Eksplorasi_Geologi.pdf",
-      category: "portofolio",
-      categoryLabel: "Portofolio",
-      size: "4.5 MB",
-      sizeInMB: 4.5,
-      uploadDate: "2026-05-15",
-      isMain: false,
-      isRequired: false,
-      format: "PDF",
-    },
-  ]);
+  const {
+    jobSeekerDocument,
+    setJobSeekerDocument,
+    createJobSeekerDocumentForm,
+    setCreateJobSeekerDocumentForm,
+    handleChangeCreateJobSeekerDocumentForm,
+    handleCreateJobSeekerDocument,
+    resetCreateJobSeekerDocumentForm,
+    handleDeleteJobSeekerDocument,
+    handleUpdateJobSeekerDocumentPrimary,
+    cvDocs,
+    portofolioDocs,
+    certDocs,
+    academicDocs,
+    otherDocs,
+    documentCategories,
+  } = useJobSeekerDocument();
 
   // State Modal Preview & Upload
   const [selectedDocForPreview, setSelectedDocForPreview] =
-    useState<DocumentItem | null>(null);
+    useState<JobSeekerDocumentData | null>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<string>("cv");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -124,94 +54,6 @@ export default function DocumentManagementPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Batas Maksimal Ukuran File (5 MB)
-  const MAX_FILE_SIZE_MB = 5;
-  const ALLOWED_FORMATS = ["application/pdf", "image/jpeg", "image/png"];
-
-  // Handler Ganti CV Utama
-  const handleSetMainCV = (id: string) => {
-    setDocuments((prev) =>
-      prev.map((doc) => {
-        if (doc.category === "cv") {
-          return { ...doc, isMain: doc.id === id };
-        }
-        return doc;
-      }),
-    );
-  };
-
-  // Handler Hapus Dokumen
-  const handleDeleteDoc = (id: string) => {
-    const target = documents.find((d) => d.id === id);
-    if (target?.isMain) {
-      alert(
-        "Dokumen CV Utama tidak dapat dihapus. Pindahkan status CV Utama ke dokumen lain terlebih dahulu.",
-      );
-      return;
-    }
-
-    if (confirm("Apakah Anda yakin ingin menghapus dokumen ini?")) {
-      setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-    }
-  };
-
-  // Handler Validasi & File Selection
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadError(null);
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    // Validasi Format
-    if (!ALLOWED_FORMATS.includes(file.type)) {
-      setUploadError(
-        "Format file tidak didukung! Harus berupa PDF, JPG, atau PNG.",
-      );
-      setSelectedFile(null);
-      return;
-    }
-
-    // Validasi Ukuran (Maksimal 5MB)
-    const sizeMB = file.size / (1024 * 1024);
-    if (sizeMB > MAX_FILE_SIZE_MB) {
-      setUploadError(
-        `Ukuran file melebihi batas ${MAX_FILE_SIZE_MB}MB! (Ukuran file: ${sizeMB.toFixed(2)}MB)`,
-      );
-      setSelectedFile(null);
-      return;
-    }
-
-    setSelectedFile(file);
-  };
-
-  // Handler Submit Upload / Ganti File
-  const handleUploadSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedFile) {
-      setUploadError("Silakan pilih file terlebih dahulu.");
-      return;
-    }
-
-    const newDoc: DocumentItem = {
-      id: `doc-${new Date()}`,
-      name: selectedFile.name,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      category: uploadCategory as any,
-      categoryLabel: getCategoryLabel(uploadCategory),
-      size: `${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`,
-      sizeInMB: Number((selectedFile.size / (1024 * 1024)).toFixed(2)),
-      uploadDate: new Date().toISOString().split("T")[0],
-      isMain:
-        uploadCategory === "cv" &&
-        !documents.some((d) => d.category === "cv" && d.isMain),
-      isRequired: uploadCategory === "akademik",
-      format: selectedFile.name.split(".").pop()?.toUpperCase() || "PDF",
-    };
-
-    setDocuments([newDoc, ...documents]);
-    setIsUploadModalOpen(false);
-    setSelectedFile(null);
-    setUploadError(null);
-  };
 
   const getCategoryLabel = (cat: string) => {
     switch (cat) {
@@ -227,13 +69,6 @@ export default function DocumentManagementPage() {
         return "Dokumen Pendukung";
     }
   };
-
-  // Pengelompokan Dokumen Berdasarkan Jenis
-  const cvDocs = documents.filter((d) => d.category === "cv");
-  const academicDocs = documents.filter((d) => d.category === "akademik");
-  const certDocs = documents.filter((d) => d.category === "sertifikat");
-  const portfolioDocs = documents.filter((d) => d.category === "portofolio");
-  const otherDocs = documents.filter((d) => d.category === "pendukung");
 
   return (
     <div className="space-y-8 mx-auto pb-12">
@@ -306,8 +141,8 @@ export default function DocumentManagementPage() {
         description="Pilih salah satu sebagai CV Utama yang akan otomatis terlampir saat melamar."
         items={cvDocs}
         onPreview={setSelectedDocForPreview}
-        onDelete={handleDeleteDoc}
-        onSetMain={handleSetMainCV}
+        onDelete={handleDeleteJobSeekerDocument}
+        onSetMain={handleUpdateJobSeekerDocumentPrimary}
         onReplace={() => setIsUploadModalOpen(true)}
       />
 
@@ -317,7 +152,7 @@ export default function DocumentManagementPage() {
         description="Ijazah dan Transkrip Nilai resmi."
         items={academicDocs}
         onPreview={setSelectedDocForPreview}
-        onDelete={handleDeleteDoc}
+        onDelete={handleDeleteJobSeekerDocument}
         onReplace={() => setIsUploadModalOpen(true)}
       />
 
@@ -325,9 +160,9 @@ export default function DocumentManagementPage() {
       <DocumentGroupSection
         title="Portofolio & Hasil Karya"
         description="Berkas pendukung keahlian dan riwayat proyek yang pernah dikerjakan."
-        items={portfolioDocs}
+        items={portofolioDocs}
         onPreview={setSelectedDocForPreview}
-        onDelete={handleDeleteDoc}
+        onDelete={handleDeleteJobSeekerDocument}
         onReplace={() => setIsUploadModalOpen(true)}
       />
 
@@ -337,7 +172,7 @@ export default function DocumentManagementPage() {
         description="Surat Lamaran, Sertifikat Pelatihan, KTP, atau SKCK."
         items={[...certDocs, ...otherDocs]}
         onPreview={setSelectedDocForPreview}
-        onDelete={handleDeleteDoc}
+        onDelete={handleDeleteJobSeekerDocument}
         onReplace={() => setIsUploadModalOpen(true)}
       />
 
@@ -362,24 +197,29 @@ export default function DocumentManagementPage() {
               </button>
             </div>
 
-            <form onSubmit={handleUploadSubmit} className="space-y-4">
+            <form
+              onSubmit={handleCreateJobSeekerDocument}
+              className="space-y-4"
+            >
               {/* KATEGORI DOKUMEN */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Jenis / Jenis Dokumen *
                 </label>
                 <select
-                  value={uploadCategory}
-                  onChange={(e) => setUploadCategory(e.target.value)}
+                  name="category_id"
+                  value={createJobSeekerDocumentForm.category_id}
+                  onChange={handleChangeCreateJobSeekerDocumentForm}
                   className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white font-medium"
                 >
-                  <option value="cv">CV / Resume</option>
-                  <option value="akademik">Ijazah / Transkrip Nilai</option>
-                  <option value="portofolio">Portofolio</option>
-                  <option value="sertifikat">Sertifikat Kompetensi</option>
-                  <option value="pendukung">
-                    Surat Lamaran / Dokumen Lainnya
-                  </option>
+                  <option value="">Pilih jenis dokumen</option>
+                  {documentCategories.map(
+                    (dc: JobSeekerDocumentCategoryData) => (
+                      <option key={dc.id} value={dc.id}>
+                        {dc.name}
+                      </option>
+                    ),
+                  )}
                 </select>
               </div>
 
@@ -408,9 +248,13 @@ export default function DocumentManagementPage() {
                   <input
                     ref={fileInputRef}
                     type="file"
+                    name="file"
                     className="hidden"
                     accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={handleFileChange}
+                    onChange={(e) => {
+                      setSelectedFile(e.target.files?.[0] ?? null);
+                      handleChangeCreateJobSeekerDocumentForm(e);
+                    }}
                   />
                 </div>
               </div>
@@ -430,13 +274,20 @@ export default function DocumentManagementPage() {
                     setIsUploadModalOpen(false);
                     setUploadError(null);
                     setSelectedFile(null);
+                    resetCreateJobSeekerDocumentForm();
                   }}
                   className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
                 >
                   Batal
                 </button>
                 <button
-                  type="submit"
+                  onClick={() => {
+                    handleCreateJobSeekerDocument();
+                    resetCreateJobSeekerDocumentForm();
+                    setIsUploadModalOpen(false);
+                    setUploadError(null);
+                    setSelectedFile(null);
+                  }}
                   disabled={!selectedFile}
                   className={`px-5 py-2 text-white font-bold text-xs rounded-xl transition-colors ${
                     selectedFile
@@ -524,8 +375,8 @@ export default function DocumentManagementPage() {
 interface DocumentGroupProps {
   title: string;
   description: string;
-  items: DocumentItem[];
-  onPreview: (doc: DocumentItem) => void;
+  items: JobSeekerDocumentData[];
+  onPreview: (doc: JobSeekerDocumentData) => void;
   onDelete: (id: string) => void;
   onSetMain?: (id: string) => void;
   onReplace: () => void;
