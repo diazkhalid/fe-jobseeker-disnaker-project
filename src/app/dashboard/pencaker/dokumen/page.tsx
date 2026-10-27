@@ -482,16 +482,6 @@ function DocumentGroupSection({
                   <Download className="w-3.5 h-3.5" />
                 </a>
 
-                {/* GANTI FILE */}
-                {/* <button
-                  onClick={onReplace}
-                  className="p-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                  title="Ganti File"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </button> */}
-
-                {/* HAPUS */}
                 <button
                   onClick={() => onDelete(doc.id)}
                   className="p-2 bg-white border border-slate-200 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
