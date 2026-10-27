@@ -119,10 +119,7 @@ export function useJobSeekerDocument() {
             break;
           }
           if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-            addToast(
-              "Format file tidak valid. Gunakan PDF, DOC, atau DOCX.",
-              "warning",
-            );
+            addToast("Format file tidak valid. Gunakan PDF.", "warning");
             e.target.value = "";
             return;
           }
@@ -143,7 +140,6 @@ export function useJobSeekerDocument() {
 
   const handleCreateJobSeekerDocument = async () => {
     if (!token) return;
-    console.log(createJobSeekerDocumentForm);
 
     const result = await createJobSeekerDocument(
       token,
@@ -169,7 +165,7 @@ export function useJobSeekerDocument() {
       addToast("Gagal mengubah dokumen!", "warning");
       return;
     }
-    addToast("Berhasil mengubah dokumen!", "success");
+    // addToast("Berhasil mengubah dokumen!", "success");
     setTriggerUpdate(!triggerUpdate);
   };
 

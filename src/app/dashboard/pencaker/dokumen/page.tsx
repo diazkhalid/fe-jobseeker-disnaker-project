@@ -47,28 +47,10 @@ export default function DocumentManagementPage() {
   const [selectedDocForPreview, setSelectedDocForPreview] =
     useState<JobSeekerDocumentData | null>(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [uploadCategory, setUploadCategory] = useState<string>("cv");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Batas Maksimal Ukuran File (5 MB)
-
-  const getCategoryLabel = (cat: string) => {
-    switch (cat) {
-      case "cv":
-        return "CV / Resume";
-      case "akademik":
-        return "Ijazah / Transkrip";
-      case "sertifikat":
-        return "Sertifikat";
-      case "portofolio":
-        return "Portofolio";
-      default:
-        return "Dokumen Pendukung";
-    }
-  };
 
   return (
     <div className="space-y-8 mx-auto pb-12">
@@ -288,6 +270,7 @@ export default function DocumentManagementPage() {
                     setUploadError(null);
                     setSelectedFile(null);
                   }}
+                  type="button"
                   disabled={!selectedFile}
                   className={`px-5 py-2 text-white font-bold text-xs rounded-xl transition-colors ${
                     selectedFile
@@ -474,7 +457,13 @@ function DocumentGroupSection({
 
                 {/* PREVIEW */}
                 <button
-                  onClick={() => onPreview(doc)}
+                  onClick={() =>
+                    window.open(
+                      `${process.env.NEXT_PUBLIC_STORAGE_URL}${doc.fileUrl}`,
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }
                   className="p-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                   title="Lihat Preview"
                 >
@@ -482,22 +471,25 @@ function DocumentGroupSection({
                 </button>
 
                 {/* DOWNLOAD */}
-                <button
-                  onClick={() => alert(`Mengunduh ${doc.name}`)}
+                <a
+                  href={`${process.env.NEXT_PUBLIC_STORAGE_URL}${doc.fileUrl}`}
+                  download={doc.name}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                   title="Unduh File"
                 >
                   <Download className="w-3.5 h-3.5" />
-                </button>
+                </a>
 
                 {/* GANTI FILE */}
-                <button
+                {/* <button
                   onClick={onReplace}
                   className="p-2 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                   title="Ganti File"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                </button>
+                </button> */}
 
                 {/* HAPUS */}
                 <button
