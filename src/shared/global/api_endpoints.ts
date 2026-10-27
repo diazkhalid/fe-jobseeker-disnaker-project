@@ -36,6 +36,12 @@ const API_ENDPOINTS = {
       UPDATE: (id: string) => `${baseURL}/skills/${id}`,
       DELETE: (id: string) => `${baseURL}/skills/${id}`,
     },
+    CERTIFICATION: {
+      CREATE: `${baseURL}/certifications`,
+      FIND_BY_AUTH: `${baseURL}/certifications`,
+      UPDATE: (id: string) => `${baseURL}/certifications/${id}`,
+      DELETE: (id: string) => `${baseURL}/certifications/${id}`,
+    },
   },
 };
 
