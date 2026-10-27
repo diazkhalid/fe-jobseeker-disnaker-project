@@ -731,7 +731,8 @@ export default function CandidateEditProfilePage() {
                       </div>
 
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        {exp.start_date} - {exp.end_date}
+                        {exp.start_date} -{" "}
+                        {exp.is_current ? "Sekarang" : exp.end_date}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -1041,208 +1042,231 @@ export default function CandidateEditProfilePage() {
       </AnimatePresence>
 
       {/* MODAL TAMBAH PENGALAMAN */}
-      {isExperienceModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Tambah Pengalaman
-              </h3>
-              <button onClick={() => setIsExperienceModalOpen(false)}>
-                <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
-              </button>
-            </div>
-
-            {/* Bagian Form yang Scrollable */}
-            <div className="max-h-[70vh] overflow-y-auto space-y-3 text-xs pr-1">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Jenis Pengalaman
-                </label>
-                <select
-                  name="employment_type"
-                  value={createJobSeekerExperienceForm.employment_type}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
+      <AnimatePresence>
+        {isExperienceModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl"
+            >
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Tambah Pengalaman
+                </h3>
+                <button
+                  onClick={() => {
+                    resetCreateJobSeekerExperienceForm();
+                    setIsExperienceModalOpen(false);
+                  }}
                 >
-                  <option value="">Pilih Jenis Pengalaman</option>
-                  <option value="full_time">Penuh Waktu</option>
-                  <option value="part_time">Paruh Waktu</option>
-                  <option value="contract">Kontrak</option>
-                  <option value="internship">Magang (Internship)</option>
-                  <option value="freelance">Freelance</option>
-                  <option value="organization">Organisasi / Sukarelawan</option>
-                </select>
+                  <X className="w-4 h-4 text-slate-400 hover:text-slate-600" />
+                </button>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Nama Perusahaan / Organisasi
-                </label>
-                <input
-                  type="text"
-                  name="company_name"
-                  value={createJobSeekerExperienceForm.company_name}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: PT Teknologi Maju"
-                />
-              </div>
-
-              {/* Input Lokasi */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Lokasi
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  value={createJobSeekerExperienceForm.location}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: Sumbawa, Sumbawa Barat"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Jabatan / Posisi
-                </label>
-                <input
-                  type="text"
-                  name="job_title"
-                  value={createJobSeekerExperienceForm.job_title}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                  placeholder="Contoh: Frontend Developer"
-                />
-              </div>
-
-              <div className="space-y-3">
-                {/* Grid Tahun Masuk & Tahun Keluar */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block font-bold text-slate-700 mb-1">
-                      Tahun Masuk
-                    </label>
-                    <input
-                      type="text"
-                      name="start_date"
-                      value={createJobSeekerExperienceForm.start_date}
-                      onChange={handleChangeCreateJobSeekerExperienceForm}
-                      className="w-full p-2.5 rounded-xl border border-slate-200"
-                      placeholder="2018"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-bold text-slate-700 mb-1">
-                      Tahun Keluar
-                    </label>
-                    <input
-                      type="text"
-                      name="end_date"
-                      value={
-                        createJobSeekerExperienceForm.is_current
-                          ? ""
-                          : createJobSeekerExperienceForm.end_date
-                      }
-                      disabled={createJobSeekerExperienceForm.is_current}
-                      onChange={handleChangeCreateJobSeekerExperienceForm}
-                      className={`w-full p-2.5 rounded-xl border border-slate-200 ${
-                        createJobSeekerExperienceForm.is_current
-                          ? "bg-slate-100 text-slate-400 cursor-not-allowed"
-                          : ""
-                      }`}
-                      placeholder={
-                        createJobSeekerExperienceForm.is_current
-                          ? "Sekarang"
-                          : "2022"
-                      }
-                    />
-                  </div>
-                </div>
-
-                {/* Checkbox "Masih bekerja di sini" */}
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="checkbox"
-                    id="is_current"
-                    name="is_current"
-                    checked={createJobSeekerExperienceForm.is_current || false}
-                    onChange={handleChangeCreateJobSeekerExperienceForm}
-                    className="w-4 h-4 rounded border-slate-300 text-app-navy-600 focus:ring-app-navy-500"
-                  />
-                  <label
-                    htmlFor="is_current"
-                    className="text-xs font-semibold text-slate-700 cursor-pointer"
-                  >
-                    Saya masih bekerja di sini
+              {/* Bagian Form yang Scrollable */}
+              <div className="max-h-[70vh] overflow-y-auto space-y-3 text-xs pr-1">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Jenis Pengalaman
                   </label>
+                  <select
+                    name="employment_type"
+                    value={createJobSeekerExperienceForm.employment_type}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                  >
+                    <option value="">Pilih Jenis Pengalaman</option>
+                    <option value="full_time">Penuh Waktu</option>
+                    <option value="part_time">Paruh Waktu</option>
+                    <option value="contract">Kontrak</option>
+                    <option value="internship">Magang (Internship)</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="organization">
+                      Organisasi / Sukarelawan
+                    </option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Nama Perusahaan / Organisasi
+                  </label>
+                  <input
+                    type="text"
+                    name="company_name"
+                    value={createJobSeekerExperienceForm.company_name}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                    placeholder="Contoh: PT Teknologi Maju"
+                  />
+                </div>
+
+                {/* Input Lokasi */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Lokasi
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    value={createJobSeekerExperienceForm.location}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                    placeholder="Contoh: Sumbawa, Sumbawa Barat"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Jabatan / Posisi
+                  </label>
+                  <input
+                    type="text"
+                    name="job_title"
+                    value={createJobSeekerExperienceForm.job_title}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                    placeholder="Contoh: Frontend Developer"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  {/* Grid Tahun Masuk & Tahun Keluar */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Tahun Masuk
+                      </label>
+                      <input
+                        type="text"
+                        name="start_date"
+                        value={createJobSeekerExperienceForm.start_date}
+                        onChange={handleChangeCreateJobSeekerExperienceForm}
+                        className="w-full p-2.5 rounded-xl border border-slate-200"
+                        placeholder="2018"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-slate-700 mb-1">
+                        Tahun Keluar
+                      </label>
+                      <input
+                        type="text"
+                        name="end_date"
+                        value={
+                          createJobSeekerExperienceForm.is_current
+                            ? ""
+                            : createJobSeekerExperienceForm.end_date
+                        }
+                        disabled={createJobSeekerExperienceForm.is_current}
+                        onChange={handleChangeCreateJobSeekerExperienceForm}
+                        className={`w-full p-2.5 rounded-xl border border-slate-200 ${
+                          createJobSeekerExperienceForm.is_current
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            : ""
+                        }`}
+                        placeholder={
+                          createJobSeekerExperienceForm.is_current
+                            ? "Sekarang"
+                            : "2022"
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {/* Checkbox "Masih bekerja di sini" */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="checkbox"
+                      id="is_current"
+                      name="is_current"
+                      checked={
+                        createJobSeekerExperienceForm.is_current || false
+                      }
+                      onChange={handleChangeCreateJobSeekerExperienceForm}
+                      className="w-4 h-4 rounded border-slate-300 text-app-navy-600 focus:ring-app-navy-500"
+                    />
+                    <label
+                      htmlFor="is_current"
+                      className="text-xs font-semibold text-slate-700 cursor-pointer"
+                    >
+                      Saya masih bekerja di sini
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Deskripsi Pekerjaan
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="description"
+                    value={createJobSeekerExperienceForm.description}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Deskripsi Tanggung Jawab
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="responsibilities"
+                    value={createJobSeekerExperienceForm.responsibilities}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Pencapaian
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="achievements"
+                    value={createJobSeekerExperienceForm.achievements}
+                    onChange={handleChangeCreateJobSeekerExperienceForm}
+                    className="w-full p-2.5 rounded-xl border border-slate-200"
+                  />
                 </div>
               </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Deskripsi Pekerjaan
-                </label>
-                <textarea
-                  rows={3}
-                  name="description"
-                  value={createJobSeekerExperienceForm.description}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                />
+              <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                <button
+                  onClick={() => {
+                    resetCreateJobSeekerExperienceForm();
+                    setIsExperienceModalOpen(false);
+                  }}
+                  className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={() => {
+                    handleCreateJobSeekerExperience();
+                    resetCreateJobSeekerExperienceForm();
+                    setIsExperienceModalOpen(false);
+                  }}
+                  className="px-4 py-2 bg-app-navy-600 text-white rounded-xl text-xs font-bold"
+                >
+                  Simpan
+                </button>
               </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Deskripsi Tanggung Jawab
-                </label>
-                <textarea
-                  rows={3}
-                  name="responsibilities"
-                  value={createJobSeekerExperienceForm.responsibilities}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                />
-              </div>
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Pencapaian
-                </label>
-                <textarea
-                  rows={3}
-                  name="achievements"
-                  value={createJobSeekerExperienceForm.achievements}
-                  onChange={handleChangeCreateJobSeekerExperienceForm}
-                  className="w-full p-2.5 rounded-xl border border-slate-200"
-                />
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
-              <button
-                onClick={() => {
-                  resetCreateJobSeekerExperienceForm();
-                  setIsExperienceModalOpen(false);
-                }}
-                className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600"
-              >
-                Batal
-              </button>
-              <button
-                onClick={() => {
-                  handleCreateJobSeekerExperience();
-                  resetCreateJobSeekerExperienceForm();
-                  setIsExperienceModalOpen(false);
-                }}
-                className="px-4 py-2 bg-app-navy-600 text-white rounded-xl text-xs font-bold"
-              >
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* MODAL TAMBAH KEAHLIAN */}
       {isSkillModalOpen && (
