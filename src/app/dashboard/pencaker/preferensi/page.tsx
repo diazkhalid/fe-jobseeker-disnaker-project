@@ -52,8 +52,12 @@ export default function JobPreferencesPage() {
     setDistrictSearch,
     isDistrictOpen,
     setIsDistrictOpen,
+    // Return masing-masing ref agar dipasang di komponen UI
+    positionRef,
+    jobCategoryRef,
+    industryRef,
     districtRef,
-    dropdownRef,
+    optionsRef,
     filteredPositions,
     filteredJobCategories,
     filteredIndustries,
@@ -63,7 +67,6 @@ export default function JobPreferencesPage() {
     handleAddDistrict,
     handleRemoveDistrict,
     isSaved,
-    optionsRef,
     isOpen,
     setIsOpen,
     jobStatuses,
@@ -176,10 +179,7 @@ export default function JobPreferencesPage() {
       {/* FORM UTAMA PREFERENSI */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* SECTION 1: PERAN & SPESIALISASI */}
-        <div
-          ref={dropdownRef}
-          className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-sm"
-        >
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-sm">
           <div className="border-b border-slate-100 pb-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-app-navy-600" /> Minat & Posisi
@@ -188,8 +188,8 @@ export default function JobPreferencesPage() {
           </div>
 
           <div className="space-y-4">
-            {/* POSISI YANG DIINGINKAN (Searchable & Multi-Select) */}
-            <div className="relative">
+            {/* POSISI YANG DIINGINKAN (Pasang positionRef di sini) */}
+            <div ref={positionRef} className="relative">
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Posisi / Jabatan Pekerjaan yang Diinginkan
               </label>
@@ -258,8 +258,8 @@ export default function JobPreferencesPage() {
 
             {/* BIDANG & INDUSTRI */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              {/* BIDANG PEKERJAAN */}
-              <div className="relative">
+              {/* BIDANG PEKERJAAN (Pasang jobCategoryRef di sini) */}
+              <div ref={jobCategoryRef} className="relative">
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Bidang Pekerjaan
                 </label>
@@ -325,8 +325,8 @@ export default function JobPreferencesPage() {
                 )}
               </div>
 
-              {/* INDUSTRI PILIHAN */}
-              <div className="relative">
+              {/* INDUSTRI PILIHAN (Pasang industryRef di sini) */}
+              <div ref={industryRef} className="relative">
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Industri Pilihan
                 </label>

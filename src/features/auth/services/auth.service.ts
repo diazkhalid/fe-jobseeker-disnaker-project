@@ -6,6 +6,7 @@ import { LoginDto, RegisterDto } from "../types/authDto.type";
 export async function register(data: RegisterDto) {
   try {
     const formData = new FormData();
+    formData.append("nik", data.nik);
     formData.append("full_name", data.full_name);
     formData.append("email", data.email);
     formData.append("phone", data.phone);

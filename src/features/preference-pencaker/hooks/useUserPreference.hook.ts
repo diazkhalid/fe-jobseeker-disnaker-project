@@ -5,39 +5,13 @@ import {
   jobFieldsDummyData,
   preferredPositionsDummyData,
 } from "@/shared/data/JobReferenceData";
+import { getDistrictOptions } from "@/shared/services/options.service";
+import { Districts } from "@/shared/types/districtsList.type";
 
 export function useJobSeekerPreference() {
-  // Data District Berbasis Objek (Code & Name)
-  const districtDummyData = [
-    { code: "52.04.05", name: "Alas" },
-    { code: "52.04.17", name: "Alas Barat" },
-    { code: "52.04.07", name: "Batu Lanteh" },
-    { code: "52.04.20", name: "Buer" },
-    { code: "52.04.14", name: "Empang" },
-    { code: "52.04.19", name: "Labangka" },
-    { code: "52.04.18", name: "Labuhan Badas" },
-    { code: "52.04.29", name: "Lantung" },
-    { code: "52.04.12", name: "Lape" },
-    { code: "52.04.27", name: "Lenangguar" },
-    { code: "52.04.26", name: "Lopok" },
-    { code: "52.04.02", name: "Lunyuk" },
-    { code: "52.04.24", name: "Maronge" },
-    { code: "52.04.09", name: "Moyo Hilir" },
-    { code: "52.04.10", name: "Moyo Hulu" },
-    { code: "52.04.23", name: "Moyo Utara" },
-    { code: "52.04.28", name: "Orong Telu" },
-    { code: "52.04.13", name: "Plampang" },
-    { code: "52.04.21", name: "Rhee" },
-    { code: "52.04.11", name: "Ropang" },
-    { code: "52.04.08", name: "Sumbawa" },
-    { code: "52.04.25", name: "Tarano" },
-    { code: "52.04.22", name: "Unter Iwes" },
-    { code: "52.04.06", name: "Utan" },
-  ];
-
-  const [districtList] = useState(districtDummyData);
+  const [districtList, setDistrictList] = useState<Districts[] | []>([]);
   const [selectedDistrictsList, setSelectedDistrictsList] = useState<
-    { code: string; name: string }[]
+    Districts[] | []
   >([]);
 
   const [preferences, setPreferences] = useState<JobSeekerPreference>({
@@ -75,7 +49,23 @@ export function useJobSeekerPreference() {
   const [districtSearch, setDistrictSearch] = useState("");
   const [isDistrictOpen, setIsDistrictOpen] = useState(false);
 
+  // === REFS UNTUK MASING-MASING DROPDOWN ===
+  const positionRef = useRef<HTMLDivElement>(null);
+  const jobCategoryRef = useRef<HTMLDivElement>(null);
+  const industryRef = useRef<HTMLDivElement>(null);
   const districtRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const result = await getDistrictOptions();
+      if (result.status !== 200) {
+        return;
+      }
+      setDistrictList(result.data.data);
+    };
+    fetch();
+  }, []);
 
   const filteredPositions = preferPositionList.filter(
     (pos) =>
@@ -91,25 +81,28 @@ export function useJobSeekerPreference() {
     ind.toLowerCase().includes(industrySearch.toLowerCase()),
   );
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
+  // === GLOBAL CLICK OUTSIDE HANDLER UNTUK SEMUA DROPDOWN ===
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+
+      if (positionRef.current && !positionRef.current.contains(target)) {
         setIsPositionOpen(false);
+      }
+      if (jobCategoryRef.current && !jobCategoryRef.current.contains(target)) {
         setIsJobCategoryOpen(false);
+      }
+      if (industryRef.current && !industryRef.current.contains(target)) {
         setIsIndustryOpen(false);
       }
-      if (
-        districtRef.current &&
-        !districtRef.current.contains(event.target as Node)
-      ) {
+      if (districtRef.current && !districtRef.current.contains(target)) {
         setIsDistrictOpen(false);
       }
+      if (optionsRef.current && !optionsRef.current.contains(target)) {
+        setIsOpen(false);
+      }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -158,26 +151,7 @@ export function useJobSeekerPreference() {
 
   // Alert State
   const [isSaved, setIsSaved] = useState(false);
-
-  const optionsRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        optionsRef.current &&
-        !optionsRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   const jobStatuses = [
     {
@@ -223,7 +197,6 @@ export function useJobSeekerPreference() {
     }));
   };
 
-  // Helper mapping untuk mengubah teks UI ke format database / backend payload
   const mapJobTypeToPayload = (type: string) => {
     switch (type) {
       case "Penuh Waktu (Full-time)":
@@ -257,7 +230,6 @@ export function useJobSeekerPreference() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Membentuk payload akhir sesuai permintaan
     const currentSelectedStatusObj = jobStatuses.find(
       (s) => s.value === preferences.jobStatus,
     );
@@ -311,8 +283,12 @@ export function useJobSeekerPreference() {
     setDistrictSearch,
     isDistrictOpen,
     setIsDistrictOpen,
+    // Return masing-masing ref agar dipasang di komponen UI
+    positionRef,
+    jobCategoryRef,
+    industryRef,
     districtRef,
-    dropdownRef,
+    optionsRef,
     filteredPositions,
     filteredJobCategories,
     filteredIndustries,
@@ -322,7 +298,6 @@ export function useJobSeekerPreference() {
     handleAddDistrict,
     handleRemoveDistrict,
     isSaved,
-    optionsRef,
     isOpen,
     setIsOpen,
     jobStatuses,

@@ -1,6 +1,7 @@
 import { ACCOUNT_TYPE } from "@/shared/types/accountType.type";
 
 export interface RegisterDto {
+  nik: string;
   full_name: string;
   email: string;
   phone: string;

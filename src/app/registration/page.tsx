@@ -17,6 +17,8 @@ import {
   Briefcase,
   GraduationCap,
   CircleAlert,
+  PersonStanding,
+  CardSim,
 } from "lucide-react";
 import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -27,10 +29,12 @@ import { useRouter } from "next/navigation";
 import Modal from "@/shared/components/Modal";
 import TermsAndConditionsContent from "@/features/auth/components/TermsAndConditionsContents";
 import PrivacyPolicyContent from "@/features/auth/components/PrivacyPolicyContents";
+import { BsPassport } from "react-icons/bs";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [accountType, setAccountType] = useState<ACCOUNT_TYPE>("job_seeker");
+  const [nik, setNik] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -68,6 +72,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     const payload = {
+      nik,
       full_name: fullName,
       email,
       phone,
@@ -80,13 +85,14 @@ export default function RegisterPage() {
     const result = await register(payload);
 
     if (result?.status !== 201) {
-      if (result?.status === 409) {
+      if (result?.status === 409 || result?.status === 400) {
         if ("message" in result) {
           setErrorMsg(result.message);
           setIsLoading(false);
           return;
         }
       }
+
       setErrorMsg("Kesalahan pada server!");
       setIsLoading(false);
       return;
@@ -284,6 +290,30 @@ export default function RegisterPage() {
 
           {/* FORM UTAMA */}
           <form onSubmit={handleSubmit} className="space-y-3.5">
+            {accountType === "job_seeker" && (
+              <div className="space-y-1">
+                <label
+                  htmlFor="nik"
+                  className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider"
+                >
+                  NIK
+                </label>
+                <div className="relative rounded-xl shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <BsPassport className="h-4 w-4" />
+                  </div>
+                  <input
+                    id="nik"
+                    type="text"
+                    required
+                    value={nik}
+                    onChange={(e) => setNik(e.target.value)}
+                    placeholder="5204XXXXXXXXXXXX"
+                    className="block w-full pl-9 pr-3 py-2.5 text-xs bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-app-navy-600 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+            )}
             {/* INPUT NAMA LENGKAP / PERUSAHAAN */}
             <div className="space-y-1">
               <label
