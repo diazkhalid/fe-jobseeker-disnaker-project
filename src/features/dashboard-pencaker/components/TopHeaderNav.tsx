@@ -23,12 +23,15 @@ import {
 } from "../utils/navConfig.util";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
+import APP_CONFIG from "@/shared/global/app_config";
+import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
 
 export default function TopHeaderNav() {
   const pathname = usePathname() || "/dashboard";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const { jobSeekerProfile } = useJobSeekerProfile();
 
   const { user, isLoading } = useAuthUser();
 
@@ -152,8 +155,19 @@ export default function TopHeaderNav() {
                 }}
                 className="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-100 transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-app-navy-800 text-white flex items-center justify-center font-bold text-xs">
-                  FA
+                <div className="relative w-5 h-5 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
+                  {jobSeekerProfile?.profile_photo_url ? (
+                    <Image
+                      src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                      alt="Foto Profil"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                      {user?.full_name.charAt(0)}
+                    </span>
+                  )}
                 </div>
                 <div className="hidden sm:block text-left">
                   <p className="text-xs font-bold text-slate-800 leading-none">

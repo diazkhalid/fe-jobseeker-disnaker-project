@@ -27,6 +27,8 @@ import {
 import { useAuthUser } from "../contexts/SessionContext";
 import { accountTypeMap } from "../utils/userAccountTypeMap";
 import { userDashboardPath } from "../utils/userDashboardPath";
+import APP_CONFIG from "../global/app_config";
+import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
 
 // Tipe lowongan untuk Dropdown Lowongan Kerja
 const jobCategories = [
@@ -79,6 +81,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { jobSeekerProfile } = useJobSeekerProfile();
 
   // State Dropdown Lowongan (Desktop & Mobile)
   const [isJobsDropdownOpen, setIsJobsDropdownOpen] = useState(false);
@@ -334,8 +337,19 @@ export default function Navbar() {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all focus:outline-none"
                 >
-                  <div className="w-7 h-7 rounded-full bg-slate-900 text-app-navy-300 flex items-center justify-center text-xs font-bold ring-2 ring-app-navy-500/30">
-                    A
+                  <div className="relative w-5 h-5 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
+                    {jobSeekerProfile?.profile_photo_url ? (
+                      <Image
+                        src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                        alt="Foto Profil"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                        {user?.full_name.charAt(0)}
+                      </span>
+                    )}
                   </div>
                   <span className="text-xs font-semibold text-slate-800">
                     {user?.full_name}
@@ -574,8 +588,19 @@ export default function Navbar() {
                 {isLoggedIn ? (
                   <div className="pt-2 border-t border-slate-100">
                     <div className="flex items-center gap-3 px-4 py-2">
-                      <div className="w-8 h-8 rounded-full bg-slate-900 text-app-navy-300 flex items-center justify-center font-bold text-xs">
-                        A
+                      <div className="relative w-5 h-5 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
+                        {jobSeekerProfile?.profile_photo_url ? (
+                          <Image
+                            src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                            alt="Foto Profil"
+                            fill
+                            className="object-cover"
+                          />
+                        ) : (
+                          <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                            {user?.full_name.charAt(0)}
+                          </span>
+                        )}
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-slate-900">
