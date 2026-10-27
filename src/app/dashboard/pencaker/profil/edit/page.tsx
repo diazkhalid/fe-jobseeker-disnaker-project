@@ -29,6 +29,7 @@ import { useJobSeekerEducation } from "@/features/profil-pencaker/hooks/useUserE
 import { motion, AnimatePresence } from "framer-motion";
 import { useJobSeekerExperience } from "@/features/profil-pencaker/hooks/useUserExperience.hook";
 import { employmentTypeMap } from "@/shared/utils/emplymentTypeMap";
+import { useJobSeekerSkill } from "@/features/profil-pencaker/hooks/useUserSkill.hook";
 
 export default function CandidateEditProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -69,19 +70,18 @@ export default function CandidateEditProfilePage() {
     resetCreateJobSeekerExperienceForm,
   } = useJobSeekerExperience();
 
-  const [hasNoExperience, setHasNoExperience] = useState(false);
+  const {
+    jobSeekerSkill,
+    setJobSeekerSkill,
+    createJobSeekerSkillForm,
+    setCreateJobSeekerSkillForm,
+    handleChangeCreateJobSeekerSkillForm,
+    handleCreateJobSeekerSkill,
+    handleDeleteJobSeekerSkill,
+    resetCreateJobSeekerSkillForm,
+  } = useJobSeekerSkill();
 
-  // --- STATE KEAHLIAN & SERTIFIKASI ---
-  const [skills, setSkills] = useState([
-    {
-      id: 1,
-      name: "Geological Mapping",
-      category: "Teknis",
-      level: "Lanjutan",
-    },
-    { id: 2, name: "ArcGIS / QGIS", category: "Software", level: "Lanjutan" },
-    { id: 3, name: "Bahasa Inggris", category: "Bahasa", level: "Menengah" },
-  ]);
+  const [hasNoExperience, setHasNoExperience] = useState(false);
 
   const [certifications, setCertifications] = useState([
     {
@@ -98,16 +98,6 @@ export default function CandidateEditProfilePage() {
   const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
   const [isSkillModalOpen, setIsSkillModalOpen] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
-
-  // Form Handlers
-  const handleSavePersonalData = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Data Pribadi berhasil diperbarui!");
-  };
-
-  const handleDeleteSkill = (id: number) => {
-    setSkills(skills.filter((item) => item.id !== id));
-  };
 
   const handleDeleteCert = (id: number) => {
     setCertifications(certifications.filter((item) => item.id !== id));
@@ -191,10 +181,7 @@ export default function CandidateEditProfilePage() {
       {/* 4. TAB 1: EDIT DATA PRIBADI */}
       {/* ========================================================================= */}
       {activeTab === "pribadi" && (
-        <form
-          onSubmit={handleSavePersonalData}
-          className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-8 shadow-sm"
-        >
+        <form className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-8 shadow-sm">
           {/* UPLOAD FOTO PROFIL */}
           <div className="space-y-4 border-b border-slate-100 pb-6">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
@@ -819,24 +806,26 @@ export default function CandidateEditProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {skills.map((skill) => (
+              {jobSeekerSkill.map((skill) => (
                 <div
                   key={skill.id}
                   className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between"
                 >
                   <div>
                     <span className="text-[9px] font-bold uppercase text-app-navy-700 block">
-                      {skill.category}
+                      {skill.skill_category}
                     </span>
                     <p className="text-xs font-bold text-slate-800">
-                      {skill.name}
+                      {skill.skill_name}
                     </p>
                     <span className="text-[10px] text-slate-500">
-                      Tingkat: {skill.level}
+                      Tingkat: {skill.proficiency_level}
                     </span>
                   </div>
                   <button
-                    onClick={() => handleDeleteSkill(skill.id)}
+                    onClick={() =>
+                      handleDeleteJobSeekerSkill(skill.id.toString())
+                    }
                     className="p-1.5 hover:bg-rose-50 text-rose-600 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -1282,14 +1271,25 @@ export default function CandidateEditProfilePage() {
             </div>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label
+                  htmlFor="skill_category"
+                  className="block font-bold text-slate-700 mb-1"
+                >
                   Kategori Skill
                 </label>
-                <select className="w-full p-2.5 rounded-xl border border-slate-200">
-                  <option>Keahlian Teknis</option>
-                  <option>Keahlian Nonteknis</option>
-                  <option>Software & Tools</option>
-                  <option>Kemampuan Bahasa</option>
+
+                <select
+                  id="skill_category"
+                  name="skill_category"
+                  value={createJobSeekerSkillForm.skill_category}
+                  onChange={handleChangeCreateJobSeekerSkillForm}
+                  className="w-full p-2.5 rounded-xl border border-slate-200"
+                >
+                  <option value="">Pilih Kategori Skill</option>
+                  <option value="technical">Keahlian Teknis</option>
+                  <option value="soft_skill">Keahlian Nonteknis</option>
+                  <option value="software_tools">Software & Tools</option>
+                  <option value="language">Kemampuan Bahasa</option>
                 </select>
               </div>
               <div>
@@ -1298,31 +1298,50 @@ export default function CandidateEditProfilePage() {
                 </label>
                 <input
                   type="text"
+                  name="skill_name"
+                  value={createJobSeekerSkillForm.skill_name}
+                  onChange={handleChangeCreateJobSeekerSkillForm}
                   className="w-full p-2.5 rounded-xl border border-slate-200"
                   placeholder="Contoh: ArcGIS, Public Speaking"
                 />
               </div>
+
               <div>
-                <label className="block font-bold text-slate-700 mb-1">
+                <label
+                  htmlFor="proficiency_level"
+                  className="block font-bold text-slate-700 mb-1"
+                >
                   Tingkat Kemampuan
                 </label>
-                <select className="w-full p-2.5 rounded-xl border border-slate-200">
-                  <option>Pemula (Basic)</option>
-                  <option>Menengah (Intermediate)</option>
-                  <option>Lanjutan (Advanced)</option>
+
+                <select
+                  id="proficiency_level"
+                  name="proficiency_level"
+                  value={createJobSeekerSkillForm.proficiency_level}
+                  onChange={handleChangeCreateJobSeekerSkillForm}
+                  className="w-full p-2.5 rounded-xl border border-slate-200"
+                >
+                  <option value="">Pilih Tingkat Kemampuan</option>
+                  <option value="Beginner">Pemula (Basic)</option>
+                  <option value="Intermediate">Menengah (Intermediate)</option>
+                  <option value="Advanced">Lanjutan (Advanced)</option>
                 </select>
               </div>
             </div>
             <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
               <button
-                onClick={() => setIsSkillModalOpen(false)}
+                onClick={() => {
+                  resetCreateJobSeekerSkillForm();
+                  setIsSkillModalOpen(false);
+                }}
                 className="px-4 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-600"
               >
                 Batal
               </button>
               <button
                 onClick={() => {
-                  alert("Keahlian disimpan");
+                  handleCreateJobSeekerSkill();
+                  resetCreateJobSeekerSkillForm();
                   setIsSkillModalOpen(false);
                 }}
                 className="px-4 py-2 bg-app-navy-600 text-white rounded-xl text-xs font-bold"
