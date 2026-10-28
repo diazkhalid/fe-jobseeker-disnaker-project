@@ -161,17 +161,13 @@ export function useJobSeekerPreference() {
       const result = await getJobSeekerPreference(token);
       if (result.status !== 200) return;
       const data = result.data.data;
-      if (data.preferred_districts) {
+      if (data?.preferred_districts) {
         setSelectedDistrictsList(data.preferred_districts);
       }
 
       // Set preferences dengan mencocokkan data dari API
       setPreferences({
-        desiredPositions: preferPositionList.filter(
-          (pos) =>
-            data.preferred_positions?.includes(pos.id) ||
-            data.preferred_positions?.includes(pos.name),
-        ),
+        desiredPositions: data.preferred_positions,
         jobCategory:
           jobCategoriesList.find((cat) => cat.id === data.job_field_id) || null,
         industry:
@@ -194,6 +190,10 @@ export function useJobSeekerPreference() {
       fetch5();
     }
   }, [token, triggerUpdate]);
+
+  useEffect(() => {
+    console.log(preferences);
+  }, [preferences]);
 
   // Filter berdasarkan .name karena berupa objek
   const filteredPositions = preferPositionList.filter(
@@ -364,11 +364,13 @@ export function useJobSeekerPreference() {
     );
 
     const payload = {
-      job_field: preferences.jobCategory
+      job_field_id: preferences.jobCategory
         ? Number(preferences.jobCategory.id)
         : null, // Mengirimkan ID bidang pekerjaan
-      industry: preferences.industry ? Number(preferences.industry.id) : null, // Mengirimkan ID industri
-      preferred_positions: preferences.desiredPositions.map((pos) => pos.id), // Mengirimkan array ID posisi
+      industry_id: preferences.industry
+        ? Number(preferences.industry.id)
+        : null, // Mengirimkan ID industri
+      preferred_position_id: preferences.desiredPositions.map((pos) => pos.id), // Mengirimkan array ID posisi
       preferred_district_codes: selectedDistrictsList.map((item) => item.code),
       job_types: preferences.jobTypes.map(mapJobTypeToPayload),
       work_arrangements: preferences.workSystems.map(mapWorkSystemToPayload),

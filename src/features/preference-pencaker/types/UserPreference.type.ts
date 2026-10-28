@@ -16,9 +16,9 @@ export interface JobSeekerPreference {
 }
 
 export interface JobSeekerPreferenceDto {
-  job_field: number | null; // Atau number jika backend meminta ID
-  industry: number | null; // Atau number jika backend meminta ID
-  preferred_positions: number[]; // Bisa string[] atau number[] (ID) tergantung backend
+  job_field_id: number | null; // Atau number jika backend meminta ID
+  industry_id: number | null; // Atau number jika backend meminta ID
+  preferred_position_id: number[]; // Bisa string[] atau number[] (ID) tergantung backend
   preferred_district_codes: string[];
   job_types: string[];
   work_arrangements: string[];
