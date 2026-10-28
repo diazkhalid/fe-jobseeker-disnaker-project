@@ -21,10 +21,40 @@ import {
   ChevronDown,
   Check,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
 
-// Tipe Data Pelamar Lengkap dengan Preferensinya
+// Interface Referensi Sesuai Struktur Preferensi Pekerjaan
+interface PreferredPosition {
+  id: number;
+  name: string;
+  display_order: number;
+}
+
+interface PreferredDistrict {
+  code: string;
+  name: string;
+  display_order: number;
+}
+
+interface JobSeekerPreferenceData {
+  user_id: number;
+  job_field_id: number;
+  job_field: string;
+  industry_id: number;
+  industry: string;
+  preferred_positions: PreferredPosition[];
+  preferred_districts: PreferredDistrict[];
+  job_types: string[];
+  work_arrangements: string[];
+  willing_to_relocate: boolean;
+  min_salary: number;
+  max_salary: number;
+  job_search_status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Tipe Data Pelamar Lengkap dengan Properti Demografi & Preferensi
 interface ExportApplicant {
   id: string;
   nik: string;
@@ -33,12 +63,21 @@ interface ExportApplicant {
   phone: string;
   avatar: string;
   education: string;
-  experience: string;
-  location: string;
+  educationLevel: string;
+  gender: string;
+  age: number;
+  residenceDistrict: string; // Tempat tinggal / domisili (Select option)
+  preferredDistricts: string[]; // Preferensi tempat kerja (Multi-select)
+  jobField: string;
+  industry: string;
   desiredPositions: string[];
   skills: string[];
+  jobTypes: string[];
+  workArrangements: string[];
+  willingToRelocate: boolean;
+  minSalary: number;
+  maxSalary: number;
   jobStatus: string;
-  expectedSalary: string;
   registeredDate: string;
 }
 
@@ -51,12 +90,21 @@ const DUMMY_EXPORT_APPLICANTS: ExportApplicant[] = [
     phone: "+62 812-3456-7890",
     avatar: "AR",
     education: "S1 Teknik Informatika",
-    experience: "4 Tahun",
-    location: "Sumbawa, NTB",
-    desiredPositions: ["Frontend Developer", "Full Stack Engineer"],
+    educationLevel: "S1",
+    gender: "Laki-laki",
+    age: 26,
+    residenceDistrict: "Alas",
+    preferredDistricts: ["Alas", "Labuhan Badas"],
+    jobField: "Teknologi Informasi & Perangkat Lunak",
+    industry: "Teknologi / Perangkat Lunak",
+    desiredPositions: ["Frontend Developer", "Full Stack Developer"],
     skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS"],
-    jobStatus: "Aktif mencari pekerjaan (Open to Work)",
-    expectedSalary: "Rp 8.000.000 - 12.000.000",
+    jobTypes: ["full_time", "contract_project"],
+    workArrangements: ["hybrid", "onsite"],
+    willingToRelocate: true,
+    minSalary: 3000000,
+    maxSalary: 8000000,
+    jobStatus: "actively_looking",
     registeredDate: "10 Jan 2026",
   },
   {
@@ -66,13 +114,22 @@ const DUMMY_EXPORT_APPLICANTS: ExportApplicant[] = [
     email: "siti.nurhaliza@example.com",
     phone: "+62 823-4567-8901",
     avatar: "SN",
-    education: "S1 Desain Komunikasi Visual",
-    experience: "3 Tahun",
-    location: "Mataram, NTB",
-    desiredPositions: ["UI/UX Designer", "Graphic Designer"],
-    skills: ["Figma", "Adobe XD", "UI/UX Research"],
-    jobStatus: "Terbuka untuk penawaran (Passive Candidate)",
-    expectedSalary: "Rp 7.000.000 - 10.000.000",
+    education: "S1 Sistem Informasi",
+    educationLevel: "S1",
+    gender: "Perempuan",
+    age: 24,
+    residenceDistrict: "Mataram",
+    preferredDistricts: ["Mataram"],
+    jobField: "Teknologi Informasi & Perangkat Lunak",
+    industry: "Teknologi / Perangkat Lunak",
+    desiredPositions: ["UI/UX Designer", "Backend Developer"],
+    skills: ["Figma", "Node.js", "PHP", "MySQL"],
+    jobTypes: ["full_time", "freelance"],
+    workArrangements: ["remote"],
+    willingToRelocate: false,
+    minSalary: 5000000,
+    maxSalary: 10000000,
+    jobStatus: "open_to_offers",
     registeredDate: "15 Feb 2026",
   },
   {
@@ -83,74 +140,125 @@ const DUMMY_EXPORT_APPLICANTS: ExportApplicant[] = [
     phone: "+62 834-5678-9012",
     avatar: "BP",
     education: "D3 Manajemen Informatika",
-    experience: "2 Tahun",
-    location: "Sumbawa Barat, NTB",
-    desiredPositions: ["Backend Developer", "Admin IT"],
+    educationLevel: "D3",
+    gender: "Laki-laki",
+    age: 28,
+    residenceDistrict: "Labuhan Badas",
+    preferredDistricts: ["Alas", "Labuhan Badas", "Moyo Hulu"],
+    jobField: "Teknologi Informasi & Perangkat Lunak",
+    industry: "Teknologi / Perangkat Lunak",
+    desiredPositions: ["Backend Developer", "Full Stack Developer"],
     skills: ["Node.js", "MySQL", "PHP", "Laravel"],
-    jobStatus: "Aktif mencari pekerjaan (Open to Work)",
-    expectedSalary: "Rp 5.000.000 - 8.000.000",
+    jobTypes: ["contract_project", "internship"],
+    workArrangements: ["hybrid"],
+    willingToRelocate: true,
+    minSalary: 2000000,
+    maxSalary: 5000000,
+    jobStatus: "actively_looking",
     registeredDate: "01 Mar 2026",
   },
-  {
-    id: "PLM-004",
-    nik: "5204036005970004",
-    name: "Dina Mariana",
-    email: "dina.m@example.com",
-    phone: "+62 845-6789-0123",
-    avatar: "DM",
-    education: "S1 Sistem Informasi",
-    experience: "5 Tahun",
-    location: "DKI Jakarta",
-    desiredPositions: ["Senior Frontend Developer", "UI/UX Lead"],
-    skills: ["React.js", "TypeScript", "Next.js", "GraphQL"],
-    jobStatus: "Aktif mencari pekerjaan (Open to Work)",
-    expectedSalary: "Rp 12.000.000 - 18.000.000",
-    registeredDate: "20 Mar 2026",
-  },
 ];
 
+// Master Options untuk Filter
 const POSITION_OPTIONS = [
   "Frontend Developer",
-  "Full Stack Engineer",
-  "UI/UX Designer",
+  "Full Stack Developer",
   "Backend Developer",
-  "Senior Frontend Developer",
-  "Graphic Designer",
+  "UI/UX Designer",
   "Admin IT",
-  "UI/UX Lead",
 ];
 
-const SKILL_OPTIONS = [
-  "React.js",
-  "Next.js",
-  "TypeScript",
-  "Tailwind CSS",
-  "Figma",
-  "Adobe XD",
-  "Node.js",
-  "PHP",
-  "Laravel",
-  "MySQL",
-  "GraphQL",
-  "UI/UX Research",
+const DISTRICT_OPTIONS = [
+  { code: "52.04.05", name: "Alas" },
+  { code: "52.04.18", name: "Labuhan Badas" },
+  { code: "52.04.10", name: "Moyo Hulu" },
+  { code: "Mataram", name: "Mataram" },
+];
+
+const EDUCATION_LEVEL_OPTIONS = [
+  "Semua Pendidikan",
+  "SMA/SMK",
+  "D3",
+  "S1",
+  "S2",
+];
+const GENDER_OPTIONS = ["Semua Gender", "Laki-laki", "Perempuan"];
+
+const JOB_TYPE_OPTIONS = [
+  { value: "full_time", label: "Penuh Waktu (Full-time)" },
+  { value: "part_time", label: "Paruh Waktu (Part-time)" },
+  { value: "contract_project", label: "Kontrak / Proyek" },
+  { value: "internship", label: "Magang (Internship)" },
+  { value: "freelance", label: "Lepas / Freelance" },
+];
+
+const WORK_ARRANGEMENT_OPTIONS = [
+  { value: "onsite", label: "Kantor (On-site)" },
+  { value: "hybrid", label: "Hibrida (Hybrid)" },
+  { value: "remote", label: "Dari Rumah (Remote)" },
+];
+
+const JOB_FIELD_OPTIONS = [
+  "Teknologi Informasi & Perangkat Lunak",
+  "Keuangan & Perbankan",
+  "Pemasaran & Digital Marketing",
+  "Sumber Daya Manusia (HR)",
+  "Logistik & Rantai Pasok",
+  "Administrasi & Kesekretariatan",
+];
+
+const INDUSTRY_OPTIONS = [
+  "Teknologi / Perangkat Lunak",
+  "Konstruksi & Pertambangan",
+  "Manufaktur & Pabrik",
+  "Jasa Keuangan & Fintech",
+  "Kesehatan & Farmasi",
+  "Pendidikan & Pelatihan",
 ];
 
 export default function ExportPelamarPage() {
-  // State Filter Form
-  const [selectedExperience, setSelectedExperience] =
-    useState("Semua Pengalaman");
-  const [selectedLocation, setSelectedLocation] = useState("Semua Lokasi");
+  // State Filter Demografi, Tempat Tinggal & Gaji
+  const [selectedEducationLevel, setSelectedEducationLevel] =
+    useState("Semua Pendidikan");
+  const [selectedResidence, setSelectedResidence] = useState("Semua Domisili");
+  const [selectedGender, setSelectedGender] = useState("Semua Gender");
+  const [minAge, setMinAge] = useState("");
+  const [maxAge, setMaxAge] = useState("");
+  const [filterMinSalary, setFilterMinSalary] = useState("");
+  const [filterMaxSalary, setFilterMaxSalary] = useState("");
+
+  // State Filter Single Select Searchable (Job Field & Industry)
+  const [jobFieldQuery, setJobFieldQuery] = useState("");
+  const [selectedJobField, setSelectedJobField] = useState("");
+  const [isJobFieldOpen, setIsJobFieldOpen] = useState(false);
+
+  const [industryQuery, setIndustryQuery] = useState("");
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [isIndustryOpen, setIsIndustryOpen] = useState(false);
+
+  const [selectedRelocate, setSelectedRelocate] = useState("all");
   const [selectedJobStatus, setSelectedJobStatus] = useState("Semua Status");
 
-  // State Multi-Select Searchable untuk Posisi
+  // State Filter Multi-Select Searchable
   const [positionQuery, setPositionQuery] = useState("");
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [isPositionOpen, setIsPositionOpen] = useState(false);
 
-  // State Multi-Select Searchable untuk Keahlian
-  const [skillQuery, setSkillQuery] = useState("");
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [isSkillOpen, setIsSkillOpen] = useState(false);
+  const [workPlaceQuery, setWorkPlaceQuery] = useState("");
+  const [selectedPreferredDistricts, setSelectedPreferredDistricts] = useState<
+    string[]
+  >([]);
+  const [isWorkPlaceOpen, setIsWorkPlaceOpen] = useState(false);
+
+  const [jobTypeQuery, setJobTypeQuery] = useState("");
+  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([]);
+  const [isJobTypeOpen, setIsJobTypeOpen] = useState(false);
+
+  const [workArrQuery, setWorkArrQuery] = useState("");
+  const [selectedWorkArrangements, setSelectedWorkArrangements] = useState<
+    string[]
+  >([]);
+  const [isWorkArrOpen, setIsWorkArrOpen] = useState(false);
 
   // State Hasil Data & Notifikasi
   const [filteredResults, setFilteredResults] = useState<ExportApplicant[]>(
@@ -158,75 +266,157 @@ export default function ExportPelamarPage() {
   );
   const [exportMessage, setExportMessage] = useState<string | null>(null);
 
-  const preferencesListRef = useRef<HTMLDivElement>(null);
-  const skillsListRef = useRef<HTMLDivElement>(null);
+  // Refs untuk Click Outside Dropdown
+  const posRef = useRef<HTMLDivElement>(null);
+  const workPlaceRef = useRef<HTMLDivElement>(null);
+  const jobTypeRef = useRef<HTMLDivElement>(null);
+  const workArrRef = useRef<HTMLDivElement>(null);
+  const jobFieldRef = useRef<HTMLDivElement>(null);
+  const industryRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        preferencesListRef.current &&
-        !preferencesListRef.current.contains(event.target as Node)
-      ) {
+      if (posRef.current && !posRef.current.contains(event.target as Node)) {
         setIsPositionOpen(false);
       }
       if (
-        skillsListRef.current &&
-        !skillsListRef.current.contains(event.target as Node)
+        workPlaceRef.current &&
+        !workPlaceRef.current.contains(event.target as Node)
       ) {
-        setIsSkillOpen(false);
+        setIsWorkPlaceOpen(false);
+      }
+      if (
+        jobTypeRef.current &&
+        !jobTypeRef.current.contains(event.target as Node)
+      ) {
+        setIsJobTypeOpen(false);
+      }
+      if (
+        workArrRef.current &&
+        !workArrRef.current.contains(event.target as Node)
+      ) {
+        setIsWorkArrOpen(false);
+      }
+      if (
+        jobFieldRef.current &&
+        !jobFieldRef.current.contains(event.target as Node)
+      ) {
+        setIsJobFieldOpen(false);
+      }
+      if (
+        industryRef.current &&
+        !industryRef.current.contains(event.target as Node)
+      ) {
+        setIsIndustryOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter list option berdasarkan pencarian
-  const filteredPositions = POSITION_OPTIONS.filter((pos) =>
-    pos.toLowerCase().includes(positionQuery.toLowerCase()),
+  // Filter Search Lists
+  const filteredPositions = POSITION_OPTIONS.filter((p) =>
+    p.toLowerCase().includes(positionQuery.toLowerCase()),
+  );
+  const filteredWorkPlaces = DISTRICT_OPTIONS.filter((d) =>
+    d.name.toLowerCase().includes(workPlaceQuery.toLowerCase()),
+  );
+  const filteredJobFields = JOB_FIELD_OPTIONS.filter((f) =>
+    f.toLowerCase().includes(jobFieldQuery.toLowerCase()),
+  );
+  const filteredIndustries = INDUSTRY_OPTIONS.filter((i) =>
+    i.toLowerCase().includes(industryQuery.toLowerCase()),
   );
 
-  const filteredSkills = SKILL_OPTIONS.filter((skill) =>
-    skill.toLowerCase().includes(skillQuery.toLowerCase()),
-  );
-
-  // Toggle pilihan posisi
+  // Toggle Handlers untuk Multi-Select
   const togglePosition = (pos: string) => {
     setSelectedPositions((prev) =>
       prev.includes(pos) ? prev.filter((p) => p !== pos) : [...prev, pos],
     );
   };
 
-  // Toggle pilihan keahlian
-  const toggleSkill = (skill: string) => {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill],
+  const togglePreferredDistrict = (distName: string) => {
+    setSelectedPreferredDistricts((prev) =>
+      prev.includes(distName)
+        ? prev.filter((d) => d !== distName)
+        : [...prev, distName],
     );
   };
 
-  // Handle Submit Filter
+  const toggleJobType = (jtValue: string) => {
+    setSelectedJobTypes((prev) =>
+      prev.includes(jtValue)
+        ? prev.filter((t) => t !== jtValue)
+        : [...prev, jtValue],
+    );
+  };
+
+  const toggleWorkArr = (waValue: string) => {
+    setSelectedWorkArrangements((prev) =>
+      prev.includes(waValue)
+        ? prev.filter((w) => w !== waValue)
+        : [...prev, waValue],
+    );
+  };
+
+  // Handle Submit Filter Lengkap
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const results = DUMMY_EXPORT_APPLICANTS.filter((item) => {
-      const matchExp =
-        selectedExperience === "Semua Pengalaman" ||
-        item.experience.includes(selectedExperience);
-      const matchLoc =
-        selectedLocation === "Semua Lokasi" ||
-        item.location.toLowerCase().includes(selectedLocation.toLowerCase());
-      const matchStatus =
-        selectedJobStatus === "Semua Status" ||
-        item.jobStatus.includes(selectedJobStatus);
+      // 1. Pendidikan Terakhir
+      const matchEdu =
+        selectedEducationLevel === "Semua Pendidikan" ||
+        item.educationLevel.toLowerCase() ===
+          selectedEducationLevel.toLowerCase();
 
-      const matchSkill =
-        selectedSkills.length === 0 ||
-        selectedSkills.some((selSkill) =>
-          item.skills.some((s) => s.toLowerCase() === selSkill.toLowerCase()),
+      // 2. Tempat Tinggal (Domisili / Kecamatan Select Option)
+      const matchResidence =
+        selectedResidence === "Semua Domisili" ||
+        item.residenceDistrict.toLowerCase() ===
+          selectedResidence.toLowerCase();
+
+      // 3. Preferensi Tempat Kerja (Multi-Select)
+      const matchPreferredDistricts =
+        selectedPreferredDistricts.length === 0 ||
+        selectedPreferredDistricts.some((selDist) =>
+          item.preferredDistricts.some(
+            (d) => d.toLowerCase() === selDist.toLowerCase(),
+          ),
         );
 
-      const matchPref =
+      // 4. Gender
+      const matchGender =
+        selectedGender === "Semua Gender" ||
+        item.gender.toLowerCase() === selectedGender.toLowerCase();
+
+      // 5. Umur (Range Min - Max)
+      const matchMinAge = minAge === "" || item.age >= Number(minAge);
+      const matchMaxAge = maxAge === "" || item.age <= Number(maxAge);
+
+      // 6. Rentang Ekspektasi Gaji
+      const reqMinSalary =
+        filterMinSalary !== "" ? Number(filterMinSalary.replace(/\D/g, "")) : 0;
+      const reqMaxSalary =
+        filterMaxSalary !== ""
+          ? Number(filterMaxSalary.replace(/\D/g, ""))
+          : Infinity;
+      const matchSalary =
+        (filterMinSalary === "" && filterMaxSalary === "") ||
+        (item.minSalary <= reqMaxSalary && item.maxSalary >= reqMinSalary);
+
+      // 7. Job Field (Searchable Select)
+      const matchField =
+        !selectedJobField ||
+        item.jobField.toLowerCase() === selectedJobField.toLowerCase();
+
+      // 8. Industry (Searchable Select)
+      const matchIndustry =
+        !selectedIndustry ||
+        item.industry.toLowerCase() === selectedIndustry.toLowerCase();
+
+      // 9. Preferred Positions (Multi-select)
+      const matchPositions =
         selectedPositions.length === 0 ||
         selectedPositions.some((selPos) =>
           item.desiredPositions.some(
@@ -234,7 +424,45 @@ export default function ExportPelamarPage() {
           ),
         );
 
-      return matchExp && matchLoc && matchStatus && matchSkill && matchPref;
+      // 10. Job Types (Multi-select)
+      const matchJobTypes =
+        selectedJobTypes.length === 0 ||
+        selectedJobTypes.some((selJt) => item.jobTypes.includes(selJt));
+
+      // 11. Work Arrangements (Multi-select)
+      const matchWorkArr =
+        selectedWorkArrangements.length === 0 ||
+        selectedWorkArrangements.some((selWa) =>
+          item.workArrangements.includes(selWa),
+        );
+
+      // 12. Willing to Relocate
+      const matchRelocate =
+        selectedRelocate === "all" ||
+        (selectedRelocate === "true" && item.willingToRelocate) ||
+        (selectedRelocate === "false" && !item.willingToRelocate);
+
+      // 13. Job Search Status
+      const matchStatus =
+        selectedJobStatus === "Semua Status" ||
+        item.jobStatus.includes(selectedJobStatus);
+
+      return (
+        matchEdu &&
+        matchResidence &&
+        matchPreferredDistricts &&
+        matchGender &&
+        matchMinAge &&
+        matchMaxAge &&
+        matchSalary &&
+        matchField &&
+        matchIndustry &&
+        matchPositions &&
+        matchJobTypes &&
+        matchWorkArr &&
+        matchRelocate &&
+        matchStatus
+      );
     });
 
     setFilteredResults(results);
@@ -258,17 +486,18 @@ export default function ExportPelamarPage() {
     <div className="space-y-6 mx-auto pb-12 text-xs">
       {/* BREADCRUMB & HEADER */}
       <div className="space-y-2">
-        <Breadcrumbs></Breadcrumbs>
+        <Breadcrumbs />
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
               <Download className="w-7 h-7 text-teal-600" />
-              <span>Export Laporan & Data Pelamar</span>
+              <span>Export Laporan Berdasarkan Preferensi Pelamar</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
-              Saring database dengan memilih banyak posisi dan keahlian
-              sekaligus (*multi-select*), lalu unduh laporan.
+              Saring database pelamar menggunakan parameter preferensi,
+              demografi, tempat tinggal (domisili), serta preferensi tempat
+              kerja.
             </p>
           </div>
         </div>
@@ -286,40 +515,363 @@ export default function ExportPelamarPage() {
       <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
         <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
           <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
-            <Filter className="w-4 h-4 text-teal-600" /> Kriteria Filter Export
-            Data (Multi-Select)
+            <Filter className="w-4 h-4 text-teal-600" /> Parameter Filter Data
+            Pelamar
           </h2>
           <span className="text-[11px] text-slate-400">
-            Pilih satu atau lebih kriteria
+            Searchable select & demografi lengkap
           </span>
         </div>
 
         <form onSubmit={handleFilterSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Filter Pengalaman Kerja */}
+            {/* 1. Pendidikan Terakhir */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Pengalaman Kerja
+                Pendidikan Terakhir
               </label>
               <select
-                value={selectedExperience}
-                onChange={(e) => setSelectedExperience(e.target.value)}
+                value={selectedEducationLevel}
+                onChange={(e) => setSelectedEducationLevel(e.target.value)}
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                <option>Semua Pengalaman</option>
-                <option value="Freshgraduate">Freshgraduate</option>
-                <option value="1 Tahun">1 Tahun</option>
-                <option value="2 Tahun">2 Tahun</option>
-                <option value="3 Tahun">3 Tahun</option>
-                <option value="4 Tahun">4 Tahun</option>
-                <option value="5 Tahun">5 Tahun</option>
+                {EDUCATION_LEVEL_OPTIONS.map((edu, idx) => (
+                  <option key={idx} value={edu}>
+                    {edu}
+                  </option>
+                ))}
               </select>
             </div>
 
-            {/* MULTI-SELECT SEARCHABLE: Preferensi Posisi */}
-            <div className="relative" ref={preferencesListRef}>
+            {/* 2. Tempat Tinggal (Domisili / Select Option Kecamatan) */}
+            <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Preferensi Posisi (Bisa Pilih Banyak)
+                Tempat Tinggal (Kecamatan)
+              </label>
+              <select
+                value={selectedResidence}
+                onChange={(e) => setSelectedResidence(e.target.value)}
+                className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+              >
+                <option value="Semua Domisili">Semua Domisili</option>
+                {DISTRICT_OPTIONS.map((dist, idx) => (
+                  <option key={idx} value={dist.name}>
+                    Kec. {dist.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 3. Preferensi Tempat Kerja (Multi-Select Kecamatan) */}
+            <div className="relative" ref={workPlaceRef}>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Preferensi Tempat Kerja
+              </label>
+              <div
+                onClick={() => setIsWorkPlaceOpen(!isWorkPlaceOpen)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              >
+                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
+                  {selectedPreferredDistricts.length > 0 ? (
+                    selectedPreferredDistricts.map((d, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded text-[10px] font-bold"
+                      >
+                        {d}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-slate-400 font-medium">
+                      Semua Tempat Kerja
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              {isWorkPlaceOpen && (
+                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
+                  <div className="relative">
+                    <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari tempat kerja..."
+                      value={workPlaceQuery}
+                      onChange={(e) => setWorkPlaceQuery(e.target.value)}
+                      className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    {filteredWorkPlaces.length > 0 ? (
+                      filteredWorkPlaces.map((dist, idx) => {
+                        const isSelected = selectedPreferredDistricts.includes(
+                          dist.name,
+                        );
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => togglePreferredDistrict(dist.name)}
+                            className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                              isSelected
+                                ? "bg-teal-50 text-teal-700 font-bold"
+                                : "hover:bg-slate-50 text-slate-700"
+                            }`}
+                          >
+                            <span>{dist.name}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-teal-600" />
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="py-2 text-center text-slate-400 text-[11px]">
+                        Tidak ditemukan
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 4. Gender */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Jenis Kelamin
+              </label>
+              <select
+                value={selectedGender}
+                onChange={(e) => setSelectedGender(e.target.value)}
+                className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+              >
+                {GENDER_OPTIONS.map((g, idx) => (
+                  <option key={idx} value={g}>
+                    {g}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 5. Umur (Range Min - Max) */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Rentang Umur (Tahun)
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="number"
+                  placeholder="Min Umur"
+                  value={minAge}
+                  onChange={(e) => setMinAge(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+                />
+                <input
+                  type="number"
+                  placeholder="Max Umur"
+                  value={maxAge}
+                  onChange={(e) => setMaxAge(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+                />
+              </div>
+            </div>
+
+            {/* 6. Rentang Ekspektasi Gaji */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Rentang Ekspektasi Gaji (IDR)
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  placeholder="Min Gaji"
+                  value={filterMinSalary}
+                  onChange={(e) => setFilterMinSalary(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+                />
+                <input
+                  type="text"
+                  placeholder="Max Gaji"
+                  value={filterMaxSalary}
+                  onChange={(e) => setFilterMaxSalary(e.target.value)}
+                  className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+                />
+              </div>
+            </div>
+
+            {/* 7. Job Field (Searchable Select Option) */}
+            <div className="relative" ref={jobFieldRef}>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Bidang Pekerjaan
+              </label>
+              <div
+                onClick={() => setIsJobFieldOpen(!isJobFieldOpen)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              >
+                <span
+                  className={
+                    selectedJobField
+                      ? "text-slate-800 font-bold"
+                      : "text-slate-400 font-medium"
+                  }
+                >
+                  {selectedJobField || "Semua Bidang Pekerjaan"}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              {isJobFieldOpen && (
+                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
+                  <div className="relative">
+                    <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari bidang pekerjaan..."
+                      value={jobFieldQuery}
+                      onChange={(e) => setJobFieldQuery(e.target.value)}
+                      className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    <div
+                      onClick={() => {
+                        setSelectedJobField("");
+                        setIsJobFieldOpen(false);
+                      }}
+                      className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                        selectedJobField === ""
+                          ? "bg-teal-50 text-teal-700 font-bold"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      <span>Semua Bidang Pekerjaan</span>
+                      {selectedJobField === "" && (
+                        <Check className="w-3.5 h-3.5 text-teal-600" />
+                      )}
+                    </div>
+                    {filteredJobFields.length > 0 ? (
+                      filteredJobFields.map((field, idx) => {
+                        const isSelected = selectedJobField === field;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setSelectedJobField(field);
+                              setIsJobFieldOpen(false);
+                            }}
+                            className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                              isSelected
+                                ? "bg-teal-50 text-teal-700 font-bold"
+                                : "hover:bg-slate-50 text-slate-700"
+                            }`}
+                          >
+                            <span>{field}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-teal-600" />
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="py-2 text-center text-slate-400 text-[11px]">
+                        Tidak ditemukan
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 8. Industry (Searchable Select Option) */}
+            <div className="relative" ref={industryRef}>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Industri Pilihan
+              </label>
+              <div
+                onClick={() => setIsIndustryOpen(!isIndustryOpen)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              >
+                <span
+                  className={
+                    selectedIndustry
+                      ? "text-slate-800 font-bold"
+                      : "text-slate-400 font-medium"
+                  }
+                >
+                  {selectedIndustry || "Semua Industri"}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              {isIndustryOpen && (
+                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
+                  <div className="relative">
+                    <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari industri..."
+                      value={industryQuery}
+                      onChange={(e) => setIndustryQuery(e.target.value)}
+                      className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    <div
+                      onClick={() => {
+                        setSelectedIndustry("");
+                        setIsIndustryOpen(false);
+                      }}
+                      className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                        selectedIndustry === ""
+                          ? "bg-teal-50 text-teal-700 font-bold"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      <span>Semua Industri</span>
+                      {selectedIndustry === "" && (
+                        <Check className="w-3.5 h-3.5 text-teal-600" />
+                      )}
+                    </div>
+                    {filteredIndustries.length > 0 ? (
+                      filteredIndustries.map((ind, idx) => {
+                        const isSelected = selectedIndustry === ind;
+                        return (
+                          <div
+                            key={idx}
+                            onClick={() => {
+                              setSelectedIndustry(ind);
+                              setIsIndustryOpen(false);
+                            }}
+                            className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                              isSelected
+                                ? "bg-teal-50 text-teal-700 font-bold"
+                                : "hover:bg-slate-50 text-slate-700"
+                            }`}
+                          >
+                            <span>{ind}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-teal-600" />
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="py-2 text-center text-slate-400 text-[11px]">
+                        Tidak ditemukan
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 9. Preferred Positions (Multi-Select Array) */}
+            <div className="relative" ref={posRef}>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Posisi yang Diinginkan
               </label>
               <div
                 onClick={() => setIsPositionOpen(!isPositionOpen)}
@@ -380,7 +932,7 @@ export default function ExportPelamarPage() {
                       })
                     ) : (
                       <div className="py-2 text-center text-slate-400 text-[11px]">
-                        Posisi tidak ditemukan
+                        Tidak ditemukan
                       </div>
                     )}
                   </div>
@@ -388,96 +940,137 @@ export default function ExportPelamarPage() {
               )}
             </div>
 
-            {/* MULTI-SELECT SEARCHABLE: Keahlian Utama (Skills) */}
-            <div className="relative" ref={skillsListRef}>
+            {/* 10. Job Types (Multi-Select Array) */}
+            <div className="relative" ref={jobTypeRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Keahlian Utama (Bisa Pilih Banyak)
+                Jenis Pekerjaan
               </label>
               <div
-                onClick={() => setIsSkillOpen(!isSkillOpen)}
+                onClick={() => setIsJobTypeOpen(!isJobTypeOpen)}
                 className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
               >
                 <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
-                  {selectedSkills.length > 0 ? (
-                    selectedSkills.map((skill, idx) => (
+                  {selectedJobTypes.length > 0 ? (
+                    selectedJobTypes.map((jt, idx) => (
                       <span
                         key={idx}
                         className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold"
                       >
-                        {skill}
+                        {JOB_TYPE_OPTIONS.find((o) => o.value === jt)?.label ||
+                          jt}
                       </span>
                     ))
                   ) : (
                     <span className="text-slate-400 font-medium">
-                      Semua Keahlian
+                      Semua Jenis Kerja
                     </span>
                   )}
                 </div>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               </div>
 
-              {isSkillOpen && (
+              {isJobTypeOpen && (
                 <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
-                  <div className="relative">
-                    <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
-                    <input
-                      type="text"
-                      placeholder="Cari keahlian..."
-                      value={skillQuery}
-                      onChange={(e) => setSkillQuery(e.target.value)}
-                      className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
-                      autoFocus
-                    />
-                  </div>
                   <div className="max-h-40 overflow-y-auto space-y-0.5">
-                    {filteredSkills.length > 0 ? (
-                      filteredSkills.map((skill, idx) => {
-                        const isSelected = selectedSkills.includes(skill);
-                        return (
-                          <div
-                            key={idx}
-                            onClick={() => toggleSkill(skill)}
-                            className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                              isSelected
-                                ? "bg-teal-50 text-teal-700 font-bold"
-                                : "hover:bg-slate-50 text-slate-700"
-                            }`}
-                          >
-                            <span>{skill}</span>
-                            {isSelected && (
-                              <Check className="w-3.5 h-3.5 text-teal-600" />
-                            )}
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="py-2 text-center text-slate-400 text-[11px]">
-                        Keahlian tidak ditemukan
-                      </div>
-                    )}
+                    {JOB_TYPE_OPTIONS.map((jt, idx) => {
+                      const isSelected = selectedJobTypes.includes(jt.value);
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => toggleJobType(jt.value)}
+                          className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                            isSelected
+                              ? "bg-teal-50 text-teal-700 font-bold"
+                              : "hover:bg-slate-50 text-slate-700"
+                          }`}
+                        >
+                          <span>{jt.label}</span>
+                          {isSelected && (
+                            <Check className="w-3.5 h-3.5 text-teal-600" />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Filter Lokasi */}
+            {/* 11. Work Arrangements (Multi-Select Array) */}
+            <div className="relative" ref={workArrRef}>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Sistem Kerja
+              </label>
+              <div
+                onClick={() => setIsWorkArrOpen(!isWorkArrOpen)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              >
+                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
+                  {selectedWorkArrangements.length > 0 ? (
+                    selectedWorkArrangements.map((wa, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold"
+                      >
+                        {WORK_ARRANGEMENT_OPTIONS.find((o) => o.value === wa)
+                          ?.label || wa}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-slate-400 font-medium">
+                      Semua Sistem Kerja
+                    </span>
+                  )}
+                </div>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              {isWorkArrOpen && (
+                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
+                  <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    {WORK_ARRANGEMENT_OPTIONS.map((wa, idx) => {
+                      const isSelected = selectedWorkArrangements.includes(
+                        wa.value,
+                      );
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => toggleWorkArr(wa.value)}
+                          className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                            isSelected
+                              ? "bg-teal-50 text-teal-700 font-bold"
+                              : "hover:bg-slate-50 text-slate-700"
+                          }`}
+                        >
+                          <span>{wa.label}</span>
+                          {isSelected && (
+                            <Check className="w-3.5 h-3.5 text-teal-600" />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* 12. Willing to Relocate (Boolean) */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
-                Lokasi Domisili
+                Kesediaan Relokasi
               </label>
               <select
-                value={selectedLocation}
-                onChange={(e) => setSelectedLocation(e.target.value)}
+                value={selectedRelocate}
+                onChange={(e) => setSelectedRelocate(e.target.value)}
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                <option>Semua Lokasi</option>
-                <option value="Sumbawa">Sumbawa, NTB</option>
-                <option value="Mataram">Mataram, NTB</option>
-                <option value="Jakarta">DKI Jakarta</option>
+                <option value="all">Semua Opsi</option>
+                <option value="true">Bersedia Relokasi (Ya)</option>
+                <option value="false">Tidak Bersedia Relokasi</option>
               </select>
             </div>
 
-            {/* Filter Status Kerja */}
+            {/* 13. Job Search Status */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Status Pencarian Kerja
@@ -488,10 +1081,10 @@ export default function ExportPelamarPage() {
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
                 <option>Semua Status</option>
-                <option value="Aktif mencari pekerjaan">
+                <option value="actively_looking">
                   Aktif mencari pekerjaan (Open to Work)
                 </option>
-                <option value="Terbuka untuk penawaran">
+                <option value="open_to_offers">
                   Terbuka untuk penawaran (Passive)
                 </option>
               </select>
@@ -517,14 +1110,14 @@ export default function ExportPelamarPage() {
           <div>
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
               <Users className="w-4 h-4 text-teal-600" /> Hasil Filter Data
-              Pelamar
+              Preferensi Pelamar
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">
               Ditemukan{" "}
               <strong className="text-teal-700">
                 {filteredResults.length}
               </strong>{" "}
-              pelamar yang sesuai dengan kriteria.
+              pelamar yang cocok dengan kriteria filter preferensi.
             </p>
           </div>
 
@@ -532,7 +1125,7 @@ export default function ExportPelamarPage() {
             <button
               onClick={handleExportExcel}
               disabled={filteredResults.length === 0}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <FileSpreadsheet className="w-4 h-4" />
               <span>Export Excel</span>
@@ -540,7 +1133,7 @@ export default function ExportPelamarPage() {
             <button
               onClick={handleExportPDF}
               disabled={filteredResults.length === 0}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <FileText className="w-4 h-4" />
               <span>Export PDF</span>
@@ -553,12 +1146,14 @@ export default function ExportPelamarPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider">
-                <th className="py-3 px-3">Nama & NIK Pelamar</th>
-                <th className="py-3 px-3">Pendidikan & Pengalaman</th>
-                <th className="py-3 px-3">Preferensi Posisi</th>
-                <th className="py-3 px-3">Keahlian (Skills)</th>
-                <th className="py-3 px-3">Lokasi</th>
-                <th className="py-3 px-3">Status Kerja</th>
+                <th className="py-3 px-3">Nama & NIK</th>
+                <th className="py-3 px-3">Pendidikan & Demografi</th>
+                <th className="py-3 px-3">
+                  Domisili & Preferensi Tempat Kerja
+                </th>
+                <th className="py-3 px-3">Posisi Pilihan</th>
+                <th className="py-3 px-3">Ekspektasi Gaji</th>
+                <th className="py-3 px-3">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
@@ -584,11 +1179,22 @@ export default function ExportPelamarPage() {
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <p className="font-medium text-slate-800">
+                      <p className="font-semibold text-slate-800">
                         {applicant.education}
                       </p>
                       <p className="text-[10px] text-slate-500">
-                        Exp: {applicant.experience}
+                        {applicant.gender} • {applicant.age} Tahun
+                      </p>
+                    </td>
+                    <td className="py-3 px-3">
+                      <p className="font-medium text-slate-800">
+                        Domisili: Kec. {applicant.residenceDistrict}
+                      </p>
+                      <p className="text-[10px] text-slate-500">
+                        Kerja:{" "}
+                        {applicant.preferredDistricts
+                          .map((d) => `Kec. ${d}`)
+                          .join(", ")}
                       </p>
                     </td>
                     <td className="py-3 px-3">
@@ -603,24 +1209,13 @@ export default function ExportPelamarPage() {
                         ))}
                       </div>
                     </td>
-                    <td className="py-3 px-3">
-                      <div className="flex flex-wrap gap-1">
-                        {applicant.skills.map((skill, idx) => (
-                          <span
-                            key={idx}
-                            className="px-1.5 py-0.5 bg-slate-100 text-slate-700 text-[10px] rounded"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-slate-600">
-                      {applicant.location}
+                    <td className="py-3 px-3 font-bold text-teal-700">
+                      Rp {applicant.minSalary.toLocaleString("id-ID")} - Rp{" "}
+                      {applicant.maxSalary.toLocaleString("id-ID")}
                     </td>
                     <td className="py-3 px-3">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        {applicant.jobStatus.includes("Aktif")
+                        {applicant.jobStatus === "actively_looking"
                           ? "Open to Work"
                           : "Passive"}
                       </span>
@@ -632,10 +1227,10 @@ export default function ExportPelamarPage() {
                   <td colSpan={6} className="py-12 text-center text-slate-400">
                     <Users className="w-8 h-8 mx-auto mb-2 opacity-30 text-teal-600" />
                     <p className="text-xs font-bold text-slate-700">
-                      Tidak ada pelamar yang cocok dengan kriteria filter
+                      Tidak ada pelamar yang cocok dengan kriteria preferensi
                     </p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      Coba longgarkan pilihan filter untuk melihat hasil data
+                      Coba longgarkan parameter filter untuk melihat hasil data
                       lainnya.
                     </p>
                   </td>
