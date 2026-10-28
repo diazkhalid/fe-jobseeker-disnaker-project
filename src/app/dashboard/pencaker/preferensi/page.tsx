@@ -21,13 +21,7 @@ import {
   Search,
   Check,
 } from "lucide-react";
-import {
-  industriesDummyData,
-  jobFieldsDummyData,
-  preferredPositionsDummyData,
-} from "@/shared/data/JobReferenceData";
 import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
-import { JobSeekerPreference } from "@/features/preference-pencaker/types/UserPreference.type";
 
 export default function JobPreferencesPage() {
   const {
@@ -52,7 +46,7 @@ export default function JobPreferencesPage() {
     setDistrictSearch,
     isDistrictOpen,
     setIsDistrictOpen,
-    // Return masing-masing ref agar dipasang di komponen UI
+    // Refs masing-masing dropdown
     positionRef,
     jobCategoryRef,
     industryRef,
@@ -188,7 +182,7 @@ export default function JobPreferencesPage() {
           </div>
 
           <div className="space-y-4">
-            {/* POSISI YANG DIINGINKAN (Pasang positionRef di sini) */}
+            {/* POSISI YANG DIINGINKAN (Multi-select objek & positionRef) */}
             <div ref={positionRef} className="relative">
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Posisi / Jabatan Pekerjaan yang Diinginkan
@@ -220,13 +214,13 @@ export default function JobPreferencesPage() {
                     />
                   </div>
                   {filteredPositions.length > 0 ? (
-                    filteredPositions.map((pos, idx) => (
+                    filteredPositions.map((pos) => (
                       <div
-                        key={idx}
+                        key={pos.id}
                         onClick={() => handleAddPosition(pos)}
                         className="px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer text-slate-700"
                       >
-                        {pos}
+                        {pos.name}
                       </div>
                     ))
                   ) : (
@@ -238,15 +232,15 @@ export default function JobPreferencesPage() {
               )}
 
               <div className="flex flex-wrap gap-2 mt-2">
-                {preferences.desiredPositions.map((pos, idx) => (
+                {preferences.desiredPositions.map((pos) => (
                   <span
-                    key={idx}
+                    key={pos.id}
                     className="px-3 py-1 bg-app-navy-50 border border-app-navy-200 text-app-navy-800 font-bold text-xs rounded-xl inline-flex items-center gap-1.5"
                   >
-                    {pos}
+                    {pos.name}
                     <button
                       type="button"
-                      onClick={() => handleRemovePosition(pos)}
+                      onClick={() => handleRemovePosition(pos.id)}
                       className="text-app-navy-600 hover:text-rose-600"
                     >
                       <X className="w-3.5 h-3.5" />
@@ -258,7 +252,7 @@ export default function JobPreferencesPage() {
 
             {/* BIDANG & INDUSTRI */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              {/* BIDANG PEKERJAAN (Pasang jobCategoryRef di sini) */}
+              {/* BIDANG PEKERJAAN (jobCategoryRef) */}
               <div ref={jobCategoryRef} className="relative">
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Bidang Pekerjaan
@@ -274,7 +268,8 @@ export default function JobPreferencesPage() {
                         : "text-slate-400"
                     }
                   >
-                    {preferences.jobCategory || "Pilih bidang pekerjaan..."}
+                    {preferences.jobCategory?.name ||
+                      "Pilih bidang pekerjaan..."}
                   </span>
                   <ChevronDown className="w-4 h-4 text-slate-400" />
                 </div>
@@ -293,9 +288,9 @@ export default function JobPreferencesPage() {
                       />
                     </div>
                     {filteredJobCategories.length > 0 ? (
-                      filteredJobCategories.map((cat, idx) => (
+                      filteredJobCategories.map((cat) => (
                         <div
-                          key={idx}
+                          key={cat.id}
                           onClick={() => {
                             setPreferences({
                               ...preferences,
@@ -305,13 +300,13 @@ export default function JobPreferencesPage() {
                             setJobCategorySearch("");
                           }}
                           className={`px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer flex items-center justify-between ${
-                            preferences.jobCategory === cat
+                            preferences.jobCategory?.id === cat.id
                               ? "font-bold text-app-navy-600 bg-app-navy-50/50"
                               : "text-slate-700"
                           }`}
                         >
-                          {cat}
-                          {preferences.jobCategory === cat && (
+                          {cat.name}
+                          {preferences.jobCategory?.id === cat.id && (
                             <Check className="w-3.5 h-3.5" />
                           )}
                         </div>
@@ -325,7 +320,7 @@ export default function JobPreferencesPage() {
                 )}
               </div>
 
-              {/* INDUSTRI PILIHAN (Pasang industryRef di sini) */}
+              {/* INDUSTRI PILIHAN (industryRef) */}
               <div ref={industryRef} className="relative">
                 <label className="block text-xs font-bold text-slate-700 mb-1">
                   Industri Pilihan
@@ -339,7 +334,7 @@ export default function JobPreferencesPage() {
                       preferences.industry ? "text-slate-800" : "text-slate-400"
                     }
                   >
-                    {preferences.industry || "Pilih industri..."}
+                    {preferences.industry?.name || "Pilih industri..."}
                   </span>
                   <ChevronDown className="w-4 h-4 text-slate-400" />
                 </div>
@@ -358,22 +353,22 @@ export default function JobPreferencesPage() {
                       />
                     </div>
                     {filteredIndustries.length > 0 ? (
-                      filteredIndustries.map((ind, idx) => (
+                      filteredIndustries.map((ind) => (
                         <div
-                          key={idx}
+                          key={ind.id}
                           onClick={() => {
                             setPreferences({ ...preferences, industry: ind });
                             setIsIndustryOpen(false);
                             setIndustrySearch("");
                           }}
                           className={`px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer flex items-center justify-between ${
-                            preferences.industry === ind
+                            preferences.industry?.id === ind.id
                               ? "font-bold text-app-navy-600 bg-app-navy-50/50"
                               : "text-slate-700"
                           }`}
                         >
-                          {ind}
-                          {preferences.industry === ind && (
+                          {ind.name}
+                          {preferences.industry?.id === ind.id && (
                             <Check className="w-3.5 h-3.5" />
                           )}
                         </div>

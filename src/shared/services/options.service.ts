@@ -11,3 +11,33 @@ export async function getDistrictOptions() {
     return handleServiceError(error);
   }
 }
+
+export async function getIndustryOptions() {
+  try {
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.INDUSTRY);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}
+
+export async function getJobCategoryOptions() {
+  try {
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.JOB_CATEGORY);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}
+
+export async function getJobPositionOptions() {
+  try {
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.JOB_POSITION);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

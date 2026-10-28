@@ -1,23 +1,47 @@
 import { useState, useEffect, useRef } from "react";
 import { JobSeekerPreference } from "../types/UserPreference.type";
 import {
-  industriesDummyData,
-  jobFieldsDummyData,
-  preferredPositionsDummyData,
-} from "@/shared/data/JobReferenceData";
-import { getDistrictOptions } from "@/shared/services/options.service";
+  getDistrictOptions,
+  getIndustryOptions,
+  getJobCategoryOptions,
+  getJobPositionOptions,
+} from "@/shared/services/options.service";
 import { Districts } from "@/shared/types/districtsList.type";
+import {
+  createJobSeekerPreference,
+  getJobSeekerPreference,
+} from "../services/preference.service";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
+import { useToast } from "@/shared/contexts/ToastContext";
+
+export interface OptionItem {
+  id: number;
+  name: string;
+}
 
 export function useJobSeekerPreference() {
+  const [token] = useLocalStorage("access-token", null);
   const [districtList, setDistrictList] = useState<Districts[] | []>([]);
   const [selectedDistrictsList, setSelectedDistrictsList] = useState<
     Districts[] | []
   >([]);
+  const { addToast } = useToast();
 
-  const [preferences, setPreferences] = useState<JobSeekerPreference>({
+  // State disesuaikan menggunakan OptionItem
+  const [preferences, setPreferences] = useState<{
+    desiredPositions: OptionItem[];
+    jobCategory: OptionItem | null;
+    industry: OptionItem | null;
+    jobTypes: string[];
+    workSystems: string[];
+    expectedSalaryMin: string;
+    expectedSalaryMax: string;
+    relocationStatus: string;
+    jobStatus: string;
+  }>({
     desiredPositions: [],
-    jobCategory: "",
-    industry: "",
+    jobCategory: null,
+    industry: null,
     jobTypes: [],
     workSystems: [],
     expectedSalaryMin: "",
@@ -30,12 +54,11 @@ export function useJobSeekerPreference() {
     console.log(preferences);
   }, [preferences]);
 
-  const [preferPositionList, setPreferPositionList] = useState(
-    preferredPositionsDummyData,
+  const [preferPositionList, setPreferPositionList] = useState<OptionItem[]>(
+    [],
   );
-  const [jobCategoriesList, setJobCategoriesList] =
-    useState(jobFieldsDummyData);
-  const [industriesList, setIndustriesList] = useState(industriesDummyData);
+  const [jobCategoriesList, setJobCategoriesList] = useState<OptionItem[]>([]);
+  const [industriesList, setIndustriesList] = useState<OptionItem[]>([]);
 
   const [positionSearch, setPositionSearch] = useState("");
   const [isPositionOpen, setIsPositionOpen] = useState(false);
@@ -56,29 +79,129 @@ export function useJobSeekerPreference() {
   const districtRef = useRef<HTMLDivElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
 
+  const [triggerUpdate, setTriggerUpdate] = useState(true);
+
   useEffect(() => {
     const fetch = async () => {
       const result = await getDistrictOptions();
-      if (result.status !== 200) {
-        return;
-      }
+      if (result.status !== 200) return;
       setDistrictList(result.data.data);
     };
+    const fetch2 = async () => {
+      const result = await getIndustryOptions();
+      if (result.status !== 200) return;
+      setIndustriesList(result.data.data);
+    };
+
+    const fetch3 = async () => {
+      const result = await getJobCategoryOptions();
+      if (result.status !== 200) return;
+      setJobCategoriesList(result.data.data);
+    };
+
+    const fetch4 = async () => {
+      const result = await getJobPositionOptions();
+      if (result.status !== 200) return;
+      setPreferPositionList(result.data.data);
+    };
+
     fetch();
+    fetch2();
+    fetch3();
+    fetch4();
   }, []);
 
+  // Helper mapping balik dari payload backend ke teks UI
+  const mapPayloadToJobType = (type: string) => {
+    switch (type) {
+      case "full_time":
+        return "Penuh Waktu (Full-time)";
+      case "part_time":
+        return "Paruh Waktu (Part-time)";
+      case "contract_project":
+        return "Kontrak / Proyek";
+      case "internship":
+        return "Magang (Internship)";
+      case "freelance":
+        return "Lepas / Freelance";
+      default:
+        return type;
+    }
+  };
+
+  const mapPayloadToWorkSystem = (sys: string) => {
+    switch (sys) {
+      case "onsite":
+        return "Kerja di Kantor (On-site)";
+      case "hybrid":
+        return "Hibrida (Hybrid)";
+      case "remote":
+        return "Kerja dari Rumah (Remote)";
+      default:
+        return sys;
+    }
+  };
+
+  const mapPayloadToJobStatus = (statusKey: string) => {
+    switch (statusKey) {
+      case "actively_looking":
+        return "Aktif mencari pekerjaan (Open to Work)";
+      case "open_to_offers":
+        return "Terbuka untuk penawaran (Passive Candidate)";
+      case "not_looking":
+        return "Tidak sedang mencari kerja";
+      default:
+        return "";
+    }
+  };
+
+  useEffect(() => {
+    const fetch5 = async () => {
+      if (!token) return;
+      const result = await getJobSeekerPreference(token);
+      if (result.status !== 200) return;
+      const data = result.data.data;
+      if (data.preferred_districts) {
+        setSelectedDistrictsList(data.preferred_districts);
+      }
+
+      // Set preferences dengan mencocokkan data dari API
+      setPreferences({
+        desiredPositions: preferPositionList.filter(
+          (pos) =>
+            data.preferred_positions?.includes(pos.id) ||
+            data.preferred_positions?.includes(pos.name),
+        ),
+        jobCategory:
+          jobCategoriesList.find((cat) => cat.id === data.job_field_id) || null,
+        industry:
+          industriesList.find((ind) => ind.id === data.industry_id) || null,
+        jobTypes: data.job_types?.map(mapPayloadToJobType) || [],
+        workSystems: data.work_arrangements?.map(mapPayloadToWorkSystem) || [],
+        expectedSalaryMin: data.min_salary ? data.min_salary.toString() : "",
+        expectedSalaryMax: data.max_salary ? data.max_salary.toString() : "",
+        relocationStatus: data.willing_to_relocate
+          ? "Ya, siap ditempatkan di mana saja"
+          : "Tidak bersedia relokasi",
+        jobStatus: mapPayloadToJobStatus(data.job_search_status),
+      });
+    };
+    fetch5();
+  }, [token, triggerUpdate]);
+
+  // Filter berdasarkan .name karena berupa objek
   const filteredPositions = preferPositionList.filter(
     (pos) =>
-      pos.toLowerCase().includes(positionSearch.toLowerCase()) &&
-      !preferences.desiredPositions.includes(pos),
+      pos.name.toLowerCase().includes(positionSearch.toLowerCase()) &&
+      !preferences.desiredPositions.some((item) => item.id === pos.id),
   );
 
   const filteredJobCategories = jobCategoriesList.filter((cat) =>
-    cat.toLowerCase().includes(jobCategorySearch.toLowerCase()),
+    cat.name.toLowerCase().includes(jobCategorySearch.toLowerCase()),
   );
 
   const filteredIndustries = industriesList.filter((ind) =>
-    ind.toLowerCase().includes(industrySearch.toLowerCase()),
+    ind.name.toLowerCase().includes(industrySearch.toLowerCase()),
   );
 
   // === GLOBAL CLICK OUTSIDE HANDLER UNTUK SEMUA DROPDOWN ===
@@ -107,9 +230,9 @@ export function useJobSeekerPreference() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handler Posisi (Multi-select)
-  const handleAddPosition = (pos: string) => {
-    if (!preferences.desiredPositions.includes(pos)) {
+  // Handler Posisi (Multi-select objek)
+  const handleAddPosition = (pos: OptionItem) => {
+    if (!preferences.desiredPositions.some((item) => item.id === pos.id)) {
       setPreferences({
         ...preferences,
         desiredPositions: [...preferences.desiredPositions, pos],
@@ -119,11 +242,11 @@ export function useJobSeekerPreference() {
     setIsPositionOpen(false);
   };
 
-  const handleRemovePosition = (posToRemove: string) => {
+  const handleRemovePosition = (posIdToRemove: number) => {
     setPreferences({
       ...preferences,
       desiredPositions: preferences.desiredPositions.filter(
-        (pos) => pos !== posToRemove,
+        (pos) => pos.id !== posIdToRemove,
       ),
     });
   };
@@ -135,7 +258,7 @@ export function useJobSeekerPreference() {
       !selectedDistrictsList.some((selected) => selected.code === item.code),
   );
 
-  const handleAddDistrict = (district: { code: string; name: string }) => {
+  const handleAddDistrict = (district: Districts) => {
     if (!selectedDistrictsList.some((item) => item.code === district.code)) {
       setSelectedDistrictsList([...selectedDistrictsList, district]);
     }
@@ -227,17 +350,19 @@ export function useJobSeekerPreference() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!token) return;
     const currentSelectedStatusObj = jobStatuses.find(
       (s) => s.value === preferences.jobStatus,
     );
 
     const payload = {
-      job_field: preferences.jobCategory,
-      industry: preferences.industry,
-      preferred_positions: preferences.desiredPositions,
+      job_field: preferences.jobCategory
+        ? Number(preferences.jobCategory.id)
+        : null, // Mengirimkan ID bidang pekerjaan
+      industry: preferences.industry ? Number(preferences.industry.id) : null, // Mengirimkan ID industri
+      preferred_positions: preferences.desiredPositions.map((pos) => pos.id), // Mengirimkan array ID posisi
       preferred_district_codes: selectedDistrictsList.map((item) => item.code),
       job_types: preferences.jobTypes.map(mapJobTypeToPayload),
       work_arrangements: preferences.workSystems.map(mapWorkSystemToPayload),
@@ -255,10 +380,14 @@ export function useJobSeekerPreference() {
         : "actively_looking",
     };
 
-    console.log("FINAL PAYLOAD:", JSON.stringify(payload, null, 2));
+    const result = await createJobSeekerPreference(token, payload);
 
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 4000);
+    if (result.status !== 200) {
+      addToast("Gagal menambahkan preferensi!", "warning");
+      return;
+    }
+    addToast("Berhasil menambahkan preferensi", "success");
+    setTriggerUpdate(!triggerUpdate);
   };
 
   return {
@@ -283,7 +412,6 @@ export function useJobSeekerPreference() {
     setDistrictSearch,
     isDistrictOpen,
     setIsDistrictOpen,
-    // Return masing-masing ref agar dipasang di komponen UI
     positionRef,
     jobCategoryRef,
     industryRef,
