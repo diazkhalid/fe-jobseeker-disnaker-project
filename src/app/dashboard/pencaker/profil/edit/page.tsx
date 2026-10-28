@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   Building2,
   MapPin,
+  Download,
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
@@ -851,7 +852,7 @@ export default function CandidateEditProfilePage() {
               </div>
               <button
                 onClick={() => setIsCertificationModalOpen(true)}
-                className="px-4 py-2 bg-app-navy-600 hover:bg-app-navy-700 text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center gap-1.5 shrink-0"
+                className="px-4 py-2 bg-app-navy-600 hover:bg-app-navy-700 text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center gap-1.5 shrink-0 cursor-pointer"
               >
                 <Plus className="w-4 h-4" /> Tambah Sertifikasi
               </button>
@@ -871,17 +872,34 @@ export default function CandidateEditProfilePage() {
                           {cert.name}
                         </p>
                         <p className="text-[11px] text-slate-500">
-                          Penerbit: {cert.issuer} • Tanggal:{" "}
+                          Penerbit: {cert.issuer} | Tanggal:{" "}
                           {formatDateWithMonthName(cert.issue_date)}
                         </p>
                       </div>
                     </div>
+
+                    {/* Tombol Aksi (Download & Hapus) */}
                     <div className="flex items-center gap-2 shrink-0">
+                      {cert.certificate_file_url && (
+                        <a
+                          href={`${APP_CONFIG.STORAGE_URL}${cert.certificate_file_url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          download
+                          title="Unduh Sertifikat"
+                          className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors inline-flex items-center justify-center"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+
                       <button
+                        type="button"
                         onClick={() =>
                           handleDeleteJobSeekerCertification(cert.id.toString())
                         }
-                        className="p-2 bg-white border border-slate-200 rounded-lg text-rose-600 hover:bg-rose-50"
+                        title="Hapus Sertifikat"
+                        className="p-2 bg-white border border-slate-200 rounded-lg text-rose-600 hover:bg-rose-50 transition-colors inline-flex items-center justify-center"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>

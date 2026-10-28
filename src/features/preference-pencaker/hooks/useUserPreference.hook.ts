@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { JobSeekerPreference } from "../types/UserPreference.type";
+import {
+  JobSeekerPreference,
+  JobSeekerPreferenceData,
+} from "../types/UserPreference.type";
 import {
   getDistrictOptions,
   getIndustryOptions,
@@ -28,17 +31,7 @@ export function useJobSeekerPreference() {
   const { addToast } = useToast();
 
   // State disesuaikan menggunakan OptionItem
-  const [preferences, setPreferences] = useState<{
-    desiredPositions: OptionItem[];
-    jobCategory: OptionItem | null;
-    industry: OptionItem | null;
-    jobTypes: string[];
-    workSystems: string[];
-    expectedSalaryMin: string;
-    expectedSalaryMax: string;
-    relocationStatus: string;
-    jobStatus: string;
-  }>({
+  const [preferences, setPreferences] = useState<JobSeekerPreference>({
     desiredPositions: [],
     jobCategory: null,
     industry: null,
@@ -49,6 +42,9 @@ export function useJobSeekerPreference() {
     relocationStatus: "",
     jobStatus: "",
   });
+
+  const [jobSeekerPreference, setJobSeekerPreference] =
+    useState<JobSeekerPreferenceData | null>(null);
 
   useEffect(() => {
     console.log(preferences);
@@ -161,6 +157,7 @@ export function useJobSeekerPreference() {
       const result = await getJobSeekerPreference(token);
       if (result.status !== 200) return;
       const data = result.data.data;
+      setJobSeekerPreference(data);
       if (data?.preferred_districts) {
         setSelectedDistrictsList(data.preferred_districts);
       }
@@ -189,7 +186,13 @@ export function useJobSeekerPreference() {
     ) {
       fetch5();
     }
-  }, [token, triggerUpdate]);
+  }, [
+    token,
+    triggerUpdate,
+    jobCategoriesList,
+    industriesList,
+    preferPositionList,
+  ]);
 
   useEffect(() => {
     console.log(preferences);
@@ -441,5 +444,7 @@ export function useJobSeekerPreference() {
     toggleJobType,
     toggleWorkSystem,
     handleSubmit,
+    jobSeekerPreference,
+    setJobSeekerPreference,
   };
 }

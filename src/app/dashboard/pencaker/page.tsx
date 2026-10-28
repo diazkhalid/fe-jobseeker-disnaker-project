@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -18,6 +19,9 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
+import APP_CONFIG from "@/shared/global/app_config";
+import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 
 // --- DUMMY DATA STATISTIK LAMARAN ---
 const statItems = [
@@ -145,6 +149,7 @@ const recentNotifications = [
 
 export default function CandidateDashboardPage() {
   const profileProgress = 85;
+  const { user } = useAuthUser();
 
   return (
     <div className="space-y-8">
@@ -153,21 +158,27 @@ export default function CandidateDashboardPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           {/* Identitas User */}
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
-              {/* Tempatkan foto profil pengguna */}
-              <Image
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"
-                alt="Foto Profil Fajar"
-                fill
-                className="object-cover"
-              />
+            <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner">
+              {user?.profile.profile_photo_url ? (
+                <Image
+                  src={`${APP_CONFIG.STORAGE_URL}${user?.profile.profile_photo_url}`}
+                  alt="Foto Profil"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                  {user?.full_name.charAt(0)}
+                </span>
+              )}
             </div>
             <div className="space-y-1">
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-800/80 text-teal-200 text-[10px] font-semibold">
-                <Sparkles className="w-3 h-3 text-teal-300" /> Pencari Kerja
+                <Sparkles className="w-3 h-3 text-teal-300" />
+                {accountTypeMap[user?.account_type as string]}
               </span>
               <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-                Selamat Datang, Fajar Ardiansyah!
+                {` Selamat Datang, ${user?.full_name}!`}
               </h2>
               <p className="text-xs text-slate-300">
                 Pantau perkembangan lamaran kerja dan peluang karir terbaru

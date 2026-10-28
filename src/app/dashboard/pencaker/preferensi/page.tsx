@@ -25,6 +25,7 @@ import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/use
 
 export default function JobPreferencesPage() {
   const {
+    jobSeekerPreference,
     preferences,
     setPreferences,
     districtList,

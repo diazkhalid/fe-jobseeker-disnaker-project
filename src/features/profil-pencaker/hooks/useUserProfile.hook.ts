@@ -129,10 +129,14 @@ export function useJobSeekerProfile() {
   const handleSubmitUpdateJobSeekerProfile = async () => {
     if (!token) return;
 
-    const result = await updateJobSeekerProfile(
-      token,
-      updateJobSeekerProfileForm,
-    );
+    const formattedForm = {
+      ...updateJobSeekerProfileForm,
+      date_of_birth: updateJobSeekerProfileForm.date_of_birth?.includes("T")
+        ? updateJobSeekerProfileForm.date_of_birth.split("T")[0]
+        : updateJobSeekerProfileForm.date_of_birth,
+    };
+
+    const result = await updateJobSeekerProfile(token, formattedForm);
     if (result.status !== 200) {
       addToast("Gagal mengubah data", "warning");
       return;
