@@ -186,7 +186,13 @@ export function useJobSeekerPreference() {
         jobStatus: mapPayloadToJobStatus(data.job_search_status),
       });
     };
-    fetch5();
+    if (
+      jobCategoriesList.length > 0 ||
+      industriesList.length > 0 ||
+      preferPositionList.length > 0
+    ) {
+      fetch5();
+    }
   }, [token, triggerUpdate]);
 
   // Filter berdasarkan .name karena berupa objek
