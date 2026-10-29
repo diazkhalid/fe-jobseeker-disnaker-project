@@ -45,6 +45,7 @@ import { employmentTypeMap } from "@/shared/utils/emplymentTypeMap";
 import { useJobSeekerSkill } from "@/features/profil-pencaker/hooks/useUserSkill.hook";
 import { useJobSeekerCertification } from "@/features/profil-pencaker/hooks/useUserCertification.hook";
 import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
+import { useJobSeekerProfileCompletionRate } from "@/features/profil-pencaker/hooks/useUserProfileCompletionRate";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
@@ -65,6 +66,9 @@ export default function CandidateProfilePage() {
   >([]);
   const [jobSeekerOrganizationExperience, setJobSeekerOrganizationExperience] =
     useState<JobSeekerExperienceData[] | []>([]);
+
+  const { jobSeekerProfileCompletionRate: profileProgress } =
+    useJobSeekerProfileCompletionRate();
 
   useEffect(() => {
     console.log(jobSeekerPreference);
@@ -107,23 +111,6 @@ export default function CandidateProfilePage() {
     };
     getJobSeekerExperienceByType();
   }, [jobSeekerExperience]);
-
-  // Status kelengkapan profil (misal 85%)
-  const profileCompleteness = 85;
-
-  // Data ringkasan/alert yang belum diisi
-  const missingDataAlerts = [
-    {
-      id: 1,
-      label: "Sertifikasi K3LH belum diunggah",
-      category: "Sertifikasi",
-    },
-    {
-      id: 2,
-      label: "Tautan Portofolio GitHub/LinkedIn belum ditambahkan",
-      category: "Portofolio",
-    },
-  ];
 
   // Riwayat pembaruan profil
   const updateHistory = [
@@ -206,7 +193,7 @@ export default function CandidateProfilePage() {
             </p>
           </div>
           <span className="text-xl font-black text-app-navy-700">
-            {profileCompleteness}%
+            {profileProgress?.profile_completeness ?? 0}%
           </span>
         </div>
 
@@ -214,27 +201,28 @@ export default function CandidateProfilePage() {
         <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
           <div
             className="bg-gradient-to-r from-red-500 to-emerald-500 h-3 rounded-full transition-all duration-500"
-            style={{ width: `${profileCompleteness}%` }}
+            style={{ width: `${profileProgress?.profile_completeness ?? 0}%` }}
           />
         </div>
 
         {/* Alert Data Yang Belum Diisi */}
-        {missingDataAlerts.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-            <div className="flex items-center gap-2 text-amber-800 font-bold text-xs">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-              <span>Perhatian: Data Anda Belum Lengkap</span>
+        {profileProgress?.missing_data_alerts &&
+          profileProgress.missing_data_alerts.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+              <div className="flex items-center gap-2 text-amber-800 font-bold text-xs">
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>Perhatian: Data Anda Belum Lengkap</span>
+              </div>
+              <ul className="space-y-1 pl-6 list-disc text-xs text-amber-900">
+                {profileProgress.missing_data_alerts.map((alert) => (
+                  <li key={alert.id}>
+                    <span className="font-semibold">{alert.category}:</span>{" "}
+                    {alert.label}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-1 pl-6 list-disc text-xs text-amber-900">
-              {missingDataAlerts.map((alert) => (
-                <li key={alert.id}>
-                  <span className="font-semibold">{alert.category}:</span>{" "}
-                  {alert.label}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+          )}
       </section>
 
       {/* TAB NAVIGATION: DETAIL PROFIL VS RIWAYAT PEMBARUAN */}
@@ -280,7 +268,7 @@ export default function CandidateProfilePage() {
                     />
                   ) : (
                     <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
-                      {user?.full_name.charAt(0)}
+                      {user?.full_name?.charAt(0) ?? "U"}
                     </span>
                   )}
                 </div>

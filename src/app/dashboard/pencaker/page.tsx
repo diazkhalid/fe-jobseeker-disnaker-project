@@ -18,10 +18,15 @@ import {
   Building2,
   Award,
   ArrowRight,
+  AlertCircle,
+  FileText,
+  GraduationCap,
+  ShieldAlert,
 } from "lucide-react";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import APP_CONFIG from "@/shared/global/app_config";
 import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
+import { useJobSeekerProfileCompletionRate } from "@/features/profil-pencaker/hooks/useUserProfileCompletionRate";
 
 // --- DUMMY DATA STATISTIK LAMARAN ---
 const statItems = [
@@ -148,7 +153,8 @@ const recentNotifications = [
 ];
 
 export default function CandidateDashboardPage() {
-  const profileProgress = 85;
+  const { jobSeekerProfileCompletionRate: profileProgress } =
+    useJobSeekerProfileCompletionRate();
   const { user } = useAuthUser();
 
   return (
@@ -168,17 +174,18 @@ export default function CandidateDashboardPage() {
                 />
               ) : (
                 <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
-                  {user?.full_name.charAt(0)}
+                  {user?.full_name ? user.full_name.charAt(0) : "U"}
                 </span>
               )}
             </div>
             <div className="space-y-1">
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-teal-800/80 text-teal-200 text-[10px] font-semibold">
                 <Sparkles className="w-3 h-3 text-teal-300" />
-                {accountTypeMap[user?.account_type as string]}
+                {accountTypeMap[user?.account_type as string] ||
+                  "Pencari Kerja"}
               </span>
               <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-                {` Selamat Datang, ${user?.full_name}!`}
+                {` Selamat Datang, ${user?.full_name || "User"}!`}
               </h2>
               <p className="text-xs text-slate-300">
                 Pantau perkembangan lamaran kerja dan peluang karir terbaru
@@ -189,7 +196,6 @@ export default function CandidateDashboardPage() {
 
           {/* Progress Bar & CTA - Compact Floating Card */}
           <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl p-4 border border-white/10 w-full lg:w-80 shadow-xl space-y-3 shrink-0 relative overflow-hidden group">
-            {/* Ambient Ambient Background Glow */}
             <div className="absolute -top-10 -right-10 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all pointer-events-none" />
 
             <div className="flex items-center justify-between gap-3">
@@ -204,7 +210,7 @@ export default function CandidateDashboardPage() {
 
               {/* Badge Persentase */}
               <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-extrabold text-xs tracking-tight">
-                {profileProgress}%
+                {profileProgress ? profileProgress.profile_completeness : 0}%
               </span>
             </div>
 
@@ -213,11 +219,14 @@ export default function CandidateDashboardPage() {
               <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden p-0.5 border border-white/5">
                 <div
                   className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-sm shadow-emerald-500/50"
-                  style={{ width: `${profileProgress}%` }}
+                  style={{
+                    width: `${profileProgress ? profileProgress.profile_completeness : 0}%`,
+                  }}
                 />
               </div>
               <p className="text-[10px] text-slate-400 text-right">
-                {profileProgress < 100
+                {(profileProgress ? profileProgress.profile_completeness : 0) <
+                100
                   ? "Lengkapi agar dilirik rekruter"
                   : "Profil sudah lengkap!"}
               </p>
@@ -225,7 +234,7 @@ export default function CandidateDashboardPage() {
 
             {/* CTA Button */}
             <Link
-              href="/dashboard/profil"
+              href="/dashboard/pencaker/profil/edit"
               className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-xs rounded-xl transition-all duration-200 shadow-md shadow-emerald-900/20 active:scale-[0.98]"
             >
               <User className="w-4 h-4 text-slate-950" />
@@ -233,6 +242,34 @@ export default function CandidateDashboardPage() {
               <ArrowRight className="w-3.5 h-3.5 ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* 1.5. ALERT DATA YANG BELUM LENGKAP (BERDASARKAN DATA JSON ANDA) */}
+      <section className="bg-white border border-orange-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-orange-100 text-orange-800 rounded-lg">
+              <ShieldAlert className="w-4 h-4 text-orange-700" />
+            </div>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+              Peringatan Kelengkapan Profil (
+              {profileProgress?.missing_data_alerts.length})
+            </h3>
+          </div>
+        </div>
+
+        {/* Container Daftar Item Tipis Menyamping / Wrap Badge */}
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {profileProgress?.missing_data_alerts.map((alert) => (
+            <span
+              key={alert.id}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-900 text-[11px] font-semibold rounded-lg"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+              {alert.label}
+            </span>
+          ))}
         </div>
       </section>
 

@@ -73,3 +73,15 @@ export async function updateJobSeekerProfilePicture(
     return handleServiceError(error);
   }
 }
+
+export async function getProfileCompletionRate(token: string) {
+  try {
+    const response = await axios(API_ENDPOINTS.JOB_SEEKER.PROFILE.COMPLETION, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

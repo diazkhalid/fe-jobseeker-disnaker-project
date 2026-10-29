@@ -157,6 +157,7 @@ export function useJobSeekerPreference() {
       const result = await getJobSeekerPreference(token);
       if (result.status !== 200) return;
       const data = result.data.data;
+      if (!data) return;
       setJobSeekerPreference(data);
       if (data?.preferred_districts) {
         setSelectedDistrictsList(data.preferred_districts);

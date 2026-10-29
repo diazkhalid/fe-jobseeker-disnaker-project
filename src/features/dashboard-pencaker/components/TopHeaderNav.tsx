@@ -164,7 +164,7 @@ export default function TopHeaderNav() {
                       className="object-cover"
                     />
                   ) : (
-                    <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                    <span className="flex h-full flex-col justify-center text-sm font-medium items-center text-slate-500">
                       {user?.full_name.charAt(0)}
                     </span>
                   )}

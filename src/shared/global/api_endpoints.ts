@@ -21,6 +21,7 @@ const API_ENDPOINTS = {
       UPDATE: `${baseURL}/profiles/me`,
       UPDATE_PICTURE: `${baseURL}/profiles/me/photo`,
       DELETE_PICTURE: `${baseURL}/profiles/me/photo`,
+      COMPLETION: `${baseURL}/profiles/completeness`
     },
     EDUCATION: {
       CREATE: `${baseURL}/educations`,

@@ -36,3 +36,14 @@ export type UpdateJobSeekerProfileDto = Omit<
 export interface UpdateJobSeekerProfilePictureDto {
   photo: File;
 }
+
+export interface MissingDataAlert {
+  id: number;
+  label: string;
+  category: string;
+}
+
+export interface ProfileCompletionRateData {
+  profile_completeness: number;
+  missing_data_alerts: MissingDataAlert[];
+}
