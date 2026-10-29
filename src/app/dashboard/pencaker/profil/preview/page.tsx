@@ -38,7 +38,7 @@ import APP_CONFIG from "@/shared/global/app_config";
 
 export default function ProfileReviewAlternativePage() {
   const [isAgreed, setIsAgreed] = useState(false);
-  const [isProfileActive, setIsProfileActive] = useState(false);
+  // const [isProfileActive, setIsProfileActive] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [activeTab, setActiveTab] = useState("personal");
 
@@ -107,11 +107,11 @@ export default function ProfileReviewAlternativePage() {
   const missingAlerts = profileProgress?.missing_data_alerts ?? [];
   const completedCount = profileSections.filter((s) => s.isComplete).length;
 
-  const handleActivateProfile = () => {
-    if (!isAgreed) return;
-    setIsProfileActive(true);
-    setShowSuccessModal(true);
-  };
+  // const handleActivateProfile = () => {
+  //   if (!isAgreed) return;
+  //   setIsProfileActive(true);
+  //   setShowSuccessModal(true);
+  // };
 
   const scrollToSection = (id: string) => {
     setActiveTab(id);
@@ -141,7 +141,7 @@ export default function ProfileReviewAlternativePage() {
           </p>
         </div>
 
-        <div className="shrink-0">
+        {/* <div className="shrink-0">
           {isProfileActive ? (
             <span className="px-3 py-1.5 bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-[11px] rounded-full inline-flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Profil Siap
@@ -153,7 +153,7 @@ export default function ProfileReviewAlternativePage() {
               Diaktifkan
             </span>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* STRIP PROGRESS & BANNER PERINGATAN */}
@@ -657,7 +657,7 @@ export default function ProfileReviewAlternativePage() {
       </div>
 
       {/* FOOTER ACTION & PERSETUJUAN */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4 shadow-sm">
+      {/* <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4 shadow-sm">
         <label className="flex items-start gap-3 cursor-pointer select-none">
           <input
             type="checkbox"
@@ -696,7 +696,7 @@ export default function ProfileReviewAlternativePage() {
             </span>
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* MODAL SUKSES */}
       {showSuccessModal && (
