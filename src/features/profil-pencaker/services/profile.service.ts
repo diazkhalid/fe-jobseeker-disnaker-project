@@ -85,3 +85,17 @@ export async function getProfileCompletionRate(token: string) {
     return handleServiceError(error);
   }
 }
+
+export async function toggleJobSeekerFreshGraduateStatus(token: string) {
+  try {
+    const response = await axios.put(
+      API_ENDPOINTS.JOB_SEEKER.PROFILE.TOGGLE_FRESH_GRADUATE,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

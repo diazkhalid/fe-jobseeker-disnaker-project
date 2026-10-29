@@ -233,45 +233,50 @@ export default function CandidateDashboardPage() {
             </div>
 
             {/* CTA Button */}
-            <Link
-              href="/dashboard/pencaker/profil/edit"
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-xs rounded-xl transition-all duration-200 shadow-md shadow-emerald-900/20 active:scale-[0.98]"
-            >
-              <User className="w-4 h-4 text-slate-950" />
-              <span>Lengkapi Profil Sekarang</span>
-              <ArrowRight className="w-3.5 h-3.5 ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+            {(profileProgress ? profileProgress.profile_completeness : 0) <
+              100 && (
+              <Link
+                href="/dashboard/pencaker/profil/edit"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-xs rounded-xl transition-all duration-200 shadow-md shadow-emerald-900/20 active:scale-[0.98]"
+              >
+                <User className="w-4 h-4 text-slate-950" />
+                <span>Lengkapi Profil Sekarang</span>
+                <ArrowRight className="w-3.5 h-3.5 ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
           </div>
         </div>
       </section>
 
       {/* 1.5. ALERT DATA YANG BELUM LENGKAP (BERDASARKAN DATA JSON ANDA) */}
-      <section className="bg-white border border-orange-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-orange-100 text-orange-800 rounded-lg">
-              <ShieldAlert className="w-4 h-4 text-orange-700" />
+      {(profileProgress ? profileProgress.profile_completeness : 0) < 100 && (
+        <section className="bg-white border border-orange-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-orange-100 text-orange-800 rounded-lg">
+                <ShieldAlert className="w-4 h-4 text-orange-700" />
+              </div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                Peringatan Kelengkapan Profil (
+                {profileProgress?.missing_data_alerts.length})
+              </h3>
             </div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-              Peringatan Kelengkapan Profil (
-              {profileProgress?.missing_data_alerts.length})
-            </h3>
           </div>
-        </div>
 
-        {/* Container Daftar Item Tipis Menyamping / Wrap Badge */}
-        <div className="flex flex-wrap gap-1.5 pt-1">
-          {profileProgress?.missing_data_alerts.map((alert) => (
-            <span
-              key={alert.id}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-900 text-[11px] font-semibold rounded-lg"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-              {alert.label}
-            </span>
-          ))}
-        </div>
-      </section>
+          {/* Container Daftar Item Tipis Menyamping / Wrap Badge */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {profileProgress?.missing_data_alerts.map((alert) => (
+              <span
+                key={alert.id}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-900 text-[11px] font-semibold rounded-lg"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                {alert.label}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 2. RINGKASAN JUMLAH LAMARAN & TERTIMPAN */}
       <section className="space-y-3">

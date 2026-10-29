@@ -38,8 +38,6 @@ export default function CandidateEditProfilePage() {
   const [activeTab, setActiveTab] = useState<
     "pribadi" | "pendidikan" | "pengalaman" | "keahlian"
   >("pribadi");
-  const { user } = useAuthUser();
-
   const {
     jobSeekerProfile,
     jobSeekerProfilePictureFile,
@@ -49,6 +47,7 @@ export default function CandidateEditProfilePage() {
     handleSubmitUpdateJobSeekerProfile,
     handleChangeUpdateJobSeekerProfileForm,
     districtsList,
+    handleToggleFreshGraduateStatus,
   } = useJobSeekerProfile();
 
   const {
@@ -95,7 +94,8 @@ export default function CandidateEditProfilePage() {
     resetCreateJobSeekerCertificationForm,
   } = useJobSeekerCertification();
 
-  const [hasNoExperience, setHasNoExperience] = useState(false);
+  const { user } = useAuthUser();
+  // const [hasNoExperience, setHasNoExperience] = useState(false);
 
   // --- MODAL STATES ---
   const [isEducationModalOpen, setIsEducationModalOpen] = useState(false);
@@ -649,7 +649,7 @@ export default function CandidateEditProfilePage() {
                 Anda.
               </p>
             </div>
-            <button
+            {/* <button
               disabled={hasNoExperience}
               onClick={() => setIsExperienceModalOpen(true)}
               className={`px-4 py-2 text-white font-bold text-xs rounded-xl transition-colors inline-flex items-center gap-1.5 shrink-0 ${
@@ -659,26 +659,28 @@ export default function CandidateEditProfilePage() {
               }`}
             >
               <Plus className="w-4 h-4" /> Tambah Pengalaman
-            </button>
+            </button> */}
           </div>
 
           {/* OPSI BELUM MEMILIKI PENGALAMAN */}
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="noExp"
-              checked={hasNoExperience}
-              onChange={(e) => setHasNoExperience(e.target.checked)}
-              className="w-4 h-4 text-app-navy-600 rounded border-amber-300 focus:ring-app-navy-500"
-            />
-            <label
-              htmlFor="noExp"
-              className="text-xs font-bold text-amber-900 cursor-pointer"
-            >
-              Saya adalah lulusan baru (Fresh Graduate) dan belum memiliki
-              pengalaman kerja.
-            </label>
-          </div>
+          {jobSeekerExperience.length === 0 && (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="noExp"
+                checked={user?.profile.is_fresh_graduate}
+                onChange={(e) => handleToggleFreshGraduateStatus()}
+                className="w-4 h-4 text-app-navy-600 rounded border-amber-300 focus:ring-app-navy-500"
+              />
+              <label
+                htmlFor="noExp"
+                className="text-xs font-bold text-amber-900 cursor-pointer"
+              >
+                Saya adalah lulusan baru (Fresh Graduate) dan belum memiliki
+                pengalaman kerja.
+              </label>
+            </div>
+          )}
 
           <div className="space-y-4">
             {jobSeekerExperience && jobSeekerExperience.length > 0 ? (

@@ -2,6 +2,7 @@ import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import React, { useState, useEffect } from "react";
 import {
   getJobSeekerProfile,
+  toggleJobSeekerFreshGraduateStatus,
   updateJobSeekerProfile,
   updateJobSeekerProfilePicture,
 } from "../services/profile.service";
@@ -12,6 +13,7 @@ import {
 import { useToast } from "@/shared/contexts/ToastContext";
 import { Districts } from "@/shared/types/districtsList.type";
 import { getDistrictOptions } from "@/shared/services/options.service";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
 export function useJobSeekerProfile() {
   const [token] = useLocalStorage("access-token", null);
   const [triggerUpdate, setTriggerUpdate] = useState(true);
@@ -22,6 +24,7 @@ export function useJobSeekerProfile() {
     useState<File | null>(null);
 
   const { addToast } = useToast();
+  const { toggleUpdate, setToggleUpdateAuth } = useAuthUser();
 
   const [districtsList, setDistrictsList] = useState<Districts[] | null>(null);
 
@@ -153,6 +156,17 @@ export function useJobSeekerProfile() {
     await handleSubmitUpdateJobSeekerProfile();
   };
 
+  const handleToggleFreshGraduateStatus = async () => {
+    if (!token) return;
+    const result = await toggleJobSeekerFreshGraduateStatus(token);
+    if (result.status !== 200) {
+      addToast("Gagal mengubah status!", "warning");
+      return;
+    }
+    setToggleUpdateAuth(!toggleUpdate);
+    addToast("Berhasil mengubah status", "success");
+  };
+
   return {
     jobSeekerProfile,
     setJobSeekerProfile,
@@ -165,5 +179,6 @@ export function useJobSeekerProfile() {
     handleSubmitUpdateJobSeekerProfile,
     handleChangeUpdateJobSeekerProfileForm,
     districtsList,
+    handleToggleFreshGraduateStatus,
   };
 }

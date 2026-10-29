@@ -19,27 +19,93 @@ import {
   ChevronRight,
   Sparkles,
   Check,
+  Award,
+  AlertCircle,
 } from "lucide-react";
+
+import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
+import { useJobSeekerEducation } from "@/features/profil-pencaker/hooks/useUserEducation.hook";
+import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
+import { useJobSeekerExperience } from "@/features/profil-pencaker/hooks/useUserExperience.hook";
+import { useJobSeekerSkill } from "@/features/profil-pencaker/hooks/useUserSkill.hook";
+import { useJobSeekerCertification } from "@/features/profil-pencaker/hooks/useUserCertification.hook";
+import { useJobSeekerDocument } from "@/features/document-pencaker/hooks/useUserDocument.hook";
+import { useJobSeekerProfileCompletionRate } from "@/features/profil-pencaker/hooks/useUserProfileCompletionRate";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
+import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
+import { userGenderMap } from "@/shared/utils/userGenderMap";
+import APP_CONFIG from "@/shared/global/app_config";
 
 export default function ProfileReviewAlternativePage() {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isProfileActive, setIsProfileActive] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState("personal");
+
+  const { user } = useAuthUser();
+  const { jobSeekerProfile } = useJobSeekerProfile();
+  const { jobSeekerEducation } = useJobSeekerEducation();
+  const { jobSeekerPreference } = useJobSeekerPreference();
+  const { jobSeekerExperience } = useJobSeekerExperience();
+  const { jobSeekerSkill } = useJobSeekerSkill();
+  const { jobSeekerCertification } = useJobSeekerCertification();
+  const { jobSeekerDocument } = useJobSeekerDocument();
+  const { jobSeekerProfileCompletionRate: profileProgress } =
+    useJobSeekerProfileCompletionRate();
+
+  // Evaluasi kelengkapan tiap section secara dinamis (handle null / empty array)
+  const isPersonalComplete = Boolean(
+    jobSeekerProfile?.full_name &&
+    jobSeekerProfile?.phone &&
+    jobSeekerProfile?.address &&
+    jobSeekerProfile?.headline,
+  );
+  const isEducationComplete = Boolean(
+    jobSeekerEducation && jobSeekerEducation.length > 0,
+  );
+  const isExperienceComplete = Boolean(
+    jobSeekerExperience && jobSeekerExperience.length > 0,
+  );
+  const isSkillsComplete = Boolean(jobSeekerSkill && jobSeekerSkill.length > 0);
+  const isCertificationComplete = Boolean(
+    jobSeekerCertification && jobSeekerCertification.length > 0,
+  );
+  const isPreferencesComplete = Boolean(
+    jobSeekerPreference && jobSeekerPreference.preferred_positions?.length > 0,
+  );
+
+  // Dokumen CV Utama
+  const mainCv =
+    jobSeekerDocument?.find((doc) => doc.category === "cv" && doc.isMain) ||
+    jobSeekerDocument?.find((doc) => doc.category === "cv");
+  const isDocumentsComplete = Boolean(mainCv);
 
   const profileSections = [
-    { id: "personal", title: "Data Pribadi", isComplete: true },
-    { id: "education", title: "Pendidikan", isComplete: true },
-    { id: "experience", title: "Pengalaman Kerja", isComplete: true },
-    { id: "skills", title: "Keahlian", isComplete: true },
-    { id: "preferences", title: "Preferensi", isComplete: true },
-    { id: "documents", title: "CV & Dokumen", isComplete: false },
+    { id: "personal", title: "Data Pribadi", isComplete: isPersonalComplete },
+    { id: "education", title: "Pendidikan", isComplete: isEducationComplete },
+    {
+      id: "experience",
+      title: "Pengalaman Kerja",
+      isComplete: isExperienceComplete,
+    },
+    { id: "skills", title: "Keahlian", isComplete: isSkillsComplete },
+    {
+      id: "certification",
+      title: "Sertifikasi",
+      isComplete: isCertificationComplete,
+    },
+    {
+      id: "preferences",
+      title: "Preferensi",
+      isComplete: isPreferencesComplete,
+    },
+    { id: "documents", title: "CV & Dokumen", isComplete: isDocumentsComplete },
   ];
 
+  // Nilai kelengkapan dan alert dari hook
+  const progressPercentage = profileProgress?.profile_completeness ?? 0;
+  const missingAlerts = profileProgress?.missing_data_alerts ?? [];
   const completedCount = profileSections.filter((s) => s.isComplete).length;
-  const progressPercentage = Math.round(
-    (completedCount / profileSections.length) * 100,
-  );
 
   const handleActivateProfile = () => {
     if (!isAgreed) return;
@@ -120,6 +186,27 @@ export default function ProfileReviewAlternativePage() {
         </div>
       </div>
 
+      {/* ALERT DATA YANG BELUM DIISI (DARI API) */}
+      {missingAlerts.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+          <div className="flex items-center gap-2 text-amber-800 font-bold text-xs">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              Perhatian: Data Anda Belum Lengkap ({missingAlerts.length}{" "}
+              Peringatan)
+            </span>
+          </div>
+          <ul className="space-y-1 pl-6 list-disc text-xs text-amber-900">
+            {missingAlerts.map((alert) => (
+              <li key={alert.id}>
+                <span className="font-semibold">{alert.category}:</span>{" "}
+                {alert.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* MAIN CONTAINER: SINGLE SHEET DOCUMENT VIEW */}
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-sm overflow-hidden">
         {/* STICKY TAB NAVIGATOR */}
@@ -169,37 +256,54 @@ export default function ProfileReviewAlternativePage() {
               <div>
                 <dt className="text-slate-400 text-[10px]">Nama Lengkap</dt>
                 <dd className="font-bold text-slate-800">
-                  Fajar Ardiansyah, S.T.
+                  {jobSeekerProfile?.full_name ||
+                    user?.full_name ||
+                    "Belum diisi"}
                 </dd>
               </div>
               <div>
                 <dt className="text-slate-400 text-[10px]">Alamat Email</dt>
                 <dd className="font-bold text-slate-800">
-                  fajar.ardiansyah@example.com
+                  {user?.email || "Belum diisi"}
                 </dd>
               </div>
               <div>
                 <dt className="text-slate-400 text-[10px]">
                   Kontak HP/WhatsApp
                 </dt>
-                <dd className="font-bold text-slate-800">+62 812-3456-7890</dd>
+                <dd className="font-bold text-slate-800">
+                  {jobSeekerProfile?.phone || user?.phone || "Belum diisi"}
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-400 text-[10px]">
                   Tempat, Tanggal Lahir
                 </dt>
                 <dd className="font-bold text-slate-800">
-                  Sumbawa Besar, 14 Juli 1998
+                  {jobSeekerProfile?.birth_place
+                    ? `${jobSeekerProfile.birth_place}, `
+                    : ""}
+                  {formatDateWithMonthName(jobSeekerProfile?.date_of_birth) ||
+                    "Belum diisi"}
                 </dd>
               </div>
               <div>
                 <dt className="text-slate-400 text-[10px]">Jenis Kelamin</dt>
-                <dd className="font-bold text-slate-800">Laki-laki</dd>
+                <dd className="font-bold text-slate-800">
+                  {jobSeekerProfile?.gender
+                    ? userGenderMap[jobSeekerProfile.gender] ||
+                      jobSeekerProfile.gender
+                    : "Belum diisi"}
+                </dd>
               </div>
               <div>
                 <dt className="text-slate-400 text-[10px]">Domisili Utama</dt>
                 <dd className="font-bold text-slate-800">
-                  Kec. Unter Iwes, Kab. Sumbawa
+                  {jobSeekerProfile?.address
+                    ? `${jobSeekerProfile.address}, ${
+                        jobSeekerProfile?.regency_name || ""
+                      }`
+                    : "Belum diisi"}
                 </dd>
               </div>
             </dl>
@@ -224,22 +328,35 @@ export default function ProfileReviewAlternativePage() {
               </Link>
             </div>
 
-            <div className="pl-3 border-l-2 border-app-navy-600 space-y-1 ml-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-slate-900">
-                  S1 Teknik Geologi
-                </h4>
-                <span className="text-[10px] text-slate-400 font-semibold">
-                  2018 - 2022
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-700">
-                {`Universitas Pembangunan Nasional "Veteran" •`}{" "}
-                <span className="font-semibold text-app-navy-700">
-                  IPK 3.65
-                </span>
+            {jobSeekerEducation && jobSeekerEducation.length > 0 ? (
+              jobSeekerEducation.map((edu) => (
+                <div
+                  key={edu.id}
+                  className="pl-3 border-l-2 border-app-navy-600 space-y-1 ml-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-slate-900">
+                      {edu.degree} {edu.major}
+                    </h4>
+                    <span className="text-[10px] text-slate-400 font-semibold">
+                      {edu.start_date} - {edu.end_date || "Sekarang"}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-700">
+                    {edu.institution} {edu.grade ? `• ` : ""}
+                    {edu.grade && (
+                      <span className="font-semibold text-app-navy-700">
+                        IPK {edu.grade}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-[11px] text-slate-400 italic pl-3">
+                Belum ada riwayat pendidikan yang ditambahkan.
               </p>
-            </div>
+            )}
           </section>
 
           {/* 3. PENGALAMAN KERJA */}
@@ -261,27 +378,38 @@ export default function ProfileReviewAlternativePage() {
               </Link>
             </div>
 
-            <div className="space-y-4 pl-3 border-l-2 border-slate-200 ml-3">
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-slate-900">
-                    Junior Exploration Geologist
-                  </h4>
-                  <span className="text-[10px] text-slate-400 font-semibold">
-                    Jan 2023 - Sekarang
-                  </span>
-                </div>
-                <p className="text-[11px] font-semibold text-slate-700">
-                  PT Tambang Nusa Tenggara — Sumbawa Barat
-                </p>
-                <p className="text-[11px] text-slate-500 leading-relaxed pt-1">
-                  • Mengoordinasikan tim pemetaan lapangan untuk area prospek
-                  emas dan tembaga.
-                  <br />• Bertanggung jawab atas pengelolaan data hasil core
-                  drilling dan supervisi QA/QC sampel laboratorium.
-                </p>
+            {jobSeekerExperience && jobSeekerExperience.length > 0 ? (
+              <div className="space-y-4 pl-3 border-l-2 border-slate-200 ml-3">
+                {jobSeekerExperience.map((exp) => (
+                  <div key={exp.id} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-slate-900">
+                        {exp.job_title}
+                      </h4>
+                      <span className="text-[10px] text-slate-400 font-semibold">
+                        {exp.start_date} -{" "}
+                        {exp.is_current
+                          ? "Sekarang"
+                          : exp.end_date || "Selesai"}
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700">
+                      {exp.company_name}{" "}
+                      {exp.location ? `— ${exp.location}` : ""}
+                    </p>
+                    {exp.description && (
+                      <p className="text-[11px] text-slate-500 leading-relaxed pt-1">
+                        {exp.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 italic pl-3">
+                Belum ada pengalaman kerja yang ditambahkan.
+              </p>
+            )}
           </section>
 
           {/* 4. KEAHLIAN & KOMPETENSI */}
@@ -303,26 +431,90 @@ export default function ProfileReviewAlternativePage() {
               </Link>
             </div>
 
-            <div className="flex flex-wrap gap-2 text-[11px]">
-              {[
-                "Geological Mapping",
-                "ArcGIS / QGIS",
-                "Core Sampling Analysis",
-                "Frontend Development (React/Next.js)",
-                "Tailwind CSS",
-                "POP Mineral K3",
-              ].map((skill, idx) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1 bg-slate-100 text-slate-700 font-bold rounded-md border border-slate-200"
-                >
-                  ✓ {skill}
-                </span>
-              ))}
-            </div>
+            {jobSeekerSkill && jobSeekerSkill.length > 0 ? (
+              <div className="flex flex-wrap gap-2 text-[11px]">
+                {jobSeekerSkill.map((skill) => (
+                  <span
+                    key={skill.id}
+                    className="px-3 py-1 bg-slate-100 text-slate-700 font-bold rounded-md border border-slate-200 inline-flex items-center gap-1"
+                  >
+                    <span>✓ {skill.skill_name}</span>
+                    {skill.proficiency_level && (
+                      <span className="text-[9px] text-slate-400 font-normal">
+                        ({skill.proficiency_level})
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 italic">
+                Belum ada keahlian yang ditambahkan.
+              </p>
+            )}
           </section>
 
-          {/* 5. PREFERENSI PEKERJAAN */}
+          {/* 5. SERTIFIKASI KOMPETENSI */}
+          <section id="certification" className="py-8 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-app-navy-50 border border-app-navy-200 flex items-center justify-center text-app-navy-700">
+                  <Award className="w-3.5 h-3.5" />
+                </div>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  5. Sertifikasi Kompetensi
+                </h3>
+              </div>
+              <Link
+                href="/dashboard/pencaker/profil/edit"
+                className="text-[10px] font-bold text-app-navy-700 hover:underline flex items-center gap-1"
+              >
+                <Edit3 className="w-3 h-3" /> Edit Section
+              </Link>
+            </div>
+
+            {jobSeekerCertification && jobSeekerCertification.length > 0 ? (
+              <div className="space-y-3">
+                {jobSeekerCertification.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between text-[11px]"
+                  >
+                    <div>
+                      <p className="font-bold text-slate-900">{cert.name}</p>
+                      <p className="text-[10px] text-slate-500">
+                        {cert.issuer} • Diterbitkan:{" "}
+                        {new Date(cert.issue_date).toLocaleDateString("id-ID", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    {cert.certificate_file_url ? (
+                      <a
+                        href={`${APP_CONFIG.STORAGE_URL}${cert.certificate_file_url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1 bg-white border border-slate-200 text-app-navy-700 font-bold rounded hover:bg-slate-100 transition"
+                      >
+                        Lihat Sertifikat
+                      </a>
+                    ) : (
+                      <span className="text-[10px] text-slate-400 italic">
+                        Tanpa File
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 italic">
+                Belum ada sertifikasi yang ditambahkan.
+              </p>
+            )}
+          </section>
+
+          {/* 6. PREFERENSI PEKERJAAN */}
           <section id="preferences" className="py-8 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -330,7 +522,7 @@ export default function ProfileReviewAlternativePage() {
                   <SlidersHorizontal className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  5. Preferensi Karier
+                  6. Preferensi Karier
                 </h3>
               </div>
               <Link
@@ -341,43 +533,71 @@ export default function ProfileReviewAlternativePage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] bg-slate-50/50 p-4 rounded-lg border border-slate-100">
-              <div>
-                <span className="text-slate-400 text-[10px] block">
-                  Peran / Jabatan Target
-                </span>
-                <p className="font-bold text-slate-800">
-                  Geologist, Mining Staff, Frontend Developer
-                </p>
+            {jobSeekerPreference ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px] bg-slate-50/50 p-4 rounded-lg border border-slate-100">
+                <div>
+                  <span className="text-slate-400 text-[10px] block">
+                    Peran / Jabatan Target
+                  </span>
+                  <p className="font-bold text-slate-800">
+                    {jobSeekerPreference.preferred_positions &&
+                    jobSeekerPreference.preferred_positions.length > 0
+                      ? jobSeekerPreference.preferred_positions
+                          .map((p) => p.name)
+                          .join(", ")
+                      : "Belum ditentukan"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[10px] block">
+                    Ekspektasi Remunerasi
+                  </span>
+                  <p className="font-bold text-slate-800">
+                    {jobSeekerPreference.min_salary ||
+                    jobSeekerPreference.max_salary
+                      ? `Rp ${Number(
+                          jobSeekerPreference.min_salary || 0,
+                        ).toLocaleString("id-ID")} - Rp ${Number(
+                          jobSeekerPreference.max_salary || 0,
+                        ).toLocaleString("id-ID")} / Bulan`
+                      : "Tidak ditentukan"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[10px] block">
+                    Status Pencarian Kerja
+                  </span>
+                  <p className="font-bold text-emerald-700">
+                    {jobSeekerPreference.job_search_status ===
+                    "actively_looking"
+                      ? "Aktif mencari pekerjaan (Open to Work)"
+                      : "Terbuka untuk penawaran"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[10px] block">
+                    Preferensi Lokasi & Relokasi
+                  </span>
+                  <p className="font-bold text-slate-800">
+                    {jobSeekerPreference.preferred_districts &&
+                    jobSeekerPreference.preferred_districts.length > 0
+                      ? jobSeekerPreference.preferred_districts
+                          .map((d) => d.name)
+                          .join(", ")
+                      : "Seluruh wilayah"}
+                    {jobSeekerPreference.willing_to_relocate &&
+                      " (Siap Relokasi)"}
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="text-slate-400 text-[10px] block">
-                  Ekspektasi Remunerasi
-                </span>
-                <p className="font-bold text-slate-800">
-                  Rp 8.000.000 - Rp 12.000.000 / Bulan
-                </p>
-              </div>
-              <div>
-                <span className="text-slate-400 text-[10px] block">
-                  Ketersediaan Bekerja
-                </span>
-                <p className="font-bold text-emerald-700">
-                  Siap Kerja Segera (Notice Period: 2 Minggu)
-                </p>
-              </div>
-              <div>
-                <span className="text-slate-400 text-[10px] block">
-                  Preferensi Lokasi
-                </span>
-                <p className="font-bold text-slate-800">
-                  Sumbawa, NTB, DKI Jakarta (Bersedia Relokasi)
-                </p>
-              </div>
-            </div>
+            ) : (
+              <p className="text-[11px] text-slate-400 italic">
+                Belum ada preferensi kerja yang diatur.
+              </p>
+            )}
           </section>
 
-          {/* 6. CV UTAMA & DOKUMEN PENDUKUNG */}
+          {/* 7. CV UTAMA & DOKUMEN PENDUKUNG */}
           <section id="documents" className="pt-8 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -385,7 +605,7 @@ export default function ProfileReviewAlternativePage() {
                   <FileText className="w-3.5 h-3.5" />
                 </div>
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  6. File Lampiran & Berkas Pendukung
+                  7. File Lampiran & Berkas Pendukung
                 </h3>
               </div>
               <Link
@@ -397,44 +617,40 @@ export default function ProfileReviewAlternativePage() {
             </div>
 
             <div className="space-y-2">
-              {/* CV TERLAMPIR */}
-              <div className="flex items-center justify-between p-3 border border-emerald-200 bg-emerald-50/40 rounded-lg text-[11px]">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <div>
-                    <p className="font-bold text-slate-900">
-                      CV_Fajar_Ardiansyah_2026.pdf
-                    </p>
-                    <p className="text-[10px] text-slate-500">
-                      CV Utama • Terverifikasi ATS-Friendly
-                    </p>
+              {mainCv ? (
+                <div className="flex items-center justify-between p-3 border border-emerald-200 bg-emerald-50/40 rounded-lg text-[11px]">
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <div>
+                      <p className="font-bold text-slate-900">{mainCv.name}</p>
+                      <p className="text-[10px] text-slate-500">
+                        {mainCv.categoryLabel || "CV Utama"} • {mainCv.size}
+                      </p>
+                    </div>
                   </div>
+                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[9px] rounded">
+                    Diunggah
+                  </span>
                 </div>
-                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold text-[9px] rounded">
-                  Diunggah
-                </span>
-              </div>
-
-              {/* DOKUMEN BELUM LENGKAP */}
-              <div className="flex items-center justify-between p-3 border border-amber-200 bg-amber-50/40 rounded-lg text-[11px]">
-                <div className="flex items-center gap-3">
-                  <Paperclip className="w-5 h-5 text-amber-600 shrink-0" />
-                  <div>
-                    <p className="font-bold text-amber-900">
-                      Ijazah Terakhir & SKCK
-                    </p>
-                    <p className="text-[10px] text-amber-700">
-                      Dokumen pendukung opsional belum diunggah
-                    </p>
+              ) : (
+                <div className="flex items-center justify-between p-3 border border-amber-200 bg-amber-50/40 rounded-lg text-[11px]">
+                  <div className="flex items-center gap-3">
+                    <Paperclip className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div>
+                      <p className="font-bold text-amber-900">CV Utama</p>
+                      <p className="text-[10px] text-amber-700">
+                        Belum ada CV utama yang diunggah.
+                      </p>
+                    </div>
                   </div>
+                  <Link
+                    href="/dashboard/pencaker/dokumen"
+                    className="px-2.5 py-1 bg-amber-600 text-white font-bold text-[10px] rounded-md hover:bg-amber-700 transition"
+                  >
+                    Unggah
+                  </Link>
                 </div>
-                <Link
-                  href="/dashboard/pencaker/dokumen"
-                  className="px-2.5 py-1 bg-amber-600 text-white font-bold text-[10px] rounded-md hover:bg-amber-700 transition"
-                >
-                  Unggah
-                </Link>
-              </div>
+              )}
             </div>
           </section>
         </div>

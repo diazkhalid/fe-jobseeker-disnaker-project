@@ -12,6 +12,11 @@ import React, {
 import { useToast } from "./ToastContext";
 import { me } from "@/features/auth/services/auth.service";
 
+interface UserProfileAuth {
+  profile_photo_url: string;
+  is_fresh_graduate: boolean;
+}
+
 // 1. Definisikan interface untuk tipe data User Anda (Sesuaikan dengan payload API Anda)
 interface UserData {
   id: string;
@@ -23,6 +28,7 @@ interface UserData {
   email_verified_at: string;
   phone_verified_at: string;
   created_at: string;
+  profile: UserProfileAuth;
   [key: string]: any; // fallback untuk property opsional lainnya
 }
 
