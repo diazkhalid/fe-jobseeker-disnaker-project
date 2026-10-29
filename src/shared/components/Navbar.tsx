@@ -29,6 +29,9 @@ import { accountTypeMap } from "../utils/userAccountTypeMap";
 import { userDashboardPath } from "../utils/userDashboardPath";
 import APP_CONFIG from "../global/app_config";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
+import { logout } from "@/features/auth/services/auth.service";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useToast } from "../contexts/ToastContext";
 
 // Tipe lowongan untuk Dropdown Lowongan Kerja
 const jobCategories = [
@@ -94,6 +97,8 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { user, isLoading } = useAuthUser();
+  const [token] = useLocalStorage("access-token", null);
+  const { addToast } = useToast();
 
   useEffect(() => {
     const checkLogin = () => {
@@ -105,6 +110,17 @@ export default function Navbar() {
     };
     checkLogin();
   }, [user, isLoading]);
+
+  const handleLogout = async () => {
+    if (!token) return;
+    const result = await logout(token);
+    if (result.status !== 200) {
+      addToast("Gagal logout", "error");
+      return;
+    }
+
+    window.location.href = "/login";
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -338,15 +354,15 @@ export default function Navbar() {
                   className="flex items-center gap-2.5 p-1.5 pr-3 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/80 transition-all focus:outline-none"
                 >
                   <div className="relative w-5 h-5 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
-                    {jobSeekerProfile?.profile_photo_url ? (
+                    {user?.profile?.profile_photo_url ? (
                       <Image
-                        src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                        src={`${APP_CONFIG.STORAGE_URL}${user?.profile?.profile_photo_url}`}
                         alt="Foto Profil"
                         fill
                         className="object-cover"
                       />
                     ) : (
-                      <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                      <span className="flex h-full flex-col justify-center text-xs font-medium items-center text-slate-500">
                         {user?.full_name.charAt(0)}
                       </span>
                     )}
@@ -387,7 +403,7 @@ export default function Navbar() {
                           Dashboard
                         </Link>
                         <Link
-                          href="/profil"
+                          href={`${userDashboardPath[user?.account_type as string]}/profil`}
                           className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-app-navy-50/50 transition-colors"
                         >
                           <User className="w-4 h-4 text-app-navy-600" /> Profil
@@ -418,7 +434,7 @@ export default function Navbar() {
 
                       <div className="border-t border-slate-100 pt-1 mt-1">
                         <button
-                          onClick={() => setIsLoggedIn(false)}
+                          onClick={() => handleLogout()}
                           className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 text-left transition-colors"
                         >
                           <LogOut className="w-4 h-4" /> Keluar
@@ -589,15 +605,15 @@ export default function Navbar() {
                   <div className="pt-2 border-t border-slate-100">
                     <div className="flex items-center gap-3 px-4 py-2">
                       <div className="relative w-5 h-5 sm:w-8 sm:h-8 rounded-full overflow-hidden border-2 border-app-navy-400/50 bg-slate-800 shrink-0">
-                        {jobSeekerProfile?.profile_photo_url ? (
+                        {user?.profile?.profile_photo_url ? (
                           <Image
-                            src={`${APP_CONFIG.STORAGE_URL}${jobSeekerProfile?.profile_photo_url}`}
+                            src={`${APP_CONFIG.STORAGE_URL}${user?.profile?.profile_photo_url}`}
                             alt="Foto Profil"
                             fill
                             className="object-cover"
                           />
                         ) : (
-                          <span className="flex h-full flex-col justify-center text-3xl font-medium items-center text-slate-500">
+                          <span className="flex h-full flex-col justify-center text-xs font-medium items-center text-slate-500">
                             {user?.full_name.charAt(0)}
                           </span>
                         )}
@@ -613,7 +629,7 @@ export default function Navbar() {
                     </div>
                     <div className="mt-2 space-y-1">
                       <Link
-                        href="/profil"
+                        href={`${userDashboardPath[user?.account_type as string]}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="block px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 rounded-lg"
                       >
@@ -621,8 +637,7 @@ export default function Navbar() {
                       </Link>
                       <button
                         onClick={() => {
-                          setIsLoggedIn(false);
-                          setIsMobileMenuOpen(false);
+                          handleLogout();
                         }}
                         className="w-full text-left px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg"
                       >

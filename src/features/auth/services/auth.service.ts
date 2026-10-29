@@ -56,3 +56,17 @@ export async function me(token: string) {
     return handleServiceError(error);
   }
 }
+
+export async function logout(token: string) {
+  try {
+    const response = await axios.post(
+      API_ENDPOINTS.AUTH.LOGOUT,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

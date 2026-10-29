@@ -25,6 +25,9 @@ import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 import APP_CONFIG from "@/shared/global/app_config";
 import { useJobSeekerProfile } from "@/features/profil-pencaker/hooks/useUserProfile.hook";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
+import { logout } from "@/features/auth/services/auth.service";
+import { useToast } from "@/shared/contexts/ToastContext";
 
 export default function TopHeaderNav() {
   const pathname = usePathname() || "/dashboard";
@@ -32,14 +35,20 @@ export default function TopHeaderNav() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { jobSeekerProfile } = useJobSeekerProfile();
+  const [token] = useLocalStorage("access-token", null);
 
   const { user, isLoading } = useAuthUser();
+  const { addToast } = useToast();
 
-  const handleLogout = () => {
-    if (confirm("Apakah Anda yakin ingin keluar dari akun?")) {
-      alert("Logout berhasil!");
-      // TODO: panggil proses logout/auth provider di sini.
+  const handleLogout = async () => {
+    if (!token) return;
+    const result = await logout(token);
+    if (result.status !== 200) {
+      addToast("Gagal logout", "error");
+      return;
     }
+
+    window.location.href = "/login";
   };
 
   return (
@@ -185,10 +194,10 @@ export default function TopHeaderNav() {
               {isProfileMenuOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 z-50 py-1 text-xs">
                   <div className="px-4 py-2 border-b border-slate-100">
-                    <p className="font-bold text-slate-800">Fajar Ardiansyah</p>
-                    <p className="text-[10px] text-slate-500">
-                      fajar.dev@sumbawa.go.id
+                    <p className="font-bold text-slate-800">
+                      {user?.full_name}
                     </p>
+                    <p className="text-[10px] text-slate-500">{user?.email}</p>
                   </div>
                   <Link
                     href="/dashboard/pencaker/profil"

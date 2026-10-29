@@ -6,6 +6,7 @@ const API_ENDPOINTS = {
     REGISTER: `${baseURL}/auth/register`,
     LOGIN: `${baseURL}/auth/login`,
     ME: `${baseURL}/me`,
+    LOGOUT: `${baseURL}/auth/logout`,
   },
   OPTIONS: {
     DISTRICTS: `${baseURL}/option/districts`,
