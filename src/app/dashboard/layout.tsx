@@ -16,9 +16,6 @@ export default function DashboardLayout({
 
   useEffect(() => {
     const checkLogin = () => {
-      console.log(user);
-      console.log(isLoading);
-
       if (isLoading) return;
 
       if (!user && !isLoading) {

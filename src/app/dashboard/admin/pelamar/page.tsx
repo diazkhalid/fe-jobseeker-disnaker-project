@@ -28,210 +28,64 @@ import {
   ShieldAlert,
   Building2,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-
-// Tipe data kandidat / pelamar untuk Admin System
-interface Applicant {
-  id: string;
-  nik: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  education: string;
-  experience: string;
-  location: string;
-  registeredDate: string;
-  totalApplications: number; // Berapa kali dia pernah melamar
-  activeApplications: number; // Berapa lamaran yang sedang berjalan
-  lastAppliedCompany?: string; // Perusahaan terakhir yang dilamar
-  accountStatus: "Aktif" | "Nonaktif" | "Ditangguhkan";
-}
-
-const INITIAL_APPLICANTS: Applicant[] = [
-  {
-    id: "PLM-001",
-    nik: "5204011203980001",
-    name: "Ahmad Rizky",
-    email: "ahmad.rizky@example.com",
-    phone: "081234567890",
-    avatar: "AR",
-    education: "S1 Teknik Informatika",
-    experience: "4 Tahun",
-    location: "Sumbawa, NTB",
-    registeredDate: "10 Jan 2026",
-    totalApplications: 5,
-    activeApplications: 2,
-    lastAppliedCompany: "PT Sumbawa Teknologi",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-002",
-    nik: "5204024508990002",
-    name: "Siti Nurhaliza",
-    email: "siti.nurhaliza@example.com",
-    phone: "082345678901",
-    avatar: "SN",
-    education: "S1 Desain Komunikasi Visual",
-    experience: "3 Tahun",
-    location: "Mataram, NTB",
-    registeredDate: "15 Feb 2026",
-    totalApplications: 8,
-    activeApplications: 3,
-    lastAppliedCompany: "CV Digital Media",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-003",
-    nik: "5204012211000003",
-    name: "Budi Pratama",
-    email: "budi.pratama@example.com",
-    phone: "083456789012",
-    avatar: "BP",
-    education: "D3 Manajemen Informatika",
-    experience: "2 Tahun",
-    location: "Sumbawa Barat, NTB",
-    registeredDate: "01 Mar 2026",
-    totalApplications: 2,
-    activeApplications: 0,
-    lastAppliedCompany: "PT Tambang Makmur",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-004",
-    nik: "5204036005970004",
-    name: "Dina Mariana",
-    email: "dina.m@example.com",
-    phone: "084567890123",
-    avatar: "DM",
-    education: "S1 Sistem Informasi",
-    experience: "5 Tahun",
-    location: "Denpasar, Bali",
-    registeredDate: "20 Mar 2026",
-    totalApplications: 12,
-    activeApplications: 4,
-    lastAppliedCompany: "PT Bali Software House",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-005",
-    nik: "5204011809010005",
-    name: "Fajar Kurniawan",
-    email: "fajar.k@example.com",
-    phone: "085678901234",
-    avatar: "FK",
-    education: "S1 Matematika",
-    experience: "1 Tahun",
-    location: "Sumbawa, NTB",
-    registeredDate: "05 Apr 2026",
-    totalApplications: 3,
-    activeApplications: 1,
-    lastAppliedCompany: "Bank NTB Syariah",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-006",
-    nik: "5204025112980006",
-    name: "Rina Astuti",
-    email: "rina.astuti@example.com",
-    phone: "086789012345",
-    avatar: "RA",
-    education: "S1 Psikologi",
-    experience: "3 Tahun",
-    location: "Sumbawa, NTB",
-    registeredDate: "12 Apr 2026",
-    totalApplications: 4,
-    activeApplications: 1,
-    lastAppliedCompany: "PT Newmont / Amman",
-    accountStatus: "Aktif",
-  },
-  {
-    id: "PLM-007",
-    nik: "5204010303020007",
-    name: "Eko Prasetyo",
-    email: "eko.p@example.com",
-    phone: "087890123456",
-    avatar: "EP",
-    education: "S1 Teknik Elektro",
-    experience: "Freshgraduate",
-    location: "Sumbawa, NTB",
-    registeredDate: "01 Mei 2026",
-    totalApplications: 1,
-    activeApplications: 0,
-    lastAppliedCompany: "PT PLN (Persero)",
-    accountStatus: "Nonaktif",
-  },
-];
+import { useAdminJobSeeker } from "@/features/dashboard-admin/hooks/useAdminJobSeeker.hook";
+import {
+  AdminJobSeeker,
+  AdminJobSeekerIndexFilter,
+} from "@/features/dashboard-admin/types/AdminJobSeeker.type";
 
 export default function AdminPelamarPage() {
   const router = useRouter();
-  const [applicants, setApplicants] = useState<Applicant[]>(INITIAL_APPLICANTS);
+
+  // Panggil hook yang sudah menangani filter dan data langsung dari Backend
+  const { adminJobSeeker, filters, setFilters } = useAdminJobSeeker();
+
+  // State UI lokal (Pencarian & Status Akun opsional / Tampilan lanjutan)
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("Semua Status Akun");
-  const [selectedEducation, setSelectedEducation] = useState("Semua Pendidikan");
-  const [selectedExperience, setSelectedExperience] = useState("Semua Pengalaman");
-  const [selectedLocation, setSelectedLocation] = useState("Semua Lokasi");
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
 
   // Multiple Selection State
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  // Pagination & Dropdown State
-  const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  // State Dropdown Aksi
+  const [activeDropdownId, setActiveDropdownId] = useState<number | null>(null);
 
-  // Filter Data Pelamar
-  const filteredApplicants = applicants.filter((applicant) => {
-    const matchesSearch =
-      applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      applicant.nik.includes(searchTerm);
+  // Handler Apply Filter (Langsung memperbarui state filters di hook agar memicu fetch BE)
+  const handleApplyFilter = (
+    newFilterUpdates: Partial<AdminJobSeekerIndexFilter>,
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      ...newFilterUpdates,
+      page: 1, // Reset halaman ke 1 saat filter berubah
+    }));
+  };
 
-    const matchesStatus =
-      selectedStatus === "Semua Status Akun" ||
-      applicant.accountStatus === selectedStatus;
-
-    const matchesEducation =
-      selectedEducation === "Semua Pendidikan" ||
-      applicant.education.toLowerCase().includes(selectedEducation.toLowerCase());
-
-    const matchesLocation =
-      selectedLocation === "Semua Lokasi" ||
-      applicant.location.toLowerCase().includes(selectedLocation.toLowerCase());
-
-    return matchesSearch && matchesStatus && matchesEducation && matchesLocation;
-  });
-
-  const totalItems = filteredApplicants.length;
-  const totalPages = Math.ceil(totalItems / pageSize) || 1;
-  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-  const endItem = Math.min(currentPage * pageSize, totalItems);
-  const paginatedApplicants = filteredApplicants.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
-  );
-
-  // Total Keseluruhan Lamaran yang Dikirim oleh Semua Pelamar
-  const totalApplicationsSubmitted = applicants.reduce(
-    (acc, curr) => acc + curr.totalApplications,
-    0,
-  );
+  // Data langsung dari Backend (Tanpa filter frontend tambahan)
+  const totalItems = adminJobSeeker.length;
+  const totalPages = Math.ceil(totalItems / filters.limit) || 1;
+  const startItem =
+    totalItems === 0 ? 0 : (filters.page - 1) * filters.limit + 1;
+  const endItem = Math.min(filters.page * filters.limit, totalItems);
+  const paginatedApplicants = adminJobSeeker; // Data dari BE biasanya sudah ter-pagination
 
   // Handle Selection Logic
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      const allCurrentIds = paginatedApplicants.map((item) => item.id);
+      const allCurrentIds = paginatedApplicants.map((item) => item.profile_id);
       setSelectedIds(Array.from(new Set([...selectedIds, ...allCurrentIds])));
     } else {
-      const currentIds = paginatedApplicants.map((item) => item.id);
+      const currentIds = paginatedApplicants.map((item) => item.profile_id);
       setSelectedIds(selectedIds.filter((id) => !currentIds.includes(id)));
     }
   };
 
-  const handleSelectOne = (id: string) => {
+  const handleSelectOne = (id: number) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
     );
@@ -239,58 +93,32 @@ export default function AdminPelamarPage() {
 
   const isAllPaginatedSelected =
     paginatedApplicants.length > 0 &&
-    paginatedApplicants.every((item) => selectedIds.includes(item.id));
+    paginatedApplicants.every((item) => selectedIds.includes(item.profile_id));
 
-  // Batch Action Handlers
+  // Batch Action Handlers Placeholder
   const handleBulkDeactivate = () => {
-    setApplicants((prev) =>
-      prev.map((item) =>
-        selectedIds.includes(item.id)
-          ? { ...item, accountStatus: "Nonaktif" }
-          : item,
-      ),
-    );
     setSelectedIds([]);
   };
 
   const handleBulkActivate = () => {
-    setApplicants((prev) =>
-      prev.map((item) =>
-        selectedIds.includes(item.id)
-          ? { ...item, accountStatus: "Aktif" }
-          : item,
-      ),
-    );
     setSelectedIds([]);
   };
 
-  const handleAction = (id: string, actionName: string) => {
+  const handleAction = (id: number, actionName: string) => {
     setActiveDropdownId(null);
-    if (actionName === "Nonaktifkan") {
-      setApplicants((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, accountStatus: "Nonaktif" } : item,
-        ),
-      );
-    } else if (actionName === "Aktifkan") {
-      setApplicants((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, accountStatus: "Aktif" } : item,
-        ),
-      );
-    } else if (actionName === "Hapus") {
-      setApplicants((prev) => prev.filter((item) => item.id !== id));
-    }
   };
 
   // Helper Badge Status Akun
-  const getAccountStatusBadge = (status: Applicant["accountStatus"]) => {
-    switch (status) {
-      case "Aktif":
+  const getAccountStatusBadge = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "aktif":
+      case "active":
         return "bg-emerald-50 text-emerald-700 border-emerald-200/60";
-      case "Nonaktif":
+      case "nonaktif":
+      case "inactive":
         return "bg-slate-100 text-slate-600 border-slate-200/60";
-      case "Ditangguhkan":
+      case "ditangguhkan":
+      case "suspended":
         return "bg-rose-50 text-rose-700 border-rose-200/60";
       default:
         return "bg-slate-100 text-slate-700 border-slate-200/60";
@@ -304,16 +132,21 @@ export default function AdminPelamarPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-slate-900 flex items-center gap-2">
-              <Users className="w-6 h-6 text-teal-600" /> Database Seluruh Pelamar
+              <Users className="w-6 h-6 text-teal-600" /> Database Seluruh
+              Pelamar
             </h1>
             <p className="text-[0.7rem] md:text-xs text-slate-500 mt-0.5">
-              Kelola data pencari kerja terdaftar, pantau rekam jejak lamaran, serta status akun pelamar di sistem.
+              Kelola data pencari kerja terdaftar, pantau rekam jejak lamaran,
+              serta status akun pelamar di sistem.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={()=>{
-              router.push('pelamar/export')
-            }} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all shadow-xs">
+            <button
+              onClick={() => {
+                router.push("pelamar/export");
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-all shadow-xs"
+            >
               <Download className="w-3.5 h-3.5 text-slate-500" /> Export
             </button>
           </div>
@@ -323,8 +156,12 @@ export default function AdminPelamarPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">Total Pelamar</p>
-              <h3 className="text-lg font-bold text-slate-900 mt-0.5">{applicants.length} Orang</h3>
+              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Total Pelamar
+              </p>
+              <h3 className="text-lg font-bold text-slate-900 mt-0.5">
+                {adminJobSeeker.length} Orang
+              </h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
               <Users className="w-5 h-5" />
@@ -333,8 +170,12 @@ export default function AdminPelamarPage() {
 
           <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">Total Akumulasi Lamaran</p>
-              <h3 className="text-lg font-bold text-teal-600 mt-0.5">{totalApplicationsSubmitted} Berkas</h3>
+              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Total Akumulasi Lamaran
+              </p>
+              <h3 className="text-lg font-bold text-teal-600 mt-0.5">
+                0 Berkas
+              </h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
               <FileText className="w-5 h-5" />
@@ -343,9 +184,11 @@ export default function AdminPelamarPage() {
 
           <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">Pelamar Aktif Melamar</p>
+              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Pelamar Aktif Melamar
+              </p>
               <h3 className="text-lg font-bold text-amber-600 mt-0.5">
-                {applicants.filter((a) => a.activeApplications > 0).length} Orang
+                0 Orang
               </h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
@@ -355,9 +198,16 @@ export default function AdminPelamarPage() {
 
           <div className="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">Akun Terverifikasi/Aktif</p>
+              <p className="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Akun Terverifikasi/Aktif
+              </p>
               <h3 className="text-lg font-bold text-emerald-600 mt-0.5">
-                {applicants.filter((a) => a.accountStatus === "Aktif").length} Akun
+                {
+                  adminJobSeeker.filter(
+                    (a) => a.account_status?.toLowerCase() === "aktif",
+                  ).length
+                }{" "}
+                Akun
               </h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
@@ -378,7 +228,7 @@ export default function AdminPelamarPage() {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setCurrentPage(1);
+                  setFilters((prev) => ({ ...prev, page: 1 }));
                 }}
                 className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 transition-all"
               />
@@ -390,14 +240,14 @@ export default function AdminPelamarPage() {
                 value={selectedStatus}
                 onChange={(e) => {
                   setSelectedStatus(e.target.value);
-                  setCurrentPage(1);
+                  setFilters((prev) => ({ ...prev, page: 1 }));
                 }}
                 className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700 transition-all"
               >
                 <option>Semua Status Akun</option>
-                <option>Aktif</option>
-                <option>Nonaktif</option>
-                <option>Ditangguhkan</option>
+                <option value="Aktif">Aktif</option>
+                <option value="Nonaktif">Nonaktif</option>
+                <option value="Ditangguhkan">Ditangguhkan</option>
               </select>
             </div>
 
@@ -432,22 +282,23 @@ export default function AdminPelamarPage() {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden border-t border-slate-100 pt-3"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 pt-1">
                   <div>
                     <label className="block text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">
                       Tingkat Pendidikan
                     </label>
                     <select
-                      value={selectedEducation}
-                      onChange={(e) => setSelectedEducation(e.target.value)}
+                      value={filters.education_level}
+                      onChange={(e) =>
+                        handleApplyFilter({ education_level: e.target.value })
+                      }
                       className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
                     >
-                      <option>Semua Pendidikan</option>
-                      <option>SMA/SMK</option>
-                      <option>D3 Informatika</option>
-                      <option>S1 Informatika</option>
-                      <option>S1 Sistem Informasi</option>
-                      <option>S1 Psikologi</option>
+                      <option value="">Semua Pendidikan</option>
+                      <option value="SMA/SMK">SMA/SMK</option>
+                      <option value="D3">D3</option>
+                      <option value="S1">S1</option>
+                      <option value="S2">S2</option>
                     </select>
                   </div>
 
@@ -456,41 +307,59 @@ export default function AdminPelamarPage() {
                       Pengalaman Kerja
                     </label>
                     <select
-                      value={selectedExperience}
-                      onChange={(e) => setSelectedExperience(e.target.value)}
+                      value={filters.experience}
+                      onChange={(e) =>
+                        handleApplyFilter({ experience: e.target.value })
+                      }
                       className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
                     >
-                      <option>Semua Pengalaman</option>
-                      <option>Freshgraduate</option>
-                      <option>1 - 2 Tahun</option>
-                      <option>3 - 5 Tahun</option>
-                      <option>&gt; 5 Tahun</option>
+                      <option value="">Semua Pengalaman</option>
+                      <option value="fresh_graduate">Fresh Graduate</option>
+                      <option value="1_2">1 - 2 Tahun</option>
+                      <option value="3_5">3 - 5 Tahun</option>
+                      <option value="gt_5">&gt; 5 Tahun</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                      Domisili
+                      Kode Kecamatan
                     </label>
-                    <select
-                      value={selectedLocation}
-                      onChange={(e) => setSelectedLocation(e.target.value)}
+                    <input
+                      type="text"
+                      placeholder="Contoh: 520401"
+                      value={filters.district_code}
+                      onChange={(e) =>
+                        handleApplyFilter({ district_code: e.target.value })
+                      }
                       className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
-                    >
-                      <option>Semua Lokasi</option>
-                      <option>Sumbawa</option>
-                      <option>Sumbawa Barat</option>
-                      <option>Mataram</option>
-                      <option>Bali</option>
-                    </select>
+                    />
                   </div>
 
                   <div>
                     <label className="block text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                      Tgl Pendaftaran Akun
+                      Tgl Daftar (Dari)
                     </label>
                     <input
                       type="date"
+                      value={filters.registered_from}
+                      onChange={(e) =>
+                        handleApplyFilter({ registered_from: e.target.value })
+                      }
+                      className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                      Tgl Daftar (Sampai)
+                    </label>
+                    <input
+                      type="date"
+                      value={filters.registered_to}
+                      onChange={(e) =>
+                        handleApplyFilter({ registered_to: e.target.value })
+                      }
                       className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
                     />
                   </div>
@@ -517,10 +386,9 @@ export default function AdminPelamarPage() {
                   <th className="py-3.5 px-3 min-w-[220px]">Data Pelamar</th>
                   <th className="py-3.5 px-3">Pendidikan</th>
                   <th className="py-3.5 px-3">Pengalaman</th>
-                  <th className="py-3.5 px-3 min-w-[130px]">Domisili</th>
-                  <th className="py-3.5 px-3 text-center">Total Lamaran</th>
-                  <th className="py-3.5 px-3 text-center">Lamaran Aktif</th>
-                  <th className="py-3.5 px-3">Tgl Daftar</th>
+                  <th className="py-3.5 px-3 text-center">Fresh Grad</th>
+                  <th className="py-3.5 px-3 min-w-[130px]">Kecamatan</th>
+                  <th className="py-3.5 px-3">Tgl Terdaftar</th>
                   <th className="py-3.5 px-3">Status Akun</th>
                   <th className="py-3.5 px-4 text-right">Aksi</th>
                 </tr>
@@ -528,11 +396,20 @@ export default function AdminPelamarPage() {
 
               <tbody className="divide-y divide-slate-100 text-xs">
                 {paginatedApplicants.length > 0 ? (
-                  paginatedApplicants.map((applicant) => {
-                    const isSelected = selectedIds.includes(applicant.id);
+                  paginatedApplicants.map((seeker) => {
+                    const isSelected = selectedIds.includes(seeker.profile_id);
+                    const initials = seeker.full_name
+                      ? seeker.full_name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .substring(0, 2)
+                          .toUpperCase()
+                      : "JS";
+
                     return (
                       <tr
-                        key={applicant.id}
+                        key={seeker.profile_id}
                         className={`transition-colors ${
                           isSelected ? "bg-teal-50/40" : "hover:bg-slate-50/80"
                         }`}
@@ -542,28 +419,28 @@ export default function AdminPelamarPage() {
                           <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={() => handleSelectOne(applicant.id)}
+                            onChange={() => handleSelectOne(seeker.profile_id)}
                             className="rounded border-slate-200 text-teal-600 focus:ring-teal-500 cursor-pointer"
                           />
                         </td>
 
-                        {/* Nama Pelamar, Email & NIK */}
+                        {/* Nama Pelamar, NIK & Email */}
                         <td className="py-3.5 px-3">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-teal-50 text-teal-700 border border-teal-100 font-bold text-xs flex items-center justify-center shrink-0">
-                              {applicant.avatar}
+                              {initials}
                             </div>
                             <div>
                               <Link
-                                href={`/dashboard/admin/pelamar/${applicant.id}`}
+                                href={`/dashboard/admin/pelamar/${seeker.profile_id}`}
                                 className="font-bold text-slate-900 hover:text-teal-600 transition-colors line-clamp-1"
                               >
-                                {applicant.name}
+                                {seeker.full_name}
                               </Link>
                               <div className="flex items-center gap-2 text-[0.625rem] text-slate-400 font-mono">
-                                <span>NIK: {applicant.nik}</span>
+                                <span>NIK: {seeker.nik || "-"}</span>
                                 <span>•</span>
-                                <span>{applicant.email}</span>
+                                <span>{seeker.email}</span>
                               </div>
                             </div>
                           </div>
@@ -574,7 +451,7 @@ export default function AdminPelamarPage() {
                           <div className="flex items-center gap-1.5 text-slate-600">
                             <GraduationCap className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                             <span className="text-[0.7rem] font-medium">
-                              {applicant.education}
+                              {seeker.education || "-"}
                             </span>
                           </div>
                         </td>
@@ -584,46 +461,42 @@ export default function AdminPelamarPage() {
                           <div className="flex items-center gap-1.5 text-slate-600">
                             <Briefcase className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                             <span className="text-[0.7rem] font-medium">
-                              {applicant.experience}
+                              {seeker.experience_years} Tahun
                             </span>
                           </div>
                         </td>
 
-                        {/* Domisili */}
+                        {/* Fresh Graduate Indicator */}
+                        <td className="py-3.5 px-3 text-center">
+                          {seeker.is_fresh_graduate ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200/60 font-medium text-[0.65rem]">
+                              <Sparkles className="w-3 h-3" />
+                              Ya
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 text-[0.7rem]">
+                              -
+                            </span>
+                          )}
+                        </td>
+
+                        {/* Kecamatan */}
                         <td className="py-3.5 px-3">
                           <div className="flex items-center gap-1.5 text-slate-600">
                             <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                            <span className="truncate max-w-[120px] text-[0.7rem]">
-                              {applicant.location}
+                            <span className="truncate max-w-[130px] text-[0.7rem]">
+                              {seeker.district_name ||
+                                seeker.district_code ||
+                                "-"}
                             </span>
                           </div>
-                        </td>
-
-                        {/* Total Lamaran yang dimasukkan */}
-                        <td className="py-3.5 px-3 text-center">
-                          <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 font-bold text-[0.7rem]">
-                            {applicant.totalApplications}x
-                          </span>
-                        </td>
-
-                        {/* Lamaran Aktif */}
-                        <td className="py-3.5 px-3 text-center">
-                          <span
-                            className={`inline-flex items-center justify-center px-2 py-0.5 rounded-full font-bold text-[0.7rem] ${
-                              applicant.activeApplications > 0
-                                ? "bg-amber-50 text-amber-700 border border-amber-200/60"
-                                : "bg-slate-100 text-slate-400"
-                            }`}
-                          >
-                            {applicant.activeApplications} Berkas
-                          </span>
                         </td>
 
                         {/* Tanggal Terdaftar */}
                         <td className="py-3.5 px-3 text-slate-500 whitespace-nowrap text-[0.7rem]">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
-                            <span>{applicant.registeredDate}</span>
+                            <span>{seeker.registered_at || "-"}</span>
                           </div>
                         </td>
 
@@ -631,10 +504,10 @@ export default function AdminPelamarPage() {
                         <td className="py-3.5 px-3 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.65rem] font-bold border ${getAccountStatusBadge(
-                              applicant.accountStatus,
+                              seeker.account_status,
                             )}`}
                           >
-                            {applicant.accountStatus}
+                            {seeker.account_status || "Aktif"}
                           </span>
                         </td>
 
@@ -644,9 +517,9 @@ export default function AdminPelamarPage() {
                             <button
                               onClick={() =>
                                 setActiveDropdownId(
-                                  activeDropdownId === applicant.id
+                                  activeDropdownId === seeker.profile_id
                                     ? null
-                                    : applicant.id,
+                                    : seeker.profile_id,
                                 )
                               }
                               className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
@@ -655,7 +528,7 @@ export default function AdminPelamarPage() {
                             </button>
 
                             {/* Dropdown Menu */}
-                            {activeDropdownId === applicant.id && (
+                            {activeDropdownId === seeker.profile_id && (
                               <>
                                 <div
                                   className="fixed inset-0 z-10"
@@ -664,7 +537,7 @@ export default function AdminPelamarPage() {
                                 <div className="absolute right-4 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 text-left divide-y divide-slate-100">
                                   <div className="py-1">
                                     <Link
-                                      href={`/dashboard/admin/pelamar/${applicant.id}`}
+                                      href={`/dashboard/admin/pelamar/${seeker.profile_id}`}
                                       className="flex items-center gap-2 px-3 py-1.5 text-[0.7rem] font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-600"
                                     >
                                       <Eye className="w-3.5 h-3.5" />
@@ -674,7 +547,7 @@ export default function AdminPelamarPage() {
                                     <button
                                       onClick={() =>
                                         handleAction(
-                                          applicant.id,
+                                          seeker.profile_id,
                                           "Kirim Email",
                                         )
                                       }
@@ -686,11 +559,12 @@ export default function AdminPelamarPage() {
                                   </div>
 
                                   <div className="py-1">
-                                    {applicant.accountStatus === "Aktif" ? (
+                                    {seeker.account_status?.toLowerCase() ===
+                                    "aktif" ? (
                                       <button
                                         onClick={() =>
                                           handleAction(
-                                            applicant.id,
+                                            seeker.profile_id,
                                             "Nonaktifkan",
                                           )
                                         }
@@ -702,7 +576,10 @@ export default function AdminPelamarPage() {
                                     ) : (
                                       <button
                                         onClick={() =>
-                                          handleAction(applicant.id, "Aktifkan")
+                                          handleAction(
+                                            seeker.profile_id,
+                                            "Aktifkan",
+                                          )
                                         }
                                         className="w-full flex items-center gap-2 px-3 py-1.5 text-[0.7rem] font-semibold text-emerald-600 hover:bg-emerald-50"
                                       >
@@ -715,7 +592,7 @@ export default function AdminPelamarPage() {
                                   <div className="py-1">
                                     <button
                                       onClick={() =>
-                                        handleAction(applicant.id, "Hapus")
+                                        handleAction(seeker.profile_id, "Hapus")
                                       }
                                       className="w-full flex items-center gap-2 px-3 py-1.5 text-[0.7rem] font-semibold text-rose-600 hover:bg-rose-50"
                                     >
@@ -734,7 +611,7 @@ export default function AdminPelamarPage() {
                 ) : (
                   <tr>
                     <td
-                      colSpan={10}
+                      colSpan={9}
                       className="py-12 text-center text-slate-400"
                     >
                       <Users className="w-8 h-8 mx-auto mb-2 opacity-30" />
@@ -768,10 +645,15 @@ export default function AdminPelamarPage() {
                   Tampilkan:
                 </span>
                 <select
-                  value={pageSize}
+                  value={filters.rowsPerPage}
                   onChange={(e) => {
-                    setPageSize(Number(e.target.value));
-                    setCurrentPage(1);
+                    const val = Number(e.target.value);
+                    setFilters((prev) => ({
+                      ...prev,
+                      rowsPerPage: val,
+                      limit: val,
+                      page: 1,
+                    }));
                   }}
                   className="px-2 py-1 border border-slate-200 rounded-lg bg-white text-xs font-medium text-slate-800 focus:outline-none focus:border-teal-500"
                 >
@@ -786,8 +668,8 @@ export default function AdminPelamarPage() {
               {/* Navigasi Halaman */}
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
+                  onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
+                  disabled={filters.page === 1}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Pertama"
                 >
@@ -795,9 +677,12 @@ export default function AdminPelamarPage() {
                 </button>
                 <button
                   onClick={() =>
-                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    setFilters((prev) => ({
+                      ...prev,
+                      page: Math.max(prev.page - 1, 1),
+                    }))
                   }
-                  disabled={currentPage === 1}
+                  disabled={filters.page === 1}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Sebelumnya"
                 >
@@ -805,22 +690,27 @@ export default function AdminPelamarPage() {
                 </button>
 
                 <span className="px-2.5 text-xs font-semibold text-slate-700">
-                  {currentPage} / {totalPages}
+                  {filters.page} / {totalPages}
                 </span>
 
                 <button
                   onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    setFilters((prev) => ({
+                      ...prev,
+                      page: Math.min(prev.page + 1, totalPages),
+                    }))
                   }
-                  disabled={currentPage === totalPages || totalItems === 0}
+                  disabled={filters.page === totalPages || totalItems === 0}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Selanjutnya"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
                 <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages || totalItems === 0}
+                  onClick={() =>
+                    setFilters((prev) => ({ ...prev, page: totalPages }))
+                  }
+                  disabled={filters.page === totalPages || totalItems === 0}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Terakhir"
                 >

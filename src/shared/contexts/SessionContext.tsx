@@ -28,7 +28,7 @@ interface UserData {
   email_verified_at: string;
   phone_verified_at: string;
   created_at: string;
-  profile: UserProfileAuth;
+  profile?: UserProfileAuth;
   [key: string]: any; // fallback untuk property opsional lainnya
 }
 

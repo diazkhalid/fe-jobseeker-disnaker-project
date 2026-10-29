@@ -19,6 +19,8 @@ import {
   Building2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
+import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 
 interface NavbarProps {
   onToggleMobileSidebar?: () => void;
@@ -29,6 +31,7 @@ export default function NavbarDashboardAdmin({
 }: NavbarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const { user } = useAuthUser();
 
   return (
     <header className="sticky top-0 z-30 w-full h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 flex items-center justify-between font-['Poppins',sans-serif]">
@@ -49,24 +52,24 @@ export default function NavbarDashboardAdmin({
             placeholder="Cari lowongan, perusahaan, pelamar, atau berita..."
             className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all"
           />
-          <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1 px-1.5 py-0.5 text-[0.6rem] font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-2xs">
+          {/* <kbd className="hidden lg:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1 px-1.5 py-0.5 text-[0.6rem] font-mono text-slate-400 bg-white border border-slate-200 rounded shadow-2xs">
             ⌘K
-          </kbd>
+          </kbd> */}
         </div>
       </div>
 
       {/* RIGHT SECTION: ACTIONS & USER PROFILE */}
       <div className="flex items-center gap-2 sm:gap-3">
         {/* Quick Action: Verifikasi Lowongan */}
-        <Link
+        {/* <Link
           href="/dashboard/disnakertrans/lowongan/verifikasi"
           className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium shadow-xs shadow-teal-600/20 transition-all duration-200"
         >
           <FileCheck2 className="w-4 h-4" />
           <span>Verifikasi Lowongan</span>
-        </Link>
+        </Link> */}
 
-        <div className="h-6 w-[1px] bg-slate-200 hidden sm:block" />
+        {/* <div className="h-6 w-[1px] bg-slate-200 hidden sm:block" /> */}
 
         <Link
           href="/dashboard/disnakertrans/pesan"
@@ -181,12 +184,12 @@ export default function NavbarDashboardAdmin({
             <div className="hidden md:flex flex-col text-left">
               <div className="flex items-center gap-1">
                 <span className="text-xs font-semibold text-slate-900 truncate max-w-[130px]">
-                  Disnakertrans
+                  {user?.full_name}
                 </span>
                 <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               </div>
               <span className="text-[0.625rem] text-slate-500">
-                Administrator
+                {accountTypeMap[user?.account_type as string]}
               </span>
             </div>
 

@@ -60,6 +60,13 @@ const API_ENDPOINTS = {
       UPDATE: `${baseURL}/job-preferences`,
     },
   },
+  ADMIN: {
+    JOB_SEEKER: {
+      INDEX: `${baseURL}/admin/job-seekers`,
+      DETAIL: (id: string) => `${baseURL}/admin/job-seekers/${id}`,
+      EXPORT: `${baseURL}/admin/job-seekers/export`,
+    },
+  },
 };
 
 export default API_ENDPOINTS;

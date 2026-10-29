@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   LayoutDashboard,
@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import TopHeaderNav from "@/features/dashboard-pencaker/components/TopHeaderNav";
 import SubHeaderNav from "@/features/dashboard-pencaker/components/SubHeaderNav";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
+import { useToast } from "@/shared/contexts/ToastContext";
 
 // --- NAVIGASI UTAMA (TOP NAVBAR) ---
 const primaryNavItems = [
@@ -136,16 +138,24 @@ export default function CandidateHeaderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname() || "/dashboard";
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const router = useRouter();
+  const { user, isLoading } = useAuthUser();
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
-  const handleLogout = () => {
-    if (confirm("Apakah Anda yakin ingin keluar dari akun?")) {
-      alert("Logout berhasil!");
-    }
-  };
+  useEffect(() => {
+    const checkLogin = () => {
+      if (isLoading) return;
+
+      if (user?.account_type !== "job_seeker") {
+        setIsAuthorized(false);
+        router.push("/403");
+        return;
+      }
+      setIsAuthorized(true);
+    };
+    checkLogin();
+  }, [user, isLoading, router]);
+  if (!isAuthorized) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col antialiased">
