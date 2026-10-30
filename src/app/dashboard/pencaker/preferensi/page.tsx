@@ -22,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
+import { WorkSystem } from "@/features/preference-pencaker/types/UserPreference.type";
 
 export default function JobPreferencesPage() {
   const {
@@ -550,12 +551,14 @@ export default function JobPreferencesPage() {
                   "Hibrida (Hybrid)",
                   "Kerja dari Rumah (Remote)",
                 ].map((sys) => {
-                  const isSelected = preferences.workSystems.includes(sys);
+                  const isSelected = preferences.workSystems.includes(
+                    sys as WorkSystem,
+                  );
                   return (
                     <button
                       key={sys}
                       type="button"
-                      onClick={() => toggleWorkSystem(sys)}
+                      onClick={() => toggleWorkSystem(sys as WorkSystem)}
                       className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                         isSelected
                           ? "bg-app-navy-700 text-white shadow-sm"

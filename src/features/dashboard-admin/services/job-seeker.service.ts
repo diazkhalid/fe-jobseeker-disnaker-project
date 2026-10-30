@@ -1,7 +1,10 @@
 import API_ENDPOINTS from "@/shared/global/api_endpoints";
 import { handleServiceError } from "@/shared/utils/handleServiceError";
 import axios from "axios";
-import { AdminJobSeekerIndexFilter } from "../types/AdminJobSeeker.type";
+import {
+  AdminExportJobSeekerFilter,
+  AdminJobSeekerIndexFilter,
+} from "../types/AdminJobSeeker.type";
 
 export async function indexAdminJobSeeker(
   token: string,
@@ -34,7 +37,10 @@ export async function getAdminJobSeekerById(token: string, id: string) {
   }
 }
 
-export async function exportAdminJobSeeker(token: string, data: any) {
+export async function exportAdminJobSeeker(
+  token: string,
+  data: AdminExportJobSeekerFilter,
+) {
   try {
     const response = await axios.post(
       API_ENDPOINTS.ADMIN.JOB_SEEKER.EXPORT,

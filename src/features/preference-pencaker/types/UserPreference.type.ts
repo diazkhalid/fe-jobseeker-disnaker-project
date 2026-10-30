@@ -1,11 +1,13 @@
 import { OptionItem } from "@/shared/types/option.type";
 
+export type WorkSystem = "on_site" | "remote" | "hybrid";
+
 export interface JobSeekerPreference {
   desiredPositions: OptionItem[]; // Diubah menjadi array objek
   jobCategory: OptionItem | null;
   industry: OptionItem | null;
   jobTypes: string[];
-  workSystems: string[];
+  workSystems: WorkSystem[];
   expectedSalaryMin: string;
   expectedSalaryMax: string;
   relocationStatus: string;
@@ -18,7 +20,7 @@ export interface JobSeekerPreferenceDto {
   preferred_position_id: number[];
   preferred_district_codes: string[];
   job_types: string[];
-  work_arrangements: string[];
+  work_arrangements: WorkSystem[];
   willing_to_relocate: boolean;
   min_salary: number;
   max_salary: number;
@@ -34,7 +36,7 @@ export interface JobSeekerPreferenceData {
   preferred_positions: PreferredPosition[];
   preferred_districts: PreferredDistrict[];
   job_types: string[];
-  work_arrangements: string[];
+  work_arrangements: WorkSystem[];
   willing_to_relocate: boolean;
   min_salary: number;
   max_salary: number;

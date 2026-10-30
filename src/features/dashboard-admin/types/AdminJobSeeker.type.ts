@@ -145,3 +145,36 @@ export interface JobSeekerDocument {
   is_primary: boolean;
   created_at: string;
 }
+
+export interface AdminExportJobSeekerResult {
+  FullName: string;
+  NIK: string;
+  Education: string;
+  Gender: string;
+  Age: number;
+  DistrictName: string;
+  PreferredDistricts: string[];
+  PreferredPositions: string[];
+  MinSalary: number;
+  MaxSalary: number;
+  JobSearchStatus: string;
+}
+
+export interface AdminExportJobSeekerFilter {
+  education_level: string;
+  gender: string;
+  job_field_id: number | null;
+  job_type: string;
+  job_search_status: string;
+  district_code: string;
+  min_age: number | null;
+  max_age: number | null;
+  industry_id: number | null;
+  work_arrangement: string;
+  preferred_district_code: string;
+  min_salary: number | null;
+  max_salary: number | null;
+  position_id: number | null;
+  willing_to_relocate: boolean | null;
+  is_fresh_graduate: boolean | null;
+}

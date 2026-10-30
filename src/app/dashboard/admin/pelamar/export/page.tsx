@@ -9,268 +9,56 @@ import {
   Filter,
   Search,
   Users,
-  Briefcase,
-  MapPin,
-  GraduationCap,
-  SlidersHorizontal,
-  ChevronRight,
   CheckCircle2,
-  Building2,
-  Compass,
-  X,
   ChevronDown,
   Check,
 } from "lucide-react";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
-
-// Interface Referensi Sesuai Struktur Preferensi Pekerjaan
-interface PreferredPosition {
-  id: number;
-  name: string;
-  display_order: number;
-}
-
-interface PreferredDistrict {
-  code: string;
-  name: string;
-  display_order: number;
-}
-
-interface JobSeekerPreferenceData {
-  user_id: number;
-  job_field_id: number;
-  job_field: string;
-  industry_id: number;
-  industry: string;
-  preferred_positions: PreferredPosition[];
-  preferred_districts: PreferredDistrict[];
-  job_types: string[];
-  work_arrangements: string[];
-  willing_to_relocate: boolean;
-  min_salary: number;
-  max_salary: number;
-  job_search_status: string;
-  created_at: string;
-  updated_at: string;
-}
-
-// Tipe Data Pelamar Lengkap dengan Properti Demografi & Preferensi
-interface ExportApplicant {
-  id: string;
-  nik: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar: string;
-  education: string;
-  educationLevel: string;
-  gender: string;
-  age: number;
-  residenceDistrict: string; // Tempat tinggal / domisili (Select option)
-  preferredDistricts: string[]; // Preferensi tempat kerja (Multi-select)
-  jobField: string;
-  industry: string;
-  desiredPositions: string[];
-  skills: string[];
-  jobTypes: string[];
-  workArrangements: string[];
-  willingToRelocate: boolean;
-  minSalary: number;
-  maxSalary: number;
-  jobStatus: string;
-  registeredDate: string;
-}
-
-const DUMMY_EXPORT_APPLICANTS: ExportApplicant[] = [
-  {
-    id: "PLM-001",
-    nik: "5204011203980001",
-    name: "Ahmad Rizky",
-    email: "ahmad.rizky@example.com",
-    phone: "+62 812-3456-7890",
-    avatar: "AR",
-    education: "S1 Teknik Informatika",
-    educationLevel: "S1",
-    gender: "Laki-laki",
-    age: 26,
-    residenceDistrict: "Alas",
-    preferredDistricts: ["Alas", "Labuhan Badas"],
-    jobField: "Teknologi Informasi & Perangkat Lunak",
-    industry: "Teknologi / Perangkat Lunak",
-    desiredPositions: ["Frontend Developer", "Full Stack Developer"],
-    skills: ["React.js", "Next.js", "TypeScript", "Tailwind CSS"],
-    jobTypes: ["full_time", "contract_project"],
-    workArrangements: ["hybrid", "onsite"],
-    willingToRelocate: true,
-    minSalary: 3000000,
-    maxSalary: 8000000,
-    jobStatus: "actively_looking",
-    registeredDate: "10 Jan 2026",
-  },
-  {
-    id: "PLM-002",
-    nik: "5204024508990002",
-    name: "Siti Nurhaliza",
-    email: "siti.nurhaliza@example.com",
-    phone: "+62 823-4567-8901",
-    avatar: "SN",
-    education: "S1 Sistem Informasi",
-    educationLevel: "S1",
-    gender: "Perempuan",
-    age: 24,
-    residenceDistrict: "Mataram",
-    preferredDistricts: ["Mataram"],
-    jobField: "Teknologi Informasi & Perangkat Lunak",
-    industry: "Teknologi / Perangkat Lunak",
-    desiredPositions: ["UI/UX Designer", "Backend Developer"],
-    skills: ["Figma", "Node.js", "PHP", "MySQL"],
-    jobTypes: ["full_time", "freelance"],
-    workArrangements: ["remote"],
-    willingToRelocate: false,
-    minSalary: 5000000,
-    maxSalary: 10000000,
-    jobStatus: "open_to_offers",
-    registeredDate: "15 Feb 2026",
-  },
-  {
-    id: "PLM-003",
-    nik: "5204012211000003",
-    name: "Budi Pratama",
-    email: "budi.pratama@example.com",
-    phone: "+62 834-5678-9012",
-    avatar: "BP",
-    education: "D3 Manajemen Informatika",
-    educationLevel: "D3",
-    gender: "Laki-laki",
-    age: 28,
-    residenceDistrict: "Labuhan Badas",
-    preferredDistricts: ["Alas", "Labuhan Badas", "Moyo Hulu"],
-    jobField: "Teknologi Informasi & Perangkat Lunak",
-    industry: "Teknologi / Perangkat Lunak",
-    desiredPositions: ["Backend Developer", "Full Stack Developer"],
-    skills: ["Node.js", "MySQL", "PHP", "Laravel"],
-    jobTypes: ["contract_project", "internship"],
-    workArrangements: ["hybrid"],
-    willingToRelocate: true,
-    minSalary: 2000000,
-    maxSalary: 5000000,
-    jobStatus: "actively_looking",
-    registeredDate: "01 Mar 2026",
-  },
-];
-
-// Master Options untuk Filter
-const POSITION_OPTIONS = [
-  "Frontend Developer",
-  "Full Stack Developer",
-  "Backend Developer",
-  "UI/UX Designer",
-  "Admin IT",
-];
-
-const DISTRICT_OPTIONS = [
-  { code: "52.04.05", name: "Alas" },
-  { code: "52.04.18", name: "Labuhan Badas" },
-  { code: "52.04.10", name: "Moyo Hulu" },
-  { code: "Mataram", name: "Mataram" },
-];
-
-const EDUCATION_LEVEL_OPTIONS = [
-  "Semua Pendidikan",
-  "SMA/SMK",
-  "D3",
-  "S1",
-  "S2",
-];
-const GENDER_OPTIONS = ["Semua Gender", "Laki-laki", "Perempuan"];
-
-const JOB_TYPE_OPTIONS = [
-  { value: "full_time", label: "Penuh Waktu (Full-time)" },
-  { value: "part_time", label: "Paruh Waktu (Part-time)" },
-  { value: "contract_project", label: "Kontrak / Proyek" },
-  { value: "internship", label: "Magang (Internship)" },
-  { value: "freelance", label: "Lepas / Freelance" },
-];
-
-const WORK_ARRANGEMENT_OPTIONS = [
-  { value: "onsite", label: "Kantor (On-site)" },
-  { value: "hybrid", label: "Hibrida (Hybrid)" },
-  { value: "remote", label: "Dari Rumah (Remote)" },
-];
-
-const JOB_FIELD_OPTIONS = [
-  "Teknologi Informasi & Perangkat Lunak",
-  "Keuangan & Perbankan",
-  "Pemasaran & Digital Marketing",
-  "Sumber Daya Manusia (HR)",
-  "Logistik & Rantai Pasok",
-  "Administrasi & Kesekretariatan",
-];
-
-const INDUSTRY_OPTIONS = [
-  "Teknologi / Perangkat Lunak",
-  "Konstruksi & Pertambangan",
-  "Manufaktur & Pabrik",
-  "Jasa Keuangan & Fintech",
-  "Kesehatan & Farmasi",
-  "Pendidikan & Pelatihan",
-];
+import { useAdminJobSeeker } from "@/features/dashboard-admin/hooks/useAdminJobSeeker.hook";
+import { useOptions } from "@/shared/hooks/useOptions.hook";
+import { AdminExportJobSeekerFilter } from "@/features/dashboard-admin/types/AdminJobSeeker.type";
+import { userGenderMap } from "@/shared/utils/userGenderMap";
+import { mapPayloadToJobStatus } from "@/shared/utils/userJobMap";
 
 export default function ExportPelamarPage() {
-  // State Filter Demografi, Tempat Tinggal & Gaji
-  const [selectedEducationLevel, setSelectedEducationLevel] =
-    useState("Semua Pendidikan");
-  const [selectedResidence, setSelectedResidence] = useState("Semua Domisili");
-  const [selectedGender, setSelectedGender] = useState("Semua Gender");
-  const [minAge, setMinAge] = useState("");
-  const [maxAge, setMaxAge] = useState("");
-  const [filterMinSalary, setFilterMinSalary] = useState("");
-  const [filterMaxSalary, setFilterMaxSalary] = useState("");
+  // Hook Integrasi Backend untuk Export dan Filter Data Pelamar
+  const {
+    adminExportJobSeeker,
+    adminExportJobSeekerFilter,
+    setAdminExportJobSeekerFilter,
+  } = useAdminJobSeeker();
 
-  // State Filter Single Select Searchable (Job Field & Industry)
+  // Hook Master Options untuk Pilihan Dinamis (District, Industry, Job Field, Job Position)
+  const {
+    districtOptions,
+    insdustryOptions,
+    jobCategoryOptions,
+    jobPositionOptions,
+  } = useOptions();
+
+  // State Search Query untuk Dropdown Searchable Select
   const [jobFieldQuery, setJobFieldQuery] = useState("");
-  const [selectedJobField, setSelectedJobField] = useState("");
   const [isJobFieldOpen, setIsJobFieldOpen] = useState(false);
 
   const [industryQuery, setIndustryQuery] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("");
   const [isIndustryOpen, setIsIndustryOpen] = useState(false);
 
-  const [selectedRelocate, setSelectedRelocate] = useState("all");
-  const [selectedJobStatus, setSelectedJobStatus] = useState("Semua Status");
-
-  // State Filter Multi-Select Searchable
   const [positionQuery, setPositionQuery] = useState("");
-  const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
   const [isPositionOpen, setIsPositionOpen] = useState(false);
 
   const [workPlaceQuery, setWorkPlaceQuery] = useState("");
-  const [selectedPreferredDistricts, setSelectedPreferredDistricts] = useState<
-    string[]
-  >([]);
   const [isWorkPlaceOpen, setIsWorkPlaceOpen] = useState(false);
 
-  const [jobTypeQuery, setJobTypeQuery] = useState("");
-  const [selectedJobTypes, setSelectedJobTypes] = useState<string[]>([]);
-  const [isJobTypeOpen, setIsJobTypeOpen] = useState(false);
+  const [districtQuery, setDistrictQuery] = useState("");
+  const [isDistrictOpen, setIsDistrictOpen] = useState(false);
 
-  const [workArrQuery, setWorkArrQuery] = useState("");
-  const [selectedWorkArrangements, setSelectedWorkArrangements] = useState<
-    string[]
-  >([]);
-  const [isWorkArrOpen, setIsWorkArrOpen] = useState(false);
-
-  // State Hasil Data & Notifikasi
-  const [filteredResults, setFilteredResults] = useState<ExportApplicant[]>(
-    DUMMY_EXPORT_APPLICANTS,
-  );
+  // State Notifikasi Pesan Export
   const [exportMessage, setExportMessage] = useState<string | null>(null);
 
   // Refs untuk Click Outside Dropdown
   const posRef = useRef<HTMLDivElement>(null);
   const workPlaceRef = useRef<HTMLDivElement>(null);
-  const jobTypeRef = useRef<HTMLDivElement>(null);
-  const workArrRef = useRef<HTMLDivElement>(null);
+  const districtRef = useRef<HTMLDivElement>(null);
   const jobFieldRef = useRef<HTMLDivElement>(null);
   const industryRef = useRef<HTMLDivElement>(null);
 
@@ -286,16 +74,10 @@ export default function ExportPelamarPage() {
         setIsWorkPlaceOpen(false);
       }
       if (
-        jobTypeRef.current &&
-        !jobTypeRef.current.contains(event.target as Node)
+        districtRef.current &&
+        !districtRef.current.contains(event.target as Node)
       ) {
-        setIsJobTypeOpen(false);
-      }
-      if (
-        workArrRef.current &&
-        !workArrRef.current.contains(event.target as Node)
-      ) {
-        setIsWorkArrOpen(false);
+        setIsDistrictOpen(false);
       }
       if (
         jobFieldRef.current &&
@@ -314,158 +96,32 @@ export default function ExportPelamarPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filter Search Lists
-  const filteredPositions = POSITION_OPTIONS.filter((p) =>
-    p.toLowerCase().includes(positionQuery.toLowerCase()),
+  // Filter Search Lists dari Master Options
+  const filteredPositions = jobPositionOptions.filter((p) =>
+    p.name.toLowerCase().includes(positionQuery.toLowerCase()),
   );
-  const filteredWorkPlaces = DISTRICT_OPTIONS.filter((d) =>
+  const filteredWorkPlaces = districtOptions.filter((d) =>
     d.name.toLowerCase().includes(workPlaceQuery.toLowerCase()),
   );
-  const filteredJobFields = JOB_FIELD_OPTIONS.filter((f) =>
-    f.toLowerCase().includes(jobFieldQuery.toLowerCase()),
+  const filteredDistricts = districtOptions.filter((d) =>
+    d.name.toLowerCase().includes(districtQuery.toLowerCase()),
   );
-  const filteredIndustries = INDUSTRY_OPTIONS.filter((i) =>
-    i.toLowerCase().includes(industryQuery.toLowerCase()),
+  const filteredJobFields = jobCategoryOptions.filter((f) =>
+    f.name.toLowerCase().includes(jobFieldQuery.toLowerCase()),
+  );
+  const filteredIndustries = insdustryOptions.filter((i) =>
+    i.name.toLowerCase().includes(industryQuery.toLowerCase()),
   );
 
-  // Toggle Handlers untuk Multi-Select
-  const togglePosition = (pos: string) => {
-    setSelectedPositions((prev) =>
-      prev.includes(pos) ? prev.filter((p) => p !== pos) : [...prev, pos],
-    );
-  };
-
-  const togglePreferredDistrict = (distName: string) => {
-    setSelectedPreferredDistricts((prev) =>
-      prev.includes(distName)
-        ? prev.filter((d) => d !== distName)
-        : [...prev, distName],
-    );
-  };
-
-  const toggleJobType = (jtValue: string) => {
-    setSelectedJobTypes((prev) =>
-      prev.includes(jtValue)
-        ? prev.filter((t) => t !== jtValue)
-        : [...prev, jtValue],
-    );
-  };
-
-  const toggleWorkArr = (waValue: string) => {
-    setSelectedWorkArrangements((prev) =>
-      prev.includes(waValue)
-        ? prev.filter((w) => w !== waValue)
-        : [...prev, waValue],
-    );
-  };
-
-  // Handle Submit Filter Lengkap
-  const handleFilterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const results = DUMMY_EXPORT_APPLICANTS.filter((item) => {
-      // 1. Pendidikan Terakhir
-      const matchEdu =
-        selectedEducationLevel === "Semua Pendidikan" ||
-        item.educationLevel.toLowerCase() ===
-          selectedEducationLevel.toLowerCase();
-
-      // 2. Tempat Tinggal (Domisili / Kecamatan Select Option)
-      const matchResidence =
-        selectedResidence === "Semua Domisili" ||
-        item.residenceDistrict.toLowerCase() ===
-          selectedResidence.toLowerCase();
-
-      // 3. Preferensi Tempat Kerja (Multi-Select)
-      const matchPreferredDistricts =
-        selectedPreferredDistricts.length === 0 ||
-        selectedPreferredDistricts.some((selDist) =>
-          item.preferredDistricts.some(
-            (d) => d.toLowerCase() === selDist.toLowerCase(),
-          ),
-        );
-
-      // 4. Gender
-      const matchGender =
-        selectedGender === "Semua Gender" ||
-        item.gender.toLowerCase() === selectedGender.toLowerCase();
-
-      // 5. Umur (Range Min - Max)
-      const matchMinAge = minAge === "" || item.age >= Number(minAge);
-      const matchMaxAge = maxAge === "" || item.age <= Number(maxAge);
-
-      // 6. Rentang Ekspektasi Gaji
-      const reqMinSalary =
-        filterMinSalary !== "" ? Number(filterMinSalary.replace(/\D/g, "")) : 0;
-      const reqMaxSalary =
-        filterMaxSalary !== ""
-          ? Number(filterMaxSalary.replace(/\D/g, ""))
-          : Infinity;
-      const matchSalary =
-        (filterMinSalary === "" && filterMaxSalary === "") ||
-        (item.minSalary <= reqMaxSalary && item.maxSalary >= reqMinSalary);
-
-      // 7. Job Field (Searchable Select)
-      const matchField =
-        !selectedJobField ||
-        item.jobField.toLowerCase() === selectedJobField.toLowerCase();
-
-      // 8. Industry (Searchable Select)
-      const matchIndustry =
-        !selectedIndustry ||
-        item.industry.toLowerCase() === selectedIndustry.toLowerCase();
-
-      // 9. Preferred Positions (Multi-select)
-      const matchPositions =
-        selectedPositions.length === 0 ||
-        selectedPositions.some((selPos) =>
-          item.desiredPositions.some(
-            (p) => p.toLowerCase() === selPos.toLowerCase(),
-          ),
-        );
-
-      // 10. Job Types (Multi-select)
-      const matchJobTypes =
-        selectedJobTypes.length === 0 ||
-        selectedJobTypes.some((selJt) => item.jobTypes.includes(selJt));
-
-      // 11. Work Arrangements (Multi-select)
-      const matchWorkArr =
-        selectedWorkArrangements.length === 0 ||
-        selectedWorkArrangements.some((selWa) =>
-          item.workArrangements.includes(selWa),
-        );
-
-      // 12. Willing to Relocate
-      const matchRelocate =
-        selectedRelocate === "all" ||
-        (selectedRelocate === "true" && item.willingToRelocate) ||
-        (selectedRelocate === "false" && !item.willingToRelocate);
-
-      // 13. Job Search Status
-      const matchStatus =
-        selectedJobStatus === "Semua Status" ||
-        item.jobStatus.includes(selectedJobStatus);
-
-      return (
-        matchEdu &&
-        matchResidence &&
-        matchPreferredDistricts &&
-        matchGender &&
-        matchMinAge &&
-        matchMaxAge &&
-        matchSalary &&
-        matchField &&
-        matchIndustry &&
-        matchPositions &&
-        matchJobTypes &&
-        matchWorkArr &&
-        matchRelocate &&
-        matchStatus
-      );
-    });
-
-    setFilteredResults(results);
+  // Handler Perubahan Field Filter secara Generik
+  const handleFilterChange = (
+    key: keyof AdminExportJobSeekerFilter,
+    value: any,
+  ) => {
+    setAdminExportJobSeekerFilter((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   const handleExportExcel = () => {
@@ -497,7 +153,7 @@ export default function ExportPelamarPage() {
             <p className="text-xs sm:text-sm text-slate-500 mt-1">
               Saring database pelamar menggunakan parameter preferensi,
               demografi, tempat tinggal (domisili), serta preferensi tempat
-              kerja.
+              kerja langsung dari server.
             </p>
           </div>
         </div>
@@ -519,11 +175,11 @@ export default function ExportPelamarPage() {
             Pelamar
           </h2>
           <span className="text-[11px] text-slate-400">
-            Searchable select & demografi lengkap
+            Terintegrasi langsung ke Backend API
           </span>
         </div>
 
-        <form onSubmit={handleFilterSubmit} className="space-y-4">
+        <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 1. Pendidikan Terakhir */}
             <div>
@@ -531,38 +187,116 @@ export default function ExportPelamarPage() {
                 Pendidikan Terakhir
               </label>
               <select
-                value={selectedEducationLevel}
-                onChange={(e) => setSelectedEducationLevel(e.target.value)}
+                value={adminExportJobSeekerFilter.education_level}
+                onChange={(e) =>
+                  handleFilterChange("education_level", e.target.value)
+                }
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                {EDUCATION_LEVEL_OPTIONS.map((edu, idx) => (
-                  <option key={idx} value={edu}>
-                    {edu}
-                  </option>
-                ))}
+                <option value="">Semua Pendidikan</option>
+                <option value="SMA/SMK">SMA/SMK</option>
+                <option value="D3">D3</option>
+                <option value="S1">S1</option>
+                <option value="S2">S2</option>
               </select>
             </div>
 
-            {/* 2. Tempat Tinggal (Domisili / Select Option Kecamatan) */}
-            <div>
+            {/* 2. Tempat Tinggal (Domisili / District Code Select) */}
+            <div className="relative" ref={districtRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Tempat Tinggal (Kecamatan)
               </label>
-              <select
-                value={selectedResidence}
-                onChange={(e) => setSelectedResidence(e.target.value)}
-                className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
+              <div
+                onClick={() => setIsDistrictOpen(!isDistrictOpen)}
+                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
               >
-                <option value="Semua Domisili">Semua Domisili</option>
-                {DISTRICT_OPTIONS.map((dist, idx) => (
-                  <option key={idx} value={dist.name}>
-                    Kec. {dist.name}
-                  </option>
-                ))}
-              </select>
+                <span
+                  className={
+                    adminExportJobSeekerFilter.district_code
+                      ? "text-slate-800 font-bold"
+                      : "text-slate-400 font-medium"
+                  }
+                >
+                  {districtOptions.find(
+                    (d) => d.code === adminExportJobSeekerFilter.district_code,
+                  )?.name
+                    ? `Kec. ${
+                        districtOptions.find(
+                          (d) =>
+                            d.code === adminExportJobSeekerFilter.district_code,
+                        )?.name
+                      }`
+                    : "Semua Domisili"}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              {isDistrictOpen && (
+                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
+                  <div className="relative">
+                    <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari kecamatan domisili..."
+                      value={districtQuery}
+                      onChange={(e) => setDistrictQuery(e.target.value)}
+                      className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    <div
+                      onClick={() => {
+                        handleFilterChange("district_code", "");
+                        setIsDistrictOpen(false);
+                      }}
+                      className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                        adminExportJobSeekerFilter.district_code === ""
+                          ? "bg-teal-50 text-teal-700 font-bold"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      <span>Semua Domisili</span>
+                      {adminExportJobSeekerFilter.district_code === "" && (
+                        <Check className="w-3.5 h-3.5 text-teal-600" />
+                      )}
+                    </div>
+                    {filteredDistricts.length > 0 ? (
+                      filteredDistricts.map((dist) => {
+                        const isSelected =
+                          adminExportJobSeekerFilter.district_code ===
+                          dist.code;
+                        return (
+                          <div
+                            key={dist.code}
+                            onClick={() => {
+                              handleFilterChange("district_code", dist.code);
+                              setIsDistrictOpen(false);
+                            }}
+                            className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                              isSelected
+                                ? "bg-teal-50 text-teal-700 font-bold"
+                                : "hover:bg-slate-50 text-slate-700"
+                            }`}
+                          >
+                            <span>{dist.name}</span>
+                            {isSelected && (
+                              <Check className="w-3.5 h-3.5 text-teal-600" />
+                            )}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="py-2 text-center text-slate-400 text-[11px]">
+                        Tidak ditemukan
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* 3. Preferensi Tempat Kerja (Multi-Select Kecamatan) */}
+            {/* 3. Preferensi Tempat Kerja (Preferred District Code Select) */}
             <div className="relative" ref={workPlaceRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Preferensi Tempat Kerja
@@ -571,22 +305,27 @@ export default function ExportPelamarPage() {
                 onClick={() => setIsWorkPlaceOpen(!isWorkPlaceOpen)}
                 className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
               >
-                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
-                  {selectedPreferredDistricts.length > 0 ? (
-                    selectedPreferredDistricts.map((d, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded text-[10px] font-bold"
-                      >
-                        {d}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-slate-400 font-medium">
-                      Semua Tempat Kerja
-                    </span>
-                  )}
-                </div>
+                <span
+                  className={
+                    adminExportJobSeekerFilter.preferred_district_code
+                      ? "text-slate-800 font-bold"
+                      : "text-slate-400 font-medium"
+                  }
+                >
+                  {districtOptions.find(
+                    (d) =>
+                      d.code ===
+                      adminExportJobSeekerFilter.preferred_district_code,
+                  )?.name
+                    ? `Kec. ${
+                        districtOptions.find(
+                          (d) =>
+                            d.code ===
+                            adminExportJobSeekerFilter.preferred_district_code,
+                        )?.name
+                      }`
+                    : "Semua Tempat Kerja"}
+                </span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               </div>
 
@@ -596,7 +335,7 @@ export default function ExportPelamarPage() {
                     <Search className="w-3 h-3 absolute left-2.5 top-2.5 text-slate-400" />
                     <input
                       type="text"
-                      placeholder="Cari tempat kerja..."
+                      placeholder="Cari preferensi tempat kerja..."
                       value={workPlaceQuery}
                       onChange={(e) => setWorkPlaceQuery(e.target.value)}
                       className="w-full pl-7 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500"
@@ -604,15 +343,37 @@ export default function ExportPelamarPage() {
                     />
                   </div>
                   <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    <div
+                      onClick={() => {
+                        handleFilterChange("preferred_district_code", "");
+                        setIsWorkPlaceOpen(false);
+                      }}
+                      className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                        adminExportJobSeekerFilter.preferred_district_code ===
+                        ""
+                          ? "bg-teal-50 text-teal-700 font-bold"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      <span>Semua Tempat Kerja</span>
+                      {adminExportJobSeekerFilter.preferred_district_code ===
+                        "" && <Check className="w-3.5 h-3.5 text-teal-600" />}
+                    </div>
                     {filteredWorkPlaces.length > 0 ? (
-                      filteredWorkPlaces.map((dist, idx) => {
-                        const isSelected = selectedPreferredDistricts.includes(
-                          dist.name,
-                        );
+                      filteredWorkPlaces.map((dist) => {
+                        const isSelected =
+                          adminExportJobSeekerFilter.preferred_district_code ===
+                          dist.code;
                         return (
                           <div
-                            key={idx}
-                            onClick={() => togglePreferredDistrict(dist.name)}
+                            key={dist.code}
+                            onClick={() => {
+                              handleFilterChange(
+                                "preferred_district_code",
+                                dist.code,
+                              );
+                              setIsWorkPlaceOpen(false);
+                            }}
                             className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
                               isSelected
                                 ? "bg-teal-50 text-teal-700 font-bold"
@@ -642,19 +403,17 @@ export default function ExportPelamarPage() {
                 Jenis Kelamin
               </label>
               <select
-                value={selectedGender}
-                onChange={(e) => setSelectedGender(e.target.value)}
+                value={adminExportJobSeekerFilter.gender}
+                onChange={(e) => handleFilterChange("gender", e.target.value)}
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                {GENDER_OPTIONS.map((g, idx) => (
-                  <option key={idx} value={g}>
-                    {g}
-                  </option>
-                ))}
+                <option value="">Semua Gender</option>
+                <option value="male">Laki-laki</option>
+                <option value="female">Perempuan</option>
               </select>
             </div>
 
-            {/* 5. Umur (Range Min - Max) */}
+            {/* 5. Umur (Min - Max Age) */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Rentang Umur (Tahun)
@@ -663,15 +422,25 @@ export default function ExportPelamarPage() {
                 <input
                   type="number"
                   placeholder="Min Umur"
-                  value={minAge}
-                  onChange={(e) => setMinAge(e.target.value)}
+                  value={adminExportJobSeekerFilter.min_age ?? ""}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "min_age",
+                      e.target.value ? Number(e.target.value) : null,
+                    )
+                  }
                   className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
                 />
                 <input
                   type="number"
                   placeholder="Max Umur"
-                  value={maxAge}
-                  onChange={(e) => setMaxAge(e.target.value)}
+                  value={adminExportJobSeekerFilter.max_age ?? ""}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "max_age",
+                      e.target.value ? Number(e.target.value) : null,
+                    )
+                  }
                   className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
                 />
               </div>
@@ -684,23 +453,33 @@ export default function ExportPelamarPage() {
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Min Gaji"
-                  value={filterMinSalary}
-                  onChange={(e) => setFilterMinSalary(e.target.value)}
+                  value={adminExportJobSeekerFilter.min_salary ?? ""}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "min_salary",
+                      e.target.value ? Number(e.target.value) : null,
+                    )
+                  }
                   className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
                 />
                 <input
-                  type="text"
+                  type="number"
                   placeholder="Max Gaji"
-                  value={filterMaxSalary}
-                  onChange={(e) => setFilterMaxSalary(e.target.value)}
+                  value={adminExportJobSeekerFilter.max_salary ?? ""}
+                  onChange={(e) =>
+                    handleFilterChange(
+                      "max_salary",
+                      e.target.value ? Number(e.target.value) : null,
+                    )
+                  }
                   className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
                 />
               </div>
             </div>
 
-            {/* 7. Job Field (Searchable Select Option) */}
+            {/* 7. Job Field ID (Searchable Select Option) */}
             <div className="relative" ref={jobFieldRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Bidang Pekerjaan
@@ -711,12 +490,14 @@ export default function ExportPelamarPage() {
               >
                 <span
                   className={
-                    selectedJobField
+                    adminExportJobSeekerFilter.job_field_id
                       ? "text-slate-800 font-bold"
                       : "text-slate-400 font-medium"
                   }
                 >
-                  {selectedJobField || "Semua Bidang Pekerjaan"}
+                  {jobCategoryOptions.find(
+                    (f) => f.id === adminExportJobSeekerFilter.job_field_id,
+                  )?.name || "Semua Bidang Pekerjaan"}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               </div>
@@ -737,28 +518,29 @@ export default function ExportPelamarPage() {
                   <div className="max-h-40 overflow-y-auto space-y-0.5">
                     <div
                       onClick={() => {
-                        setSelectedJobField("");
+                        handleFilterChange("job_field_id", null);
                         setIsJobFieldOpen(false);
                       }}
                       className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                        selectedJobField === ""
+                        adminExportJobSeekerFilter.job_field_id === null
                           ? "bg-teal-50 text-teal-700 font-bold"
                           : "hover:bg-slate-50 text-slate-700"
                       }`}
                     >
                       <span>Semua Bidang Pekerjaan</span>
-                      {selectedJobField === "" && (
+                      {adminExportJobSeekerFilter.job_field_id === null && (
                         <Check className="w-3.5 h-3.5 text-teal-600" />
                       )}
                     </div>
                     {filteredJobFields.length > 0 ? (
-                      filteredJobFields.map((field, idx) => {
-                        const isSelected = selectedJobField === field;
+                      filteredJobFields.map((field) => {
+                        const isSelected =
+                          adminExportJobSeekerFilter.job_field_id === field.id;
                         return (
                           <div
-                            key={idx}
+                            key={field.id}
                             onClick={() => {
-                              setSelectedJobField(field);
+                              handleFilterChange("job_field_id", field.id);
                               setIsJobFieldOpen(false);
                             }}
                             className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
@@ -767,7 +549,7 @@ export default function ExportPelamarPage() {
                                 : "hover:bg-slate-50 text-slate-700"
                             }`}
                           >
-                            <span>{field}</span>
+                            <span>{field.name}</span>
                             {isSelected && (
                               <Check className="w-3.5 h-3.5 text-teal-600" />
                             )}
@@ -784,7 +566,7 @@ export default function ExportPelamarPage() {
               )}
             </div>
 
-            {/* 8. Industry (Searchable Select Option) */}
+            {/* 8. Industry ID (Searchable Select Option) */}
             <div className="relative" ref={industryRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Industri Pilihan
@@ -795,12 +577,14 @@ export default function ExportPelamarPage() {
               >
                 <span
                   className={
-                    selectedIndustry
+                    adminExportJobSeekerFilter.industry_id
                       ? "text-slate-800 font-bold"
                       : "text-slate-400 font-medium"
                   }
                 >
-                  {selectedIndustry || "Semua Industri"}
+                  {insdustryOptions.find(
+                    (i) => i.id === adminExportJobSeekerFilter.industry_id,
+                  )?.name || "Semua Industri"}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               </div>
@@ -821,28 +605,29 @@ export default function ExportPelamarPage() {
                   <div className="max-h-40 overflow-y-auto space-y-0.5">
                     <div
                       onClick={() => {
-                        setSelectedIndustry("");
+                        handleFilterChange("industry_id", null);
                         setIsIndustryOpen(false);
                       }}
                       className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                        selectedIndustry === ""
+                        adminExportJobSeekerFilter.industry_id === null
                           ? "bg-teal-50 text-teal-700 font-bold"
                           : "hover:bg-slate-50 text-slate-700"
                       }`}
                     >
                       <span>Semua Industri</span>
-                      {selectedIndustry === "" && (
+                      {adminExportJobSeekerFilter.industry_id === null && (
                         <Check className="w-3.5 h-3.5 text-teal-600" />
                       )}
                     </div>
                     {filteredIndustries.length > 0 ? (
-                      filteredIndustries.map((ind, idx) => {
-                        const isSelected = selectedIndustry === ind;
+                      filteredIndustries.map((ind) => {
+                        const isSelected =
+                          adminExportJobSeekerFilter.industry_id === ind.id;
                         return (
                           <div
-                            key={idx}
+                            key={ind.id}
                             onClick={() => {
-                              setSelectedIndustry(ind);
+                              handleFilterChange("industry_id", ind.id);
                               setIsIndustryOpen(false);
                             }}
                             className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
@@ -851,7 +636,7 @@ export default function ExportPelamarPage() {
                                 : "hover:bg-slate-50 text-slate-700"
                             }`}
                           >
-                            <span>{ind}</span>
+                            <span>{ind.name}</span>
                             {isSelected && (
                               <Check className="w-3.5 h-3.5 text-teal-600" />
                             )}
@@ -868,7 +653,7 @@ export default function ExportPelamarPage() {
               )}
             </div>
 
-            {/* 9. Preferred Positions (Multi-Select Array) */}
+            {/* 9. Position ID (Searchable Select Option) */}
             <div className="relative" ref={posRef}>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Posisi yang Diinginkan
@@ -877,22 +662,17 @@ export default function ExportPelamarPage() {
                 onClick={() => setIsPositionOpen(!isPositionOpen)}
                 className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
               >
-                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
-                  {selectedPositions.length > 0 ? (
-                    selectedPositions.map((pos, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-teal-50 text-teal-700 border border-teal-200 px-2 py-0.5 rounded text-[10px] font-bold"
-                      >
-                        {pos}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-slate-400 font-medium">
-                      Semua Posisi
-                    </span>
-                  )}
-                </div>
+                <span
+                  className={
+                    adminExportJobSeekerFilter.position_id
+                      ? "text-slate-800 font-bold"
+                      : "text-slate-400 font-medium"
+                  }
+                >
+                  {jobPositionOptions.find(
+                    (p) => p.id === adminExportJobSeekerFilter.position_id,
+                  )?.name || "Semua Posisi"}
+                </span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
               </div>
 
@@ -910,20 +690,40 @@ export default function ExportPelamarPage() {
                     />
                   </div>
                   <div className="max-h-40 overflow-y-auto space-y-0.5">
+                    <div
+                      onClick={() => {
+                        handleFilterChange("position_id", null);
+                        setIsPositionOpen(false);
+                      }}
+                      className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
+                        adminExportJobSeekerFilter.position_id === null
+                          ? "bg-teal-50 text-teal-700 font-bold"
+                          : "hover:bg-slate-50 text-slate-700"
+                      }`}
+                    >
+                      <span>Semua Posisi</span>
+                      {adminExportJobSeekerFilter.position_id === null && (
+                        <Check className="w-3.5 h-3.5 text-teal-600" />
+                      )}
+                    </div>
                     {filteredPositions.length > 0 ? (
-                      filteredPositions.map((pos, idx) => {
-                        const isSelected = selectedPositions.includes(pos);
+                      filteredPositions.map((pos) => {
+                        const isSelected =
+                          adminExportJobSeekerFilter.position_id === pos.id;
                         return (
                           <div
-                            key={idx}
-                            onClick={() => togglePosition(pos)}
+                            key={pos.id}
+                            onClick={() => {
+                              handleFilterChange("position_id", pos.id);
+                              setIsPositionOpen(false);
+                            }}
                             className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
                               isSelected
                                 ? "bg-teal-50 text-teal-700 font-bold"
                                 : "hover:bg-slate-50 text-slate-700"
                             }`}
                           >
-                            <span>{pos}</span>
+                            <span>{pos.name}</span>
                             {isSelected && (
                               <Check className="w-3.5 h-3.5 text-teal-600" />
                             )}
@@ -940,128 +740,61 @@ export default function ExportPelamarPage() {
               )}
             </div>
 
-            {/* 10. Job Types (Multi-Select Array) */}
-            <div className="relative" ref={jobTypeRef}>
+            {/* 10. Job Type */}
+            <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Jenis Pekerjaan
               </label>
-              <div
-                onClick={() => setIsJobTypeOpen(!isJobTypeOpen)}
-                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              <select
+                value={adminExportJobSeekerFilter.job_type}
+                onChange={(e) => handleFilterChange("job_type", e.target.value)}
+                className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
-                  {selectedJobTypes.length > 0 ? (
-                    selectedJobTypes.map((jt, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold"
-                      >
-                        {JOB_TYPE_OPTIONS.find((o) => o.value === jt)?.label ||
-                          jt}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-slate-400 font-medium">
-                      Semua Jenis Kerja
-                    </span>
-                  )}
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              </div>
-
-              {isJobTypeOpen && (
-                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
-                  <div className="max-h-40 overflow-y-auto space-y-0.5">
-                    {JOB_TYPE_OPTIONS.map((jt, idx) => {
-                      const isSelected = selectedJobTypes.includes(jt.value);
-                      return (
-                        <div
-                          key={idx}
-                          onClick={() => toggleJobType(jt.value)}
-                          className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                            isSelected
-                              ? "bg-teal-50 text-teal-700 font-bold"
-                              : "hover:bg-slate-50 text-slate-700"
-                          }`}
-                        >
-                          <span>{jt.label}</span>
-                          {isSelected && (
-                            <Check className="w-3.5 h-3.5 text-teal-600" />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                <option value="">Semua Jenis Kerja</option>
+                <option value="full_time">Penuh Waktu (Full-time)</option>
+                <option value="part_time">Paruh Waktu (Part-time)</option>
+                <option value="contract_project">Kontrak / Proyek</option>
+                <option value="internship">Magang (Internship)</option>
+                <option value="freelance">Lepas / Freelance</option>
+              </select>
             </div>
 
-            {/* 11. Work Arrangements (Multi-Select Array) */}
-            <div className="relative" ref={workArrRef}>
+            {/* 11. Work Arrangement */}
+            <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Sistem Kerja
               </label>
-              <div
-                onClick={() => setIsWorkArrOpen(!isWorkArrOpen)}
-                className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between cursor-pointer min-h-[38px]"
+              <select
+                value={adminExportJobSeekerFilter.work_arrangement}
+                onChange={(e) =>
+                  handleFilterChange("work_arrangement", e.target.value)
+                }
+                className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                <div className="flex flex-wrap gap-1 items-center max-w-[85%]">
-                  {selectedWorkArrangements.length > 0 ? (
-                    selectedWorkArrangements.map((wa, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-bold"
-                      >
-                        {WORK_ARRANGEMENT_OPTIONS.find((o) => o.value === wa)
-                          ?.label || wa}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-slate-400 font-medium">
-                      Semua Sistem Kerja
-                    </span>
-                  )}
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              </div>
-
-              {isWorkArrOpen && (
-                <div className="absolute z-20 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg p-2 space-y-2">
-                  <div className="max-h-40 overflow-y-auto space-y-0.5">
-                    {WORK_ARRANGEMENT_OPTIONS.map((wa, idx) => {
-                      const isSelected = selectedWorkArrangements.includes(
-                        wa.value,
-                      );
-                      return (
-                        <div
-                          key={idx}
-                          onClick={() => toggleWorkArr(wa.value)}
-                          className={`px-3 py-1.5 text-xs rounded-lg cursor-pointer flex items-center justify-between transition-colors ${
-                            isSelected
-                              ? "bg-teal-50 text-teal-700 font-bold"
-                              : "hover:bg-slate-50 text-slate-700"
-                          }`}
-                        >
-                          <span>{wa.label}</span>
-                          {isSelected && (
-                            <Check className="w-3.5 h-3.5 text-teal-600" />
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                <option value="">Semua Sistem Kerja</option>
+                <option value="on_site">Kantor (On-site)</option>
+                <option value="hybrid">Hibrida (Hybrid)</option>
+                <option value="remote">Dari Rumah (Remote)</option>
+              </select>
             </div>
 
-            {/* 12. Willing to Relocate (Boolean) */}
+            {/* 12. Willing to Relocate */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">
                 Kesediaan Relokasi
               </label>
               <select
-                value={selectedRelocate}
-                onChange={(e) => setSelectedRelocate(e.target.value)}
+                value={
+                  adminExportJobSeekerFilter.willing_to_relocate === null
+                    ? "all"
+                    : String(adminExportJobSeekerFilter.willing_to_relocate)
+                }
+                onChange={(e) =>
+                  handleFilterChange(
+                    "willing_to_relocate",
+                    e.target.value === "all" ? null : e.target.value === "true",
+                  )
+                }
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
                 <option value="all">Semua Opsi</option>
@@ -1076,11 +809,13 @@ export default function ExportPelamarPage() {
                 Status Pencarian Kerja
               </label>
               <select
-                value={selectedJobStatus}
-                onChange={(e) => setSelectedJobStatus(e.target.value)}
+                value={adminExportJobSeekerFilter.job_search_status}
+                onChange={(e) =>
+                  handleFilterChange("job_search_status", e.target.value)
+                }
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
-                <option>Semua Status</option>
+                <option value="">Semua Status</option>
                 <option value="actively_looking">
                   Aktif mencari pekerjaan (Open to Work)
                 </option>
@@ -1090,18 +825,7 @@ export default function ExportPelamarPage() {
               </select>
             </div>
           </div>
-
-          {/* Tombol Submit Filter */}
-          <div className="flex justify-end pt-2">
-            <button
-              type="submit"
-              className="px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer"
-            >
-              <Search className="w-4 h-4" />
-              <span>Terapkan Filter & Tampilkan Data</span>
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
 
       {/* HASIL FILTER & TOMBOL EXPORT */}
@@ -1115,16 +839,16 @@ export default function ExportPelamarPage() {
             <p className="text-[11px] text-slate-500 mt-0.5">
               Ditemukan{" "}
               <strong className="text-teal-700">
-                {filteredResults.length}
+                {adminExportJobSeeker.length}
               </strong>{" "}
-              pelamar yang cocok dengan kriteria filter preferensi.
+              pelamar yang cocok dengan kriteria filter preferensi server.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleExportExcel}
-              disabled={filteredResults.length === 0}
+              disabled={adminExportJobSeeker.length === 0}
               className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <FileSpreadsheet className="w-4 h-4" />
@@ -1132,7 +856,7 @@ export default function ExportPelamarPage() {
             </button>
             <button
               onClick={handleExportPDF}
-              disabled={filteredResults.length === 0}
+              disabled={adminExportJobSeeker.length === 0}
               className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               <FileText className="w-4 h-4" />
@@ -1152,76 +876,91 @@ export default function ExportPelamarPage() {
                   Domisili & Preferensi Tempat Kerja
                 </th>
                 <th className="py-3 px-3">Posisi Pilihan</th>
-                <th className="py-3 px-3">Ekspektasi Gaji</th>
-                <th className="py-3 px-3">Status</th>
+                <th className="py-3 px-3 min-w-52">Ekspektasi Gaji</th>
+                <th className="py-3 px-3 min-w-32">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredResults.length > 0 ? (
-                filteredResults.map((applicant) => (
-                  <tr
-                    key={applicant.id}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-teal-50 text-teal-700 border border-teal-100 font-bold text-xs flex items-center justify-center shrink-0">
-                          {applicant.avatar}
+              {adminExportJobSeeker.length > 0 ? (
+                adminExportJobSeeker.map((applicant, idx) => {
+                  const initials = applicant.FullName
+                    ? applicant.FullName.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .substring(0, 2)
+                        .toUpperCase()
+                    : "JS";
+
+                  return (
+                    <tr
+                      key={idx}
+                      className="hover:bg-slate-50/80 transition-colors"
+                    >
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-full bg-teal-50 text-teal-700 border border-teal-100 font-bold text-xs flex items-center justify-center shrink-0">
+                            {initials}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-900">
+                              {applicant.FullName}
+                            </p>
+                            <p className="text-[10px] text-slate-400 font-mono">
+                              NIK: {applicant.NIK || "-"}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-bold text-slate-900">
-                            {applicant.name}
-                          </p>
-                          <p className="text-[10px] text-slate-400 font-mono">
-                            NIK: {applicant.nik}
-                          </p>
+                      </td>
+                      <td className="py-3 px-3">
+                        <p className="font-semibold text-slate-800">
+                          {applicant.Education || "-"}
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          {userGenderMap[applicant.Gender] || "-"} •{" "}
+                          {applicant.Age || 0} Tahun
+                        </p>
+                      </td>
+                      <td className="py-3 px-3">
+                        <p className="font-medium text-slate-800">
+                          Domisili: {applicant.DistrictName || "-"}
+                        </p>
+                        <p className="text-[10px] text-slate-500">
+                          Kerja:{" "}
+                          {applicant.PreferredDistricts
+                            ? applicant.PreferredDistricts.join(", ")
+                            : "-"}
+                        </p>
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="flex flex-wrap gap-1">
+                          {applicant.PreferredPositions &&
+                          applicant.PreferredPositions.length > 0 ? (
+                            applicant.PreferredPositions.map((pos, pIdx) => (
+                              <span
+                                key={pIdx}
+                                className="px-2 py-0.5 bg-teal-50 text-teal-700 text-[10px] rounded font-semibold"
+                              >
+                                {pos}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
                         </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <p className="font-semibold text-slate-800">
-                        {applicant.education}
-                      </p>
-                      <p className="text-[10px] text-slate-500">
-                        {applicant.gender} • {applicant.age} Tahun
-                      </p>
-                    </td>
-                    <td className="py-3 px-3">
-                      <p className="font-medium text-slate-800">
-                        Domisili: Kec. {applicant.residenceDistrict}
-                      </p>
-                      <p className="text-[10px] text-slate-500">
-                        Kerja:{" "}
-                        {applicant.preferredDistricts
-                          .map((d) => `Kec. ${d}`)
-                          .join(", ")}
-                      </p>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="flex flex-wrap gap-1">
-                        {applicant.desiredPositions.map((pos, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-0.5 bg-teal-50 text-teal-700 text-[10px] rounded font-semibold"
-                          >
-                            {pos}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 font-bold text-teal-700">
-                      Rp {applicant.minSalary.toLocaleString("id-ID")} - Rp{" "}
-                      {applicant.maxSalary.toLocaleString("id-ID")}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        {applicant.jobStatus === "actively_looking"
-                          ? "Open to Work"
-                          : "Passive"}
-                      </span>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="py-3 px-3 font-bold text-teal-700">
+                        Rp {applicant.MinSalary?.toLocaleString("id-ID") || 0} -
+                        Rp {applicant.MaxSalary?.toLocaleString("id-ID") || 0}
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          {mapPayloadToJobStatus(applicant.JobSearchStatus) ||
+                            "Active"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-slate-400">

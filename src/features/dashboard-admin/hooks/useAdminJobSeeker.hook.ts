@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import {
+  AdminExportJobSeekerFilter,
+  AdminExportJobSeekerResult,
   AdminJobSeeker,
   AdminJobSeekerDetail,
   AdminJobSeekerIndexFilter,
 } from "../types/AdminJobSeeker.type";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import {
+  exportAdminJobSeeker,
   getAdminJobSeekerById,
   indexAdminJobSeeker,
 } from "../services/job-seeker.service";
@@ -19,6 +22,30 @@ export function useAdminJobSeeker() {
 
   const [adminJobSeekerDetail, setAdminJobSeekerDetail] =
     useState<AdminJobSeekerDetail | null>(null);
+
+  const [adminExportJobSeekerFilter, setAdminExportJobSeekerFilter] =
+    useState<AdminExportJobSeekerFilter>({
+      education_level: "",
+      gender: "",
+      job_field_id: null,
+      job_type: "",
+      job_search_status: "",
+      district_code: "",
+      min_age: null,
+      max_age: null,
+      industry_id: null,
+      work_arrangement: "",
+      preferred_district_code: "",
+      min_salary: null,
+      max_salary: null,
+      position_id: null,
+      willing_to_relocate: null,
+      is_fresh_graduate: null,
+    });
+
+  const [adminExportJobSeeker, setAdminExportJobSeeker] = useState<
+    AdminExportJobSeekerResult[] | []
+  >([]);
 
   const { addToast } = useToast();
 
@@ -47,6 +74,21 @@ export function useAdminJobSeeker() {
     fetch();
   }, [token, filters]);
 
+  useEffect(() => {
+    const fetch = async () => {
+      if (!token) return;
+      const result = await exportAdminJobSeeker(
+        token,
+        adminExportJobSeekerFilter,
+      );
+      if (result.status !== 200) {
+        return;
+      }
+      setAdminExportJobSeeker(result.data.data);
+    };
+    fetch();
+  }, [token, adminExportJobSeekerFilter]);
+
   const handleGetAdminJobSeekerDetail = async (token: string, id: string) => {
     if (!token) return;
     const result = await getAdminJobSeekerById(token, id);
@@ -66,5 +108,8 @@ export function useAdminJobSeeker() {
     filters,
     setFilters,
     handleGetAdminJobSeekerDetail,
+    adminExportJobSeeker,
+    adminExportJobSeekerFilter,
+    setAdminExportJobSeekerFilter,
   };
 }

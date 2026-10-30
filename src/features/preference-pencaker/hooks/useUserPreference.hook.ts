@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   JobSeekerPreference,
   JobSeekerPreferenceData,
+  WorkSystem,
 } from "../types/UserPreference.type";
 import {
   getDistrictOptions,
@@ -123,7 +124,7 @@ export function useJobSeekerPreference() {
 
   const mapPayloadToWorkSystem = (sys: string) => {
     switch (sys) {
-      case "onsite":
+      case "on_site":
         return "Kerja di Kantor (On-site)";
       case "hybrid":
         return "Hibrida (Hybrid)";
@@ -317,7 +318,7 @@ export function useJobSeekerPreference() {
     }));
   };
 
-  const toggleWorkSystem = (system: string) => {
+  const toggleWorkSystem = (system: WorkSystem) => {
     setPreferences((prev) => ({
       ...prev,
       workSystems: prev.workSystems.includes(system)
@@ -346,7 +347,7 @@ export function useJobSeekerPreference() {
   const mapWorkSystemToPayload = (sys: string) => {
     switch (sys) {
       case "Kerja di Kantor (On-site)":
-        return "onsite";
+        return "on_site";
       case "Hibrida (Hybrid)":
         return "hybrid";
       case "Kerja dari Rumah (Remote)":
@@ -373,7 +374,9 @@ export function useJobSeekerPreference() {
       preferred_position_id: preferences.desiredPositions.map((pos) => pos.id), // Mengirimkan array ID posisi
       preferred_district_codes: selectedDistrictsList.map((item) => item.code),
       job_types: preferences.jobTypes.map(mapJobTypeToPayload),
-      work_arrangements: preferences.workSystems.map(mapWorkSystemToPayload),
+      work_arrangements: preferences.workSystems.map(
+        mapWorkSystemToPayload,
+      ) as WorkSystem[],
       willing_to_relocate:
         preferences.relocationStatus.includes("Ya") ||
         preferences.relocationStatus.includes("seluruh wilayah"),
