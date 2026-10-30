@@ -37,12 +37,17 @@ import {
   AdminJobSeeker,
   AdminJobSeekerIndexFilter,
 } from "@/features/dashboard-admin/types/AdminJobSeeker.type";
+import { useOptions } from "@/shared/hooks/useOptions.hook";
+import { Districts } from "@/shared/types/districtsList.type";
+import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
 
 export default function AdminPelamarPage() {
   const router = useRouter();
 
   // Panggil hook yang sudah menangani filter dan data langsung dari Backend
   const { adminJobSeeker, filters, setFilters } = useAdminJobSeeker();
+
+  const { districtOptions } = useOptions();
 
   // State UI lokal (Pencarian & Status Akun opsional / Tampilan lanjutan)
   const [searchTerm, setSearchTerm] = useState("");
@@ -228,7 +233,7 @@ export default function AdminPelamarPage() {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setFilters((prev) => ({ ...prev, page: 1 }));
+                  handleApplyFilter({ search: e.target.value });
                 }}
                 className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 transition-all"
               />
@@ -240,14 +245,13 @@ export default function AdminPelamarPage() {
                 value={selectedStatus}
                 onChange={(e) => {
                   setSelectedStatus(e.target.value);
-                  setFilters((prev) => ({ ...prev, page: 1 }));
+                  handleApplyFilter({ account_status: e.target.value });
                 }}
                 className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700 transition-all"
               >
-                <option>Semua Status Akun</option>
-                <option value="Aktif">Aktif</option>
-                <option value="Nonaktif">Nonaktif</option>
-                <option value="Ditangguhkan">Ditangguhkan</option>
+                <option value={""}>Semua Status Akun</option>
+                <option value="active">Aktif</option>
+                <option value="non_active">Nonaktif</option>
               </select>
             </div>
 
@@ -262,7 +266,7 @@ export default function AdminPelamarPage() {
                 }`}
               >
                 <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>Filter Demografi</span>
+                <span>Filter Lanjutan</span>
                 <ChevronDown
                   className={`w-3 h-3 transition-transform ${
                     showAdvancedFilter ? "rotate-180" : ""
@@ -315,9 +319,10 @@ export default function AdminPelamarPage() {
                     >
                       <option value="">Semua Pengalaman</option>
                       <option value="fresh_graduate">Fresh Graduate</option>
-                      <option value="1_2">1 - 2 Tahun</option>
-                      <option value="3_5">3 - 5 Tahun</option>
-                      <option value="gt_5">&gt; 5 Tahun</option>
+                      <option value="under_1_year">{"< 1 Tahun"}</option>
+                      <option value="1_2_years">1 - 2 Tahun</option>
+                      <option value="3_5_years">3 - 5 Tahun</option>
+                      <option value="over_5_years">{"> 5 Tahun"}</option>
                     </select>
                   </div>
 
@@ -325,15 +330,20 @@ export default function AdminPelamarPage() {
                     <label className="block text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider mb-1">
                       Kode Kecamatan
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Contoh: 520401"
+                    <select
                       value={filters.district_code}
                       onChange={(e) =>
                         handleApplyFilter({ district_code: e.target.value })
                       }
                       className="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-teal-500 text-slate-700"
-                    />
+                    >
+                      <option value="">Semua Kecamatan</option>
+                      {districtOptions.map((d: Districts) => (
+                        <option key={d.code} value={d.code}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
@@ -496,7 +506,10 @@ export default function AdminPelamarPage() {
                         <td className="py-3.5 px-3 text-slate-500 whitespace-nowrap text-[0.7rem]">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
-                            <span>{seeker.registered_at || "-"}</span>
+                            <span>
+                              {formatDateWithMonthName(seeker.registered_at) ||
+                                "-"}
+                            </span>
                           </div>
                         </td>
 
@@ -507,7 +520,9 @@ export default function AdminPelamarPage() {
                               seeker.account_status,
                             )}`}
                           >
-                            {seeker.account_status || "Aktif"}
+                            {seeker.account_status === "active"
+                              ? "Aktif"
+                              : "Non-Aktif"}
                           </span>
                         </td>
 
@@ -537,7 +552,7 @@ export default function AdminPelamarPage() {
                                 <div className="absolute right-4 mt-1 w-48 bg-white border border-slate-200 rounded-xl shadow-lg z-20 py-1 text-left divide-y divide-slate-100">
                                   <div className="py-1">
                                     <Link
-                                      href={`/dashboard/admin/pelamar/${seeker.profile_id}`}
+                                      href={`/dashboard/admin/pelamar/${seeker.user_id}`}
                                       className="flex items-center gap-2 px-3 py-1.5 text-[0.7rem] font-semibold text-slate-700 hover:bg-slate-50 hover:text-teal-600"
                                     >
                                       <Eye className="w-3.5 h-3.5" />

@@ -1,7 +1,4 @@
-export interface OptionItem {
-  id: number;
-  name: string;
-}
+import { OptionItem } from "@/shared/types/option.type";
 
 export interface JobSeekerPreference {
   desiredPositions: OptionItem[]; // Diubah menjadi array objek

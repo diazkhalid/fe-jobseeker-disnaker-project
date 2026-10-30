@@ -490,7 +490,7 @@ export default function ExportPelamarPage() {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
               <Download className="w-7 h-7 text-teal-600" />
               <span>Export Laporan Berdasarkan Preferensi Pelamar</span>
             </h1>

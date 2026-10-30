@@ -41,3 +41,13 @@ export async function getJobPositionOptions() {
     return handleServiceError(error);
   }
 }
+
+export async function getDocumentCategoryOptions() {
+  try {
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.DOCUMENT_CATEGORY);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

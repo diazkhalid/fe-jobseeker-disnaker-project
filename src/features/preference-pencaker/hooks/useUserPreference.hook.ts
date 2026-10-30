@@ -16,11 +16,7 @@ import {
 } from "../services/preference.service";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { useToast } from "@/shared/contexts/ToastContext";
-
-export interface OptionItem {
-  id: number;
-  name: string;
-}
+import { OptionItem } from "@/shared/types/option.type";
 
 export function useJobSeekerPreference() {
   const [token] = useLocalStorage("access-token", null);

@@ -14,6 +14,8 @@ export interface AdminJobSeeker {
 }
 
 export interface AdminJobSeekerIndexFilter {
+  search: string;
+  account_status: string;
   education_level: string;
   experience: string;
   district_code: string;
