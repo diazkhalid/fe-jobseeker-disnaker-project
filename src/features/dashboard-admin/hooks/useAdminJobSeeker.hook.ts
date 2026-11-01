@@ -13,6 +13,9 @@ import {
   indexAdminJobSeeker,
 } from "../services/job-seeker.service";
 import { useToast } from "@/shared/contexts/ToastContext";
+import { useOptions } from "@/shared/hooks/useOptions.hook";
+import { userGenderMap } from "@/shared/utils/userGenderMap";
+import { mapPayloadToJobStatus } from "@/shared/utils/userJobMap";
 
 export function useAdminJobSeeker() {
   const [adminJobSeeker, setAdminJobSeeker] = useState<AdminJobSeeker[] | []>(
@@ -63,6 +66,12 @@ export function useAdminJobSeeker() {
     rowsPerPage: 10,
     limit: 10,
   });
+  const {
+    districtOptions,
+    insdustryOptions,
+    jobCategoryOptions,
+    jobPositionOptions,
+  } = useOptions();
 
   useEffect(() => {
     const fetch = async () => {
@@ -146,6 +155,211 @@ export function useAdminJobSeeker() {
     } finally {
       setIsExportingPdf(false);
       setTimeout(() => setExportMessage(null), 4000);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    if (adminExportJobSeeker.length === 0) return;
+
+    try {
+      const XLSX = await import("xlsx");
+
+      // ==========================================
+      // 1. MAPPING DATA PELAMAR
+      // ==========================================
+
+      const applicantData = adminExportJobSeeker.map((applicant, index) => ({
+        No: index + 1,
+        "Nama Lengkap": applicant.FullName || "-",
+        NIK: applicant.NIK || "-",
+        Pendidikan: applicant.Education || "-",
+        "Jenis Kelamin": userGenderMap[applicant.Gender] || "-",
+        Umur: applicant.Age || 0,
+        Domisili: applicant.DistrictName || "-",
+        "Preferensi Tempat Kerja":
+          applicant.PreferredDistricts?.join(", ") || "-",
+        "Posisi yang Diinginkan":
+          applicant.PreferredPositions?.join(", ") || "-",
+        "Ekspektasi Gaji Minimum": applicant.MinSalary || 0,
+        "Ekspektasi Gaji Maksimum": applicant.MaxSalary || 0,
+        "Status Pencarian Kerja":
+          mapPayloadToJobStatus(applicant.JobSearchStatus) || "Active",
+      }));
+
+      // ==========================================
+      // 2. MAPPING FILTER YANG DIGUNAKAN
+      // ==========================================
+
+      const filter = adminExportJobSeekerFilter;
+
+      const getOptionName = (
+        options: { id: number; name: string }[],
+        id: number | null,
+      ) => options.find((item) => item.id === id)?.name || "Semua";
+
+      const getDistrictName = (code: string) =>
+        districtOptions.find((item) => item.code === code)?.name || "Semua";
+
+      const filterData = [
+        {
+          Parameter: "Tanggal Export",
+          Nilai: new Date().toLocaleString("id-ID"),
+        },
+        {
+          Parameter: "Pendidikan Terakhir",
+          Nilai: filter.education_level || "Semua",
+        },
+        {
+          Parameter: "Domisili (Kecamatan)",
+          Nilai: getDistrictName(filter.district_code),
+        },
+        {
+          Parameter: "Preferensi Tempat Kerja",
+          Nilai: getDistrictName(filter.preferred_district_code),
+        },
+        {
+          Parameter: "Jenis Kelamin",
+          Nilai:
+            filter.gender === "male"
+              ? "Laki-laki"
+              : filter.gender === "female"
+                ? "Perempuan"
+                : "Semua",
+        },
+        {
+          Parameter: "Umur Minimum",
+          Nilai: filter.min_age ?? "Tidak ditentukan",
+        },
+        {
+          Parameter: "Umur Maksimum",
+          Nilai: filter.max_age ?? "Tidak ditentukan",
+        },
+        {
+          Parameter: "Gaji Minimum",
+          Nilai: filter.min_salary ?? "Tidak ditentukan",
+        },
+        {
+          Parameter: "Gaji Maksimum",
+          Nilai: filter.max_salary ?? "Tidak ditentukan",
+        },
+        {
+          Parameter: "Bidang Pekerjaan",
+          Nilai: getOptionName(jobCategoryOptions, filter.job_field_id),
+        },
+        {
+          Parameter: "Industri",
+          Nilai: getOptionName(insdustryOptions, filter.industry_id),
+        },
+        {
+          Parameter: "Posisi Pekerjaan",
+          Nilai: getOptionName(jobPositionOptions, filter.position_id),
+        },
+        {
+          Parameter: "Jenis Pekerjaan",
+          Nilai:
+            {
+              full_time: "Penuh Waktu (Full-time)",
+              part_time: "Paruh Waktu (Part-time)",
+              contract_project: "Kontrak / Proyek",
+              internship: "Magang (Internship)",
+              freelance: "Lepas / Freelance",
+            }[filter.job_type] || "Semua",
+        },
+        {
+          Parameter: "Sistem Kerja",
+          Nilai:
+            {
+              on_site: "Kantor (On-site)",
+              hybrid: "Hibrida (Hybrid)",
+              remote: "Dari Rumah (Remote)",
+            }[filter.work_arrangement] || "Semua",
+        },
+        {
+          Parameter: "Kesediaan Relokasi",
+          Nilai:
+            filter.willing_to_relocate === null
+              ? "Semua"
+              : filter.willing_to_relocate
+                ? "Bersedia"
+                : "Tidak Bersedia",
+        },
+        {
+          Parameter: "Status Pencarian Kerja",
+          Nilai:
+            {
+              actively_looking: "Aktif mencari pekerjaan",
+              open_to_offers: "Terbuka untuk penawaran",
+            }[filter.job_search_status] || "Semua",
+        },
+        {
+          Parameter: "Total Pelamar",
+          Nilai: adminExportJobSeeker.length,
+        },
+      ];
+
+      // ==========================================
+      // 3. MEMBUAT WORKBOOK
+      // ==========================================
+
+      const workbook = XLSX.utils.book_new();
+
+      // Worksheet Data Pelamar
+      const applicantSheet = XLSX.utils.json_to_sheet(applicantData);
+
+      // Worksheet Filter Export
+      const filterSheet = XLSX.utils.json_to_sheet(filterData);
+
+      // ==========================================
+      // 4. MENGATUR LEBAR KOLOM
+      // ==========================================
+
+      applicantSheet["!cols"] = [
+        { wch: 6 },
+        { wch: 28 },
+        { wch: 22 },
+        { wch: 15 },
+        { wch: 18 },
+        { wch: 10 },
+        { wch: 20 },
+        { wch: 30 },
+        { wch: 35 },
+        { wch: 24 },
+        { wch: 24 },
+        { wch: 25 },
+      ];
+
+      filterSheet["!cols"] = [{ wch: 35 }, { wch: 40 }];
+
+      // ==========================================
+      // 5. MENGAKTIFKAN FILTER EXCEL
+      // ==========================================
+
+      if (applicantData.length > 0) {
+        applicantSheet["!autofilter"] = {
+          ref: applicantSheet["!ref"]!,
+        };
+      }
+
+      // ==========================================
+      // 6. MENAMBAHKAN WORKSHEET
+      // ==========================================
+
+      XLSX.utils.book_append_sheet(workbook, applicantSheet, "Data Pelamar");
+
+      XLSX.utils.book_append_sheet(workbook, filterSheet, "Filter Export");
+
+      // ==========================================
+      // 7. DOWNLOAD EXCEL
+      // ==========================================
+
+      const fileName = `Laporan_Pelamar_${new Date()
+        .toISOString()
+        .slice(0, 10)}.xlsx`;
+
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error("Export Excel Error:", error);
+      alert("Gagal mengexport data ke Excel.");
     }
   };
   return {
