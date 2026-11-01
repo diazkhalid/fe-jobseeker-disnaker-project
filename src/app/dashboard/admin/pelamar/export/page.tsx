@@ -26,6 +26,9 @@ export default function ExportPelamarPage() {
     adminExportJobSeeker,
     adminExportJobSeekerFilter,
     setAdminExportJobSeekerFilter,
+    exportMessage,
+    isExportingPdf,
+    handleExportPDF,
   } = useAdminJobSeeker();
 
   // Hook Master Options untuk Pilihan Dinamis (District, Industry, Job Field, Job Position)
@@ -51,9 +54,6 @@ export default function ExportPelamarPage() {
 
   const [districtQuery, setDistrictQuery] = useState("");
   const [isDistrictOpen, setIsDistrictOpen] = useState(false);
-
-  // State Notifikasi Pesan Export
-  const [exportMessage, setExportMessage] = useState<string | null>(null);
 
   // Refs untuk Click Outside Dropdown
   const posRef = useRef<HTMLDivElement>(null);
@@ -122,20 +122,6 @@ export default function ExportPelamarPage() {
       ...prev,
       [key]: value,
     }));
-  };
-
-  const handleExportExcel = () => {
-    setExportMessage(
-      "Berhasil mengekspor data ke format Excel (.xlsx)! File sedang diunduh.",
-    );
-    setTimeout(() => setExportMessage(null), 4000);
-  };
-
-  const handleExportPDF = () => {
-    setExportMessage(
-      "Berhasil mengekspor data ke format PDF (.pdf)! File sedang diunduh.",
-    );
-    setTimeout(() => setExportMessage(null), 4000);
   };
 
   return (
@@ -847,7 +833,7 @@ export default function ExportPelamarPage() {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={handleExportExcel}
+              // onClick={handleExportExcel}
               disabled={adminExportJobSeeker.length === 0}
               className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >

@@ -25,3 +25,14 @@ export const mapPayloadToJobStatus = (statusKey: string) => {
       return "Off to Work";
   }
 };
+
+export const mapPayloadToJobSystem = (statusKey: string) => {
+  switch (statusKey) {
+    case "on_site":
+      return "On Site";
+    case "remote":
+      return "Remote";
+    default:
+      return "Hybrid";
+  }
+};
