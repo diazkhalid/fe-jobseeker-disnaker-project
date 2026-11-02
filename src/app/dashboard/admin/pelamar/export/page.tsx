@@ -29,6 +29,7 @@ export default function ExportPelamarPage() {
     exportMessage,
     isExportingPdf,
     handleExportPDF,
+    handleExportExcel,
   } = useAdminJobSeeker();
 
   // Hook Master Options untuk Pilihan Dinamis (District, Industry, Job Field, Job Position)
@@ -833,7 +834,7 @@ export default function ExportPelamarPage() {
 
           <div className="flex items-center gap-2">
             <button
-              // onClick={handleExportExcel}
+              onClick={handleExportExcel}
               disabled={adminExportJobSeeker.length === 0}
               className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all shadow-xs disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >

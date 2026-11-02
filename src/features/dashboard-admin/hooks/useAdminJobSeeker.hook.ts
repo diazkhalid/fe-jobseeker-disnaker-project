@@ -16,11 +16,15 @@ import { useToast } from "@/shared/contexts/ToastContext";
 import { useOptions } from "@/shared/hooks/useOptions.hook";
 import { userGenderMap } from "@/shared/utils/userGenderMap";
 import { mapPayloadToJobStatus } from "@/shared/utils/userJobMap";
+import { Pagination } from "@/shared/types/pagination.type";
 
 export function useAdminJobSeeker() {
   const [adminJobSeeker, setAdminJobSeeker] = useState<AdminJobSeeker[] | []>(
     [],
   );
+  const [adminJobSeekerPagination, setAdminJobSeekerPagination] =
+    useState<Pagination | null>(null);
+
   const [token] = useLocalStorage("access-token", null);
 
   const [adminJobSeekerDetail, setAdminJobSeekerDetail] =
@@ -81,6 +85,7 @@ export function useAdminJobSeeker() {
         return;
       }
       setAdminJobSeeker(result.data.data);
+      setAdminJobSeekerPagination(result.data.pagination);
     };
     fetch();
   }, [token, filters]);
@@ -375,5 +380,8 @@ export function useAdminJobSeeker() {
     exportMessage,
     isExportingPdf,
     handleExportPDF,
+    handleExportExcel,
+    adminJobSeekerPagination,
+    setAdminJobSeekerPagination,
   };
 }

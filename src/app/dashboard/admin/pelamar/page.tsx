@@ -33,10 +33,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAdminJobSeeker } from "@/features/dashboard-admin/hooks/useAdminJobSeeker.hook";
-import {
-  AdminJobSeeker,
-  AdminJobSeekerIndexFilter,
-} from "@/features/dashboard-admin/types/AdminJobSeeker.type";
+import { AdminJobSeekerIndexFilter } from "@/features/dashboard-admin/types/AdminJobSeeker.type";
 import { useOptions } from "@/shared/hooks/useOptions.hook";
 import { Districts } from "@/shared/types/districtsList.type";
 import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
@@ -44,12 +41,13 @@ import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
 export default function AdminPelamarPage() {
   const router = useRouter();
 
-  // Panggil hook yang sudah menangani filter dan data langsung dari Backend
-  const { adminJobSeeker, filters, setFilters } = useAdminJobSeeker();
+  // Ambil data pelamar, pagination dari backend, serta fungsi setFilters
+  const { adminJobSeeker, adminJobSeekerPagination, filters, setFilters } =
+    useAdminJobSeeker();
 
   const { districtOptions } = useOptions();
 
-  // State UI lokal (Pencarian & Status Akun opsional / Tampilan lanjutan)
+  // State UI lokal
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("Semua Status Akun");
   const [showAdvancedFilter, setShowAdvancedFilter] = useState(false);
@@ -71,13 +69,15 @@ export default function AdminPelamarPage() {
     }));
   };
 
-  // Data langsung dari Backend (Tanpa filter frontend tambahan)
-  const totalItems = adminJobSeeker.length;
-  const totalPages = Math.ceil(totalItems / filters.limit) || 1;
-  const startItem =
-    totalItems === 0 ? 0 : (filters.page - 1) * filters.limit + 1;
-  const endItem = Math.min(filters.page * filters.limit, totalItems);
-  const paginatedApplicants = adminJobSeeker; // Data dari BE biasanya sudah ter-pagination
+  // Nilai Pagination yang diambil langsung dari Backend (dengan fallback value)
+  const currentPage = adminJobSeekerPagination?.page ?? filters.page;
+  const totalPages = adminJobSeekerPagination?.total_pages ?? 1;
+  const totalItems = adminJobSeekerPagination?.total ?? adminJobSeeker.length;
+  const currentLimit = adminJobSeekerPagination?.limit ?? filters.limit;
+
+  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * currentLimit + 1;
+  const endItem = Math.min(currentPage * currentLimit, totalItems);
+  const paginatedApplicants = adminJobSeeker;
 
   // Handle Selection Logic
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +165,7 @@ export default function AdminPelamarPage() {
                 Total Pelamar
               </p>
               <h3 className="text-lg font-bold text-slate-900 mt-0.5">
-                {adminJobSeeker.length} Orang
+                {totalItems} Orang
               </h3>
             </div>
             <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold">
@@ -660,7 +660,7 @@ export default function AdminPelamarPage() {
                   Tampilkan:
                 </span>
                 <select
-                  value={filters.rowsPerPage}
+                  value={filters.rowsPerPage || filters.limit}
                   onChange={(e) => {
                     const val = Number(e.target.value);
                     setFilters((prev) => ({
@@ -670,7 +670,7 @@ export default function AdminPelamarPage() {
                       page: 1,
                     }));
                   }}
-                  className="px-2 py-1 border border-slate-200 rounded-lg bg-white text-xs font-medium text-slate-800 focus:outline-none focus:border-teal-500"
+                  className="px-2 py-1 border border-slate-200 rounded-lg bg-white text-xs font-medium text-slate-800 focus:outline-none focus:border-teal-500 cursor-pointer"
                 >
                   {[10, 20, 50].map((size) => (
                     <option key={size} value={size}>
@@ -684,7 +684,7 @@ export default function AdminPelamarPage() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setFilters((prev) => ({ ...prev, page: 1 }))}
-                  disabled={filters.page === 1}
+                  disabled={currentPage <= 1}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Pertama"
                 >
@@ -697,7 +697,7 @@ export default function AdminPelamarPage() {
                       page: Math.max(prev.page - 1, 1),
                     }))
                   }
-                  disabled={filters.page === 1}
+                  disabled={currentPage <= 1}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Sebelumnya"
                 >
@@ -705,7 +705,7 @@ export default function AdminPelamarPage() {
                 </button>
 
                 <span className="px-2.5 text-xs font-semibold text-slate-700">
-                  {filters.page} / {totalPages}
+                  {currentPage} / {totalPages}
                 </span>
 
                 <button
@@ -715,7 +715,7 @@ export default function AdminPelamarPage() {
                       page: Math.min(prev.page + 1, totalPages),
                     }))
                   }
-                  disabled={filters.page === totalPages || totalItems === 0}
+                  disabled={currentPage >= totalPages || totalItems === 0}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Selanjutnya"
                 >
@@ -725,7 +725,7 @@ export default function AdminPelamarPage() {
                   onClick={() =>
                     setFilters((prev) => ({ ...prev, page: totalPages }))
                   }
-                  disabled={filters.page === totalPages || totalItems === 0}
+                  disabled={currentPage >= totalPages || totalItems === 0}
                   className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors bg-white text-slate-600"
                   title="Halaman Terakhir"
                 >
