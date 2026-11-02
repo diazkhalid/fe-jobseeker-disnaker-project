@@ -21,6 +21,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
+import { usePathname } from "next/navigation";
 
 interface NavbarProps {
   onToggleMobileSidebar?: () => void;
@@ -29,10 +30,16 @@ interface NavbarProps {
 export default function NavbarDashboardAdmin({
   onToggleMobileSidebar,
 }: NavbarProps) {
+  const pathname = usePathname();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { user } = useAuthUser();
 
+  const hide = ["/dashboard/admin/peta"].some((route) =>
+    pathname.includes(route),
+  );
+
+  if (hide) return null;
   return (
     <header className="sticky top-0 z-30 w-full h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-6 flex items-center justify-between font-['Poppins',sans-serif]">
       {/* LEFT SECTION: MOBILE TOGGLE & SEARCH BAR */}

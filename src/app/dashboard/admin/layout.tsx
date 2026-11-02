@@ -5,7 +5,7 @@ import NavbarDashboardPerusahaan from "@/features/dashboard-perusahaan/component
 import Sidebar from "@/features/dashboard-perusahaan/components/Sidebar";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import { useToast } from "@/shared/contexts/ToastContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function DashboardAdminLayout({
@@ -16,6 +16,7 @@ export default function DashboardAdminLayout({
   const router = useRouter();
   const { user, isLoading } = useAuthUser();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkLogin = () => {
@@ -34,9 +35,13 @@ export default function DashboardAdminLayout({
   return (
     <div className="flex flex-row w-full bg-slate-100/30">
       <SidebarAdmin></SidebarAdmin>
-      <div className="flex flex-col min-h-screen w-[85%]">
+      <div
+        className={`flex flex-col min-h-screen ${pathname.includes("/peta") ? "w-full" : "w-[85%]"} ]`}
+      >
         <NavbarDashboardAdmin></NavbarDashboardAdmin>
-        <div className="p-7">{children}</div>
+        <div className={`${pathname.includes("/peta") ? "p-0" : "p-7"}`}>
+          {children}
+        </div>
       </div>
     </div>
   );

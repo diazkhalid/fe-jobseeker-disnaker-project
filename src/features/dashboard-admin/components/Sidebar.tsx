@@ -138,6 +138,12 @@ export default function SidebarAdmin() {
     },
   ];
 
+  const hide = ["/dashboard/admin/peta"].some((route) =>
+    pathname.includes(route),
+  );
+
+  if (hide) return null;
+
   return (
     <aside className="w-64 h-screen bg-white text-slate-700 flex flex-col border-r border-slate-200 sticky top-0 left-0 z-40 select-none">
       {/* BRAND / LOGO */}

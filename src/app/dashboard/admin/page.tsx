@@ -2,6 +2,7 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useAdminJobSeeker } from "@/features/dashboard-admin/hooks/useAdminJobSeeker.hook";
 import {
   Users,
@@ -12,6 +13,9 @@ import {
   Calendar,
   Activity,
   UserCheck,
+  Map,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import { ApexOptions } from "apexcharts";
 import { useOptions } from "@/shared/hooks/useOptions.hook";
@@ -237,7 +241,7 @@ export default function DashboardAdminPage() {
   return (
     <div className="space-y-6 bg-slate-50/50 min-h-screen">
       {/* HEADER SECTION */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             Dashboard Pencari Kerja
@@ -248,9 +252,10 @@ export default function DashboardAdminPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-600 shadow-2xs">
-            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+        {/* HEADER ACTIONS: DATE & MODERN MAP NAVIGATION BUTTON */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200/80 rounded-xl text-xs font-medium text-slate-600 shadow-2xs">
+            <Calendar className="w-3.5 h-3.5 text-teal-600" />
             <span>
               {new Date().toLocaleDateString("id-ID", {
                 day: "numeric",
@@ -259,6 +264,16 @@ export default function DashboardAdminPage() {
               })}
             </span>
           </div>
+
+          {/* Tombol Navigasi ke Peta Persebaran */}
+          <Link
+            href="/dashboard/admin/peta" // Sesuaikan rute halaman peta Anda di sini
+            className="group inline-flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-teal-900/15 transition-all duration-200 active:scale-95"
+          >
+            <Map size={16} />
+            <span>Peta Persebaran</span>
+            <ArrowRight className="w-3.5 h-3.5 ml-0.5 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
 

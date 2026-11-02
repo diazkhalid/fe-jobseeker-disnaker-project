@@ -16,3 +16,26 @@
 .debug {
   background-color: red;
 }
+
+/* Menghaluskan shadow dan border radius pada container pop-up Mapbox */
+.mapboxgl-popup-content {
+  border-radius: 1rem !important;
+  padding: 16px !important;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #e2e8f0;
+}
+
+.mapboxgl-popup-close-button {
+  padding: 6px 8px;
+  color: #94a3b8;
+  font-size: 16px;
+}
+
+.mapboxgl-popup-close-button:hover {
+  color: #0f172a;
+  background-color: #f1f5f9;
+  border-top-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}

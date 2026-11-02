@@ -67,3 +67,14 @@ export async function getAdminJobSeekerDashboard(token: string) {
     return handleServiceError(error);
   }
 }
+export async function getAdminJobSeekerMap(token: string) {
+  try {
+    const response = await axios.get(API_ENDPOINTS.ADMIN.JOB_SEEKER.MAP, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

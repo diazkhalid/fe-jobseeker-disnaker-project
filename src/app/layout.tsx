@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "mapbox-gl/dist/mapbox-gl.css";
 import "./globals.css";
 import Navbar from "@/shared/components/Navbar";
 import { poppins } from "@/shared/fonts";
