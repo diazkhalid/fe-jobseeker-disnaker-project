@@ -178,3 +178,36 @@ export interface AdminExportJobSeekerFilter {
   willing_to_relocate: boolean | null;
   is_fresh_graduate: boolean | null;
 }
+
+export interface AdminJobSeekerDashboardData {
+  total_job_seekers: number;
+  kecamatan: AdminJobSeekerDashboardDistrict[];
+  wilayah_diminati: AdminJobSeekerDashboardDistrict[];
+  posisi_diminati: AdminJobSeekerDashboardPosition[];
+  job_fields: AdminJobSeekerDashboardJobField[];
+  industri: AdminJobSeekerDashboardIndustry[];
+}
+
+export interface AdminJobSeekerDashboardDistrict {
+  district_code: string;
+  kecamatan: string;
+  jumlah_job_seekers: number;
+}
+
+export interface AdminJobSeekerDashboardPosition {
+  id: number;
+  nama: string;
+  jumlah_job_seekers: number;
+}
+
+export interface AdminJobSeekerDashboardJobField {
+  id: number;
+  nama: string;
+  jumlah_job_seekers: number;
+}
+
+export interface AdminJobSeekerDashboardIndustry {
+  id: number;
+  nama: string;
+  jumlah_job_seekers: number;
+}

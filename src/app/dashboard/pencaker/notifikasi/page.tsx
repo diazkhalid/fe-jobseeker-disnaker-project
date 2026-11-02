@@ -20,6 +20,7 @@ import {
   CheckCircle,
   Eye,
   Trash2,
+  BellOff,
 } from "lucide-react";
 
 // Tipe Notifikasi sesuai spesifikasi
@@ -44,8 +45,9 @@ interface NotificationItem {
   relatedId?: string; // ID Lamaran, Lowongan, atau Chat terkait
 }
 
-// Mock Data Notifikasi
+// Mock Data Notifikasi (Dikomentari sesuai permintaan)
 const initialNotifications: NotificationItem[] = [
+  /*
   {
     id: "NOTIF-001",
     type: "undangan_wawancara",
@@ -117,6 +119,7 @@ const initialNotifications: NotificationItem[] = [
     rawDate: "2026-09-20 14:00",
     isRead: true,
   },
+  */
 ];
 
 // Helper untuk mendapatkan Icon dan Warna berdasarkan Tipe Notifikasi
@@ -314,7 +317,7 @@ export default function NotifikasiPage() {
         </div>
       </div>
 
-      {/* NOTIFICATION LIST LAYOUT */}
+      {/* NOTIFICATION LIST LAYOUT / UI HANDLER DATA KOSONG */}
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
         {filteredNotifications.length > 0 ? (
           <div className="divide-y divide-slate-100">
@@ -408,32 +411,36 @@ export default function NotifikasiPage() {
             })}
           </div>
         ) : (
-          /* EMPTY STATE */
-          <div className="p-16 text-center space-y-4">
-            <div className="w-20 h-20 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
-              <MailWarning className="w-10 h-10" />
+          /* EMPTY STATE / UI HANDLER KETIKA DATA KOSONG ATAU FILTER TIDAK DITEMUKAN */
+          <div className="p-12 sm:p-16 text-center space-y-4">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
+              <BellOff className="w-8 h-8 sm:w-10 sm:h-10" />
             </div>
             <div className="max-w-md mx-auto space-y-1">
               <h3 className="text-lg font-bold text-slate-900">
-                Tidak Ada Notifikasi
+                {notifications.length === 0
+                  ? "Belum Ada Notifikasi"
+                  : "Tidak Ada Notifikasi Ditemukan"}
               </h3>
-              <p className="text-xs text-slate-500">
-                {searchQuery || activeTab !== "semua"
-                  ? "Tidak ada notifikasi yang cocok dengan pencarian atau filter tab Anda."
-                  : "Pusat notifikasi Anda kosong. Seluruh informasi terbaru akan muncul di sini."}
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {notifications.length === 0
+                  ? "Pusat notifikasi Anda masih kosong. Seluruh informasi penting seperti update status lamaran, undangan wawancara, dan pesan akan tampil di sini."
+                  : "Tidak ada pemberitahuan atau pesan yang cocok dengan kriteria kata kunci pencarian atau filter tab yang Anda pilih saat ini."}
               </p>
             </div>
             {(searchQuery || activeTab !== "semua") && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveTab("semua");
-                }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
-              >
-                Reset Filter
-              </button>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setActiveTab("semua");
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                >
+                  Reset Filter & Pencarian
+                </button>
+              </div>
             )}
           </div>
         )}

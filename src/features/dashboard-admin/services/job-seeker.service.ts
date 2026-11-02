@@ -55,3 +55,15 @@ export async function exportAdminJobSeeker(
     return handleServiceError(error);
   }
 }
+
+export async function getAdminJobSeekerDashboard(token: string) {
+  try {
+    const response = await axios.get(API_ENDPOINTS.ADMIN.JOB_SEEKER.DASHBOARD, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

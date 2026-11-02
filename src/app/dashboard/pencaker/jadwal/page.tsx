@@ -21,6 +21,7 @@ import {
   Calendar,
   Layers,
   Filter,
+  CalendarX,
 } from "lucide-react";
 
 interface ScheduleItem {
@@ -41,72 +42,74 @@ interface ScheduleItem {
   prepNotes: string;
 }
 
+// Mock Data Agenda Seleksi (Dikomentari sesuai permintaan)
+const schedules: ScheduleItem[] = [
+  /*
+  {
+    id: "SCH-001",
+    applicationId: "APP-2026-0982",
+    companyName: "PT Technology Innovation Indonesia",
+    companyLogo:
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80",
+    position: "Senior Frontend Developer",
+    type: "Wawancara",
+    subType: "Wawancara User & Live Coding",
+    date: "2026-09-25",
+    formattedDate: "Jumat, 25 September 2026",
+    time: "10:00 - 11:30 WIB",
+    locationType: "Online",
+    locationDetail: "Google Meet",
+    meetingLink: "https://meet.google.com/abc-defg-hij",
+    attendanceStatus: "Belum Konfirmasi",
+    prepNotes:
+      "Siapkan environment pengembangan React/Next.js lokal. Pastikan mikrofon dan kamera berfungsi.",
+  },
+  {
+    id: "SCH-002",
+    applicationId: "APP-2026-0811",
+    companyName: "Nusantara Digital Group",
+    companyLogo:
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=100&auto=format&fit=crop&q=80",
+    position: "UI/UX Designer",
+    type: "Tes Kompetensi",
+    subType: "Design Challenge & Portfolio Defense",
+    date: "2026-09-28",
+    formattedDate: "Senin, 28 September 2026",
+    time: "14:00 - 16:00 WIB",
+    locationType: "Online",
+    locationDetail: "Zoom Meeting",
+    meetingLink: "https://zoom.us/j/9876543210",
+    attendanceStatus: "Hadir",
+    prepNotes:
+      "Pelajari studi kasus aplikasi e-commerce terakhir yang telah dikirimkan ke HRD.",
+  },
+  {
+    id: "SCH-003",
+    applicationId: "APP-2026-0774",
+    companyName: "Global Fintech Solutions",
+    companyLogo:
+      "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=100&auto=format&fit=crop&q=80",
+    position: "Fullstack Engineer",
+    type: "Wawancara",
+    subType: "Wawancara HR & Culture Fit",
+    date: "2026-10-02",
+    formattedDate: "Jumat, 02 Oktober 2026",
+    time: "09:00 - 10:00 WIB",
+    locationType: "Offline",
+    locationDetail:
+      "Menara BCA Lantai 24, Jl. M.H. Thamrin No. 1, Jakarta Pusat",
+    attendanceStatus: "Belum Konfirmasi",
+    prepNotes:
+      "Bawa KTP fisik untuk akses masuk gedung. Datang 15 menit sebelum jadwal.",
+  },
+  */
+];
+
 export default function JadwalSeleksiPage() {
   const [selectedDate, setSelectedDate] = useState<string>("2026-09-25");
   const [filterType, setFilterType] = useState<string>("Semua");
   const [filterStatus, setFilterStatus] = useState<string>("Semua");
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  // Mock Data Agenda Seleksi
-  const schedules: ScheduleItem[] = [
-    {
-      id: "SCH-001",
-      applicationId: "APP-2026-0982",
-      companyName: "PT Technology Innovation Indonesia",
-      companyLogo:
-        "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80",
-      position: "Senior Frontend Developer",
-      type: "Wawancara",
-      subType: "Wawancara User & Live Coding",
-      date: "2026-09-25",
-      formattedDate: "Jumat, 25 September 2026",
-      time: "10:00 - 11:30 WIB",
-      locationType: "Online",
-      locationDetail: "Google Meet",
-      meetingLink: "https://meet.google.com/abc-defg-hij",
-      attendanceStatus: "Belum Konfirmasi",
-      prepNotes:
-        "Siapkan environment pengembangan React/Next.js lokal. Pastikan mikrofon dan kamera berfungsi.",
-    },
-    {
-      id: "SCH-002",
-      applicationId: "APP-2026-0811",
-      companyName: "Nusantara Digital Group",
-      companyLogo:
-        "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=100&auto=format&fit=crop&q=80",
-      position: "UI/UX Designer",
-      type: "Tes Kompetensi",
-      subType: "Design Challenge & Portfolio Defense",
-      date: "2026-09-28",
-      formattedDate: "Senin, 28 September 2026",
-      time: "14:00 - 16:00 WIB",
-      locationType: "Online",
-      locationDetail: "Zoom Meeting",
-      meetingLink: "https://zoom.us/j/9876543210",
-      attendanceStatus: "Hadir",
-      prepNotes:
-        "Pelajari studi kasus aplikasi e-commerce terakhir yang telah dikirimkan ke HRD.",
-    },
-    {
-      id: "SCH-003",
-      applicationId: "APP-2026-0774",
-      companyName: "Global Fintech Solutions",
-      companyLogo:
-        "https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=100&auto=format&fit=crop&q=80",
-      position: "Fullstack Engineer",
-      type: "Wawancara",
-      subType: "Wawancara HR & Culture Fit",
-      date: "2026-10-02",
-      formattedDate: "Jumat, 02 Oktober 2026",
-      time: "09:00 - 10:00 WIB",
-      locationType: "Offline",
-      locationDetail:
-        "Menara BCA Lantai 24, Jl. M.H. Thamrin No. 1, Jakarta Pusat",
-      attendanceStatus: "Belum Konfirmasi",
-      prepNotes:
-        "Bawa KTP fisik untuk akses masuk gedung. Datang 15 menit sebelum jadwal.",
-    },
-  ];
 
   // Multi-Filter Data Handling
   const filteredSchedules = schedules.filter((item) => {
@@ -248,7 +251,7 @@ export default function JadwalSeleksiPage() {
             </p>
           </section>
 
-          {/* CATATAN RINGKASAN PERSAPSI / TIPS */}
+          {/* CATATAN RINGKASAN PERSIAPAN / TIPS */}
           <section className="pt-4 border-t border-slate-200 space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-500" />
@@ -328,7 +331,7 @@ export default function JadwalSeleksiPage() {
             </div>
           </div>
 
-          {/* LIST JADWAL SELEKSI */}
+          {/* LIST JADWAL SELEKSI / UI HANDLER DATA KOSONG */}
           <div className="space-y-8 divide-y divide-slate-100">
             {filteredSchedules.length > 0 ? (
               filteredSchedules.map((schedule) => (
@@ -458,12 +461,49 @@ export default function JadwalSeleksiPage() {
                 </div>
               ))
             ) : (
-              <div className="py-12 text-center space-y-3">
-                <HelpCircle className="w-8 h-8 text-slate-300 mx-auto" />
-                <p className="text-sm font-semibold text-slate-500">
-                  Tidak ada agenda seleksi yang cocok dengan pencarian dan
-                  filter Anda.
-                </p>
+              /* EMPTY STATE / UI HANDLER KETIKA JADWAL KOSONG ATAU FILTER TIDAK COCOK */
+              <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center space-y-4 shadow-sm">
+                <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
+                  <CalendarX className="w-8 h-8" />
+                </div>
+                <div className="max-w-md mx-auto space-y-1">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    {schedules.length === 0
+                      ? "Tidak Ada Jadwal Seleksi Aktif"
+                      : "Tidak Ditemukan Jadwal yang Sesuai"}
+                  </h3>
+                  <p className="text-xs text-slate-500 leading-relaxed">
+                    {schedules.length === 0
+                      ? "Belum ada agenda tes atau wawancara yang dijadwalkan oleh perusahaan untuk Anda saat ini. Jadwal akan otomatis muncul di sini ketika lamaran Anda dipanggil ke tahap seleksi."
+                      : "Tidak ada agenda seleksi yang cocok dengan filter kategori, status kehadiran, atau kata kunci pencarian yang Anda masukkan."}
+                  </p>
+                </div>
+
+                {schedules.length === 0 ? (
+                  <div className="pt-2">
+                    <Link
+                      href="/dashboard/lamaran"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-md transition-all"
+                    >
+                      <span>Pantau Status Lamaran Saya</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setFilterType("Semua");
+                        setFilterStatus("Semua");
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                    >
+                      Reset Filter & Pencarian
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

@@ -3,6 +3,7 @@ import {
   AdminExportJobSeekerFilter,
   AdminExportJobSeekerResult,
   AdminJobSeeker,
+  AdminJobSeekerDashboardData,
   AdminJobSeekerDetail,
   AdminJobSeekerIndexFilter,
 } from "../types/AdminJobSeeker.type";
@@ -10,6 +11,7 @@ import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import {
   exportAdminJobSeeker,
   getAdminJobSeekerById,
+  getAdminJobSeekerDashboard,
   indexAdminJobSeeker,
 } from "../services/job-seeker.service";
 import { useToast } from "@/shared/contexts/ToastContext";
@@ -53,6 +55,9 @@ export function useAdminJobSeeker() {
   const [adminExportJobSeeker, setAdminExportJobSeeker] = useState<
     AdminExportJobSeekerResult[] | []
   >([]);
+
+  const [adminJobSeekerDashboard, setAdminJobSeekerDashboard] =
+    useState<AdminJobSeekerDashboardData | null>(null);
 
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
@@ -367,6 +372,19 @@ export function useAdminJobSeeker() {
       alert("Gagal mengexport data ke Excel.");
     }
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!token) return;
+      const result = await getAdminJobSeekerDashboard(token);
+      if (result.status !== 200) {
+        return;
+      }
+      setAdminJobSeekerDashboard(result.data.data);
+    };
+    fetch();
+  }, [token]);
+
   return {
     adminJobSeekerDetail,
     adminJobSeeker,
@@ -383,5 +401,6 @@ export function useAdminJobSeeker() {
     handleExportExcel,
     adminJobSeekerPagination,
     setAdminJobSeekerPagination,
+    adminJobSeekerDashboard,
   };
 }

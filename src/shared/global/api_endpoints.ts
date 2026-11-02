@@ -65,6 +65,7 @@ const API_ENDPOINTS = {
       INDEX: `${baseURL}/admin/job-seekers`,
       DETAIL: (id: string) => `${baseURL}/admin/job-seekers/${id}`,
       EXPORT: `${baseURL}/admin/job-seekers/export`,
+      DASHBOARD: `${baseURL}/admin/dashboard/job-seekers`,
     },
   },
 };

@@ -35,8 +35,9 @@ interface SavedJob {
   salaryRange?: string;
 }
 
-// Mock Data Lowongan Tersimpan
+// Mock Data Lowongan Tersimpan (Dikomentari sesuai permintaan)
 const initialSavedJobs: SavedJob[] = [
+  /*
   {
     id: "job-1",
     title: "Senior Frontend Developer (React / Next.js)",
@@ -85,6 +86,7 @@ const initialSavedJobs: SavedJob[] = [
     status: "closed",
     salaryRange: "Rp 12.000.000 - Rp 18.000.000",
   },
+  */
 ];
 
 export default function SavedJobsPage() {
@@ -250,7 +252,7 @@ export default function SavedJobsPage() {
           </div>
         </div>
 
-        {/* DAFTAR LOWONGAN TERSIMPAN */}
+        {/* DAFTAR LOWONGAN TERSIMPAN / UI HANDLER DATA KOSONG */}
         {filteredJobs.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {filteredJobs.map((job) => (
@@ -367,40 +369,47 @@ export default function SavedJobsPage() {
             ))}
           </div>
         ) : (
-          /* EMPTY STATE */
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center space-y-4">
+          /* EMPTY STATE / UI HANDLER KETIKA DATA KOSONG ATAU FILTER TIDAK DITEMUKAN */
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center space-y-4 shadow-sm">
             <div className="w-16 h-16 bg-app-navy-50 text-app-navy-600 rounded-full flex items-center justify-center mx-auto border border-app-navy-100">
               <BookmarkX className="w-8 h-8" />
             </div>
             <div className="max-w-md mx-auto space-y-1">
               <h3 className="text-lg font-bold text-slate-900">
-                Tidak Ada Lowongan Tersimpan
+                {savedJobs.length === 0
+                  ? "Belum Ada Lowongan Tersimpan"
+                  : "Tidak Ditemukan Lowongan yang Sesuai"}
               </h3>
-              <p className="text-xs text-slate-500">
-                {searchQuery || filterStatus !== "all"
-                  ? "Tidak ada lowongan yang sesuai dengan kriteria pencarian atau filter Anda."
-                  : "Anda belum menyimpan lowongan kerja apa pun. Jelajahi lowongan dan bookmark pekerjaan yang Anda minati."}
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {savedJobs.length === 0
+                  ? "Anda belum menyimpan lowongan kerja apa pun ke dalam daftar. Jelajahi berbagai lowongan dan bookmark posisi yang Anda minati untuk dilamar nanti."
+                  : "Tidak ada lowongan tersimpan yang cocok dengan kata kunci pencarian atau filter status yang Anda pilih saat ini."}
               </p>
             </div>
-            {searchQuery || filterStatus !== "all" ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setFilterStatus("all");
-                }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
-              >
-                Reset Filter & Pencarian
-              </button>
+
+            {savedJobs.length === 0 ? (
+              <div className="pt-2">
+                <Link
+                  href="/lowongan"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 text-white text-xs font-bold rounded-xl shadow-md transition-all"
+                >
+                  <span>Cari Lowongan Sekarang</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
             ) : (
-              <Link
-                href="/lowongan"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 text-white text-xs font-bold rounded-xl shadow-md transition-all"
-              >
-                <span>Cari Lowongan Sekarang</span>
-                <ChevronRight className="w-4 h-4" />
-              </Link>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setFilterStatus("all");
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                >
+                  Reset Filter & Pencarian
+                </button>
+              </div>
             )}
           </div>
         )}

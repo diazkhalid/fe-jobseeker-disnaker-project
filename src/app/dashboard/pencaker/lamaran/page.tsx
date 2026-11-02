@@ -55,8 +55,9 @@ interface Application {
   notes?: string; // Catatan tambahan dari perusahaan
 }
 
-// Mock Data Lamaran Saya
+// Mock Data Lamaran Saya (Dikomentari sesuai permintaan)
 const initialApplications: Application[] = [
+  /*
   {
     id: "APP-001",
     positionName: "Frontend Developer (React / Next.js)",
@@ -142,6 +143,7 @@ const initialApplications: Application[] = [
     status: "dibatalkan",
     recruitmentStage: "Lamaran Dibatalkan oleh Pelamar",
   },
+  */
 ];
 
 export default function MyApplicationsPage() {
@@ -372,7 +374,7 @@ export default function MyApplicationsPage() {
           </div>
         </div>
 
-        {/* DAFTAR LAMARAN */}
+        {/* DAFTAR LAMARAN / UI HANDLER DATA KOSONG */}
         {filteredApplications.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
             {filteredApplications.map((app) => {
@@ -491,40 +493,47 @@ export default function MyApplicationsPage() {
             })}
           </div>
         ) : (
-          /* EMPTY STATE */
-          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center space-y-4">
-            <div className="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto border border-slate-200">
-              <Send className="w-7 h-7" />
+          /* EMPTY STATE / UI HANDLER KETIKA DATA KOSONG ATAU FILTER TIDAK DITEMUKAN */
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center space-y-4 shadow-sm">
+            <div className="w-16 h-16 bg-app-navy-50 text-app-navy-600 rounded-full flex items-center justify-center mx-auto border border-app-navy-100">
+              <Send className="w-8 h-8" />
             </div>
             <div className="max-w-md mx-auto space-y-1">
               <h3 className="text-lg font-bold text-slate-900">
-                Tidak Ada Lamaran Ditemukan
+                {applications.length === 0
+                  ? "Belum Ada Riwayat Lamaran"
+                  : "Tidak Ditemukan Lamaran yang Sesuai"}
               </h3>
-              <p className="text-xs text-slate-500">
-                {searchQuery || selectedStatus !== "semua"
-                  ? "Tidak ada riwayat lamaran yang cocok dengan kriteria kata kunci atau status yang Anda pilih."
-                  : "Anda belum pernah mengirimkan lamaran pekerjaan. Cari lowongan impian Anda dan mulai melamar!"}
+              <p className="text-xs text-slate-500 leading-relaxed">
+                {applications.length === 0
+                  ? "Anda belum pernah mengirimkan lamaran pekerjaan apa pun. Jelajahi ratusan lowongan kerja yang tersedia dan mulailah melamar posisi impian Anda."
+                  : "Tidak ada riwayat lamaran yang cocok dengan kriteria kata kunci pencarian atau filter status yang Anda pilih saat ini."}
               </p>
             </div>
-            {searchQuery || selectedStatus !== "semua" ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedStatus("semua");
-                }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
-              >
-                Reset Filter
-              </button>
+
+            {applications.length === 0 ? (
+              <div className="pt-2">
+                <Link
+                  href="/lowongan"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 text-white text-xs font-bold rounded-xl shadow-md transition-all"
+                >
+                  <span>Cari Lowongan Kerja Sekarang</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
             ) : (
-              <Link
-                href="/lowongan"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-app-navy-700 hover:bg-app-navy-800 text-white text-xs font-bold rounded-xl shadow-md transition-all"
-              >
-                <span>Eksplor Lowongan Kerja</span>
-                <ChevronRight className="w-4 h-4" />
-              </Link>
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedStatus("semua");
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+                >
+                  Reset Filter & Pencarian
+                </button>
+              </div>
             )}
           </div>
         )}

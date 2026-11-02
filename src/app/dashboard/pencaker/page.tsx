@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -18,10 +19,10 @@ import {
   Building2,
   Award,
   ArrowRight,
-  AlertCircle,
-  FileText,
-  GraduationCap,
   ShieldAlert,
+  Inbox,
+  Search,
+  SlidersHorizontal,
 } from "lucide-react";
 import { useAuthUser } from "@/shared/contexts/SessionContext";
 import APP_CONFIG from "@/shared/global/app_config";
@@ -29,127 +30,159 @@ import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 import { useJobSeekerProfileCompletionRate } from "@/features/profil-pencaker/hooks/useUserProfileCompletionRate";
 
 // --- DUMMY DATA STATISTIK LAMARAN ---
-const statItems = [
-  {
-    label: "Total Lamaran",
-    value: "12",
-    icon: Send,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    label: "Sedang Ditinjau",
-    value: "5",
-    icon: Clock,
-    color: "text-amber-600",
-    bgColor: "bg-amber-50",
-  },
-  {
-    label: "Dipanggil Seleksi",
-    value: "3",
-    icon: CheckCircle2,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50",
-  },
-  {
-    label: "Diterima",
-    value: "1",
-    icon: Award,
-    color: "text-app-navy-600",
-    bgColor: "bg-app-navy-50",
-  },
-  {
-    label: "Lowongan Tersimpan",
-    value: "8",
-    icon: Bookmark,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-  },
+const statItems: Array<{
+  label: string;
+  value: string;
+  icon: any;
+  color: string;
+  bgColor: string;
+}> = [
+  // {
+  //   label: "Total Lamaran",
+  //   value: "12",
+  //   icon: Send,
+  //   color: "text-blue-600",
+  //   bgColor: "bg-blue-50",
+  // },
+  // {
+  //   label: "Sedang Ditinjau",
+  //   value: "5",
+  //   icon: Clock,
+  //   color: "text-amber-600",
+  //   bgColor: "bg-amber-50",
+  // },
+  // {
+  //   label: "Dipanggil Seleksi",
+  //   value: "3",
+  //   icon: CheckCircle2,
+  //   color: "text-emerald-600",
+  //   bgColor: "bg-emerald-50",
+  // },
+  // {
+  //   label: "Diterima",
+  //   value: "1",
+  //   icon: Award,
+  //   color: "text-app-navy-600",
+  //   bgColor: "bg-app-navy-50",
+  // },
+  // {
+  //   label: "Lowongan Tersimpan",
+  //   value: "8",
+  //   icon: Bookmark,
+  //   color: "text-purple-600",
+  //   bgColor: "bg-purple-50",
+  // },
 ];
 
 // --- DUMMY DATA JADWAL SELEKSI TERDEKAT ---
-const upcomingSchedules = [
-  {
-    id: 1,
-    title: "Wawancara User (Online)",
-    company: "PT AMNT",
-    date: "25 Sep 2026",
-    time: "09:00 WITA",
-    type: "Interview",
-  },
-  {
-    id: 2,
-    title: "Psikotes Online",
-    company: "PT Macmahon Indonesia",
-    date: "28 Sep 2026",
-    time: "13:30 WITA",
-    type: "Tes Substantif",
-  },
+const upcomingSchedules: Array<{
+  id: number;
+  title: string;
+  company: string;
+  date: string;
+  time: string;
+  type: string;
+}> = [
+  // {
+  //   id: 1,
+  //   title: "Wawancara User (Online)",
+  //   company: "PT AMNT",
+  //   date: "25 Sep 2026",
+  //   time: "09:00 WITA",
+  //   type: "Interview",
+  // },
+  // {
+  //   id: 2,
+  //   title: "Psikotes Online",
+  //   company: "PT Macmahon Indonesia",
+  //   date: "28 Sep 2026",
+  //   time: "13:30 WITA",
+  //   type: "Tes Substantif",
+  // },
 ];
 
 // --- DUMMY DATA LAMARAN TERBARU ---
-const recentApplications = [
-  {
-    id: 1,
-    role: "Senior Geologist",
-    company: "PT AMNT",
-    location: "Sumbawa Barat",
-    appliedDate: "18 Sep 2026",
-    status: "Dipanggil Wawancara",
-    statusColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  },
-  {
-    id: 2,
-    role: "HSE Specialist (K3LH)",
-    company: "PT Macmahon Indonesia",
-    location: "Batu Hijau",
-    appliedDate: "15 Sep 2026",
-    status: "Sedang Ditinjau",
-    statusColor: "bg-amber-50 text-amber-700 border-amber-200",
-  },
-  {
-    id: 3,
-    role: "Database Administrator",
-    company: "Diskominfo Sumbawa",
-    location: "Sumbawa Besar",
-    appliedDate: "10 Sep 2026",
-    status: "Seleksi Berkas",
-    statusColor: "bg-blue-50 text-blue-700 border-blue-200",
-  },
+const recentApplications: Array<{
+  id: number;
+  role: string;
+  company: string;
+  location: string;
+  appliedDate: string;
+  status: string;
+  statusColor: string;
+}> = [
+  // {
+  //   id: 1,
+  //   role: "Senior Geologist",
+  //   company: "PT AMNT",
+  //   location: "Sumbawa Barat",
+  //   appliedDate: "18 Sep 2026",
+  //   status: "Dipanggil Wawancara",
+  //   statusColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  // },
+  // {
+  //   id: 2,
+  //   role: "HSE Specialist (K3LH)",
+  //   company: "PT Macmahon Indonesia",
+  //   location: "Batu Hijau",
+  //   appliedDate: "15 Sep 2026",
+  //   status: "Sedang Ditinjau",
+  //   statusColor: "bg-amber-50 text-amber-700 border-amber-200",
+  // },
+  // {
+  //   id: 3,
+  //   role: "Database Administrator",
+  //   company: "Diskominfo Sumbawa",
+  //   location: "Sumbawa Besar",
+  //   appliedDate: "10 Sep 2026",
+  //   status: "Seleksi Berkas",
+  //   statusColor: "bg-blue-50 text-blue-700 border-blue-200",
+  // },
 ];
 
 // --- DUMMY DATA REKOMENDASI LOWONGAN ---
-const jobRecommendations = [
-  {
-    id: 1,
-    title: "Frontend Web Developer",
-    company: "PT Digital Sumbawa",
-    location: "Sumbawa Besar",
-    salary: "Rp 6.000.000 - Rp 8.500.000",
-    type: "Full-time",
-  },
-  {
-    id: 2,
-    title: "Environmental Officer",
-    company: "PT Amman Mineral",
-    location: "Sumbawa Barat",
-    salary: "Kompetitif",
-    type: "Full-time",
-  },
+const jobRecommendations: Array<{
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  type: string;
+}> = [
+  // {
+  //   id: 1,
+  //   title: "Frontend Web Developer",
+  //   company: "PT Digital Sumbawa",
+  //   location: "Sumbawa Besar",
+  //   salary: "Rp 6.000.000 - Rp 8.500.000",
+  //   type: "Full-time",
+  // },
+  // {
+  //   id: 2,
+  //   title: "Environmental Officer",
+  //   company: "PT Amman Mineral",
+  //   location: "Sumbawa Barat",
+  //   salary: "Kompetitif",
+  //   type: "Full-time",
+  // },
 ];
 
 // --- DUMMY DATA NOTIFIKASI TERBARU ---
-const recentNotifications = [
-  {
-    id: 1,
-    text: "Undangan Wawancara dari PT AMNT telah dikirim ke email Anda.",
-    time: "2 jam yang lalu",
-  },
-  {
-    id: 2,
-    text: "Lamaran Anda untuk posisi 'HSE Specialist' telah dibaca oleh HRD.",
-    time: "1 hari yang lalu",
-  },
+const recentNotifications: Array<{
+  id: number;
+  text: string;
+  time: string;
+}> = [
+  // {
+  //   id: 1,
+  //   text: "Undangan Wawancara dari PT AMNT telah dikirim ke email Anda.",
+  //   time: "2 jam yang lalu",
+  // },
+  // {
+  //   id: 2,
+  //   text: "Lamaran Anda untuk posisi 'HSE Specialist' telah dibaca oleh HRD.",
+  //   time: "1 hari yang lalu",
+  // },
 ];
 
 export default function CandidateDashboardPage() {
@@ -164,8 +197,8 @@ export default function CandidateDashboardPage() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           {/* Identitas User */}
           <div className="flex items-center gap-4 sm:gap-5">
-            <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner">
-              {user?.profile.profile_photo_url ? (
+            <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-slate-100 bg-slate-100 shadow-inner shrink-0">
+              {user?.profile?.profile_photo_url ? (
                 <Image
                   src={`${APP_CONFIG.STORAGE_URL}${user?.profile.profile_photo_url}`}
                   alt="Foto Profil"
@@ -248,66 +281,94 @@ export default function CandidateDashboardPage() {
         </div>
       </section>
 
-      {/* 1.5. ALERT DATA YANG BELUM LENGKAP (BERDASARKAN DATA JSON ANDA) */}
-      {(profileProgress ? profileProgress.profile_completeness : 0) < 100 && (
-        <section className="bg-white border border-orange-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-orange-100 text-orange-800 rounded-lg">
-                <ShieldAlert className="w-4 h-4 text-orange-700" />
+      {/* 1.5. ALERT DATA YANG BELUM LENGKAP */}
+      {profileProgress &&
+        profileProgress.missing_data_alerts &&
+        profileProgress.missing_data_alerts.length > 0 && (
+          <section className="bg-white border border-orange-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-orange-100 text-orange-800 rounded-lg">
+                  <ShieldAlert className="w-4 h-4 text-orange-700" />
+                </div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  Peringatan Kelengkapan Profil (
+                  {profileProgress.missing_data_alerts.length})
+                </h3>
               </div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                Peringatan Kelengkapan Profil (
-                {profileProgress?.missing_data_alerts.length})
-              </h3>
             </div>
-          </div>
 
-          {/* Container Daftar Item Tipis Menyamping / Wrap Badge */}
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {profileProgress?.missing_data_alerts.map((alert) => (
-              <span
-                key={alert.id}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-900 text-[11px] font-semibold rounded-lg"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                {alert.label}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {profileProgress.missing_data_alerts.map((alert) => (
+                <span
+                  key={alert.id}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-orange-50 border border-orange-200 text-orange-900 text-[11px] font-semibold rounded-lg"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                  {alert.label}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
-      {/* 2. RINGKASAN JUMLAH LAMARAN & TERTIMPAN */}
+      {/* 2. RINGKASAN JUMLAH LAMARAN & TERSIMPAN */}
       <section className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
           Ringkasan Lamaran
         </h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          {statItems.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={idx}
-                className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-app-navy-500/50 transition-all flex flex-col justify-between"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[11px] font-semibold text-slate-500">
-                    {stat.label}
-                  </span>
-                  <div
-                    className={`p-2 rounded-lg ${stat.bgColor} ${stat.color}`}
-                  >
-                    <Icon className="w-4 h-4" />
+        {statItems.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            {statItems.map((stat, idx) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-app-navy-500/50 transition-all flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[11px] font-semibold text-slate-500">
+                      {stat.label}
+                    </span>
+                    <div
+                      className={`p-2 rounded-lg ${stat.bgColor} ${stat.color}`}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
                   </div>
+                  <p className="text-2xl font-extrabold text-slate-900 tracking-tight">
+                    {stat.value}
+                  </p>
                 </div>
-                <p className="text-2xl font-extrabold text-slate-900 tracking-tight">
-                  {stat.value}
+              );
+            })}
+          </div>
+        ) : (
+          /* EMPTY STATE RINGKASAN LAMARAN */
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 text-center flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+            <div className="flex items-center gap-3 text-left">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
+                <Send className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-800">
+                  Belum Ada Rekam Aktivitas Lamaran
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Seluruh statistik status lamaran dan lowongan tersimpan Anda
+                  akan tampil di sini.
                 </p>
               </div>
-            );
-          })}
-        </div>
+            </div>
+            <Link
+              href="/dashboard/lowongan"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shrink-0 transition-colors"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Jelajahi Lowongan</span>
+            </Link>
+          </div>
+        )}
       </section>
 
       {/* GRID KONTEN UTAMA: UTAMA & SIDEBAR */}
@@ -323,43 +384,63 @@ export default function CandidateDashboardPage() {
                   Jadwal Seleksi Terdekat
                 </h3>
               </div>
-              <Link
-                href="/dashboard/jadwal"
-                className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
-              >
-                Lihat Jadwal <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+              {upcomingSchedules.length > 0 && (
+                <Link
+                  href="/dashboard/jadwal"
+                  className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
+                >
+                  Lihat Jadwal <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {upcomingSchedules.map((schedule) => (
-                <div
-                  key={schedule.id}
-                  className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="px-2 py-0.5 bg-app-navy-100 text-app-navy-800 font-bold text-[10px] rounded">
-                      {schedule.type}
-                    </span>
-                    <span className="text-[10px] font-semibold text-slate-500">
-                      {schedule.time}
-                    </span>
+            {upcomingSchedules.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {upcomingSchedules.map((schedule) => (
+                  <div
+                    key={schedule.id}
+                    className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-0.5 bg-app-navy-100 text-app-navy-800 font-bold text-[10px] rounded">
+                        {schedule.type}
+                      </span>
+                      <span className="text-[10px] font-semibold text-slate-500">
+                        {schedule.time}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-900">
+                        {schedule.title}
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {schedule.company}
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-slate-200/60 text-[10px] font-semibold text-slate-600 flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-slate-400" />
+                      <span>{schedule.date}</span>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-slate-900">
-                      {schedule.title}
-                    </p>
-                    <p className="text-[11px] text-slate-500">
-                      {schedule.company}
-                    </p>
-                  </div>
-                  <div className="pt-2 border-t border-slate-200/60 text-[10px] font-semibold text-slate-600 flex items-center gap-1">
-                    <Calendar className="w-3 h-3 text-slate-400" />
-                    <span>{schedule.date}</span>
-                  </div>
+                ))}
+              </div>
+            ) : (
+              /* EMPTY STATE JADWAL SELEKSI */
+              <div className="py-8 px-4 text-center space-y-3">
+                <div className="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto">
+                  <Calendar className="w-5 h-5" />
                 </div>
-              ))}
-            </div>
+                <div className="space-y-1 max-w-sm mx-auto">
+                  <p className="text-xs font-bold text-slate-800">
+                    Tidak ada jadwal seleksi mendatang
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Undangan tes, psikotes, atau wawancara kerja dari rekruter
+                    akan muncul di bagian ini.
+                  </p>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* 4. LAMARAN TERBARU */}
@@ -371,46 +452,75 @@ export default function CandidateDashboardPage() {
                   Lamaran Terbaru
                 </h3>
               </div>
-              <Link
-                href="/dashboard/lamaran"
-                className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
-              >
-                Semua Lamaran <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+              {recentApplications.length > 0 && (
+                <Link
+                  href="/dashboard/lamaran"
+                  className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
+                >
+                  Semua Lamaran <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
 
-            <div className="divide-y divide-slate-100">
-              {recentApplications.map((app) => (
-                <div
-                  key={app.id}
-                  className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 first:pt-0 last:pb-0"
-                >
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-slate-900">
-                      {app.role}
-                    </p>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-500">
-                      <span className="flex items-center gap-1">
-                        <Building2 className="w-3 h-3" /> {app.company}
+            {recentApplications.length > 0 ? (
+              <div className="divide-y divide-slate-100">
+                {recentApplications.map((app) => (
+                  <div
+                    key={app.id}
+                    className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 first:pt-0 last:pb-0"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-xs font-bold text-slate-900">
+                        {app.role}
+                      </p>
+                      <div className="flex items-center gap-3 text-[11px] text-slate-500">
+                        <span className="flex items-center gap-1">
+                          <Building2 className="w-3 h-3" /> {app.company}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3" /> {app.location}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                      <span className="text-[10px] text-slate-400">
+                        {app.appliedDate}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {app.location}
+                      <span
+                        className={`px-2.5 py-1 text-[10px] font-bold rounded-full border ${app.statusColor}`}
+                      >
+                        {app.status}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
-                    <span className="text-[10px] text-slate-400">
-                      {app.appliedDate}
-                    </span>
-                    <span
-                      className={`px-2.5 py-1 text-[10px] font-bold rounded-full border ${app.statusColor}`}
-                    >
-                      {app.status}
-                    </span>
-                  </div>
+                ))}
+              </div>
+            ) : (
+              /* EMPTY STATE LAMARAN TERBARU */
+              <div className="py-10 px-4 text-center space-y-3">
+                <div className="w-12 h-12 bg-app-navy-50 text-app-navy-700 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+                  <Inbox className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
+                <div className="space-y-1 max-w-sm mx-auto">
+                  <p className="text-xs font-bold text-slate-800">
+                    Belum Melamar Pekerjaan Apapun
+                  </p>
+                  <p className="text-[11px] text-slate-500">
+                    Temukan dan lamar berbagai peluang lowongan kerja di
+                    Kabupaten Sumbawa yang sesuai dengan keahlian Anda.
+                  </p>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    href="/dashboard/lowongan"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-app-navy-900 text-white rounded-xl text-xs font-bold hover:bg-app-navy-800 transition-colors shadow-xs"
+                  >
+                    <Search className="w-3.5 h-3.5" />
+                    <span>Cari Lowongan Kerja</span>
+                  </Link>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* 5. REKOMENDASI LOWONGAN */}
@@ -422,51 +532,79 @@ export default function CandidateDashboardPage() {
                   Rekomendasi Lowongan
                 </h3>
               </div>
-              <Link
-                href="/dashboard/lowongan"
-                className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
-              >
-                Eksplor Lainnya <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {jobRecommendations.map((job) => (
-                <div
-                  key={job.id}
-                  className="p-4 rounded-xl border border-slate-200 hover:border-app-navy-500 transition-all flex flex-col justify-between space-y-3 group"
+              {jobRecommendations.length > 0 && (
+                <Link
+                  href="/dashboard/lowongan"
+                  className="text-xs font-bold text-app-navy-700 hover:underline flex items-center gap-1"
                 >
-                  <div className="space-y-1.5">
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-xs font-bold text-slate-900 group-hover:text-app-navy-700 transition-colors">
-                        {job.title}
-                      </h4>
-                      <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[9px] font-bold rounded">
-                        {job.type}
-                      </span>
-                    </div>
-                    <p className="text-[11px] font-medium text-slate-600">
-                      {job.company}
-                    </p>
-                    <p className="text-[10px] text-slate-400 flex items-center gap-1">
-                      <MapPin className="w-3 h-3" /> {job.location}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-slate-800">
-                      {job.salary}
-                    </span>
-                    <Link
-                      href={`/dashboard/lowongan/${job.id}`}
-                      className="p-1.5 rounded-lg bg-app-navy-50 text-app-navy-700 hover:bg-app-navy-700 hover:text-white transition-colors"
-                    >
-                      <ArrowUpRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                  Eksplor Lainnya <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              )}
             </div>
+
+            {jobRecommendations.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {jobRecommendations.map((job) => (
+                  <div
+                    key={job.id}
+                    className="p-4 rounded-xl border border-slate-200 hover:border-app-navy-500 transition-all flex flex-col justify-between space-y-3 group"
+                  >
+                    <div className="space-y-1.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <h4 className="text-xs font-bold text-slate-900 group-hover:text-app-navy-700 transition-colors">
+                          {job.title}
+                        </h4>
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[9px] font-bold rounded">
+                          {job.type}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-medium text-slate-600">
+                        {job.company}
+                      </p>
+                      <p className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {job.location}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-800">
+                        {job.salary}
+                      </span>
+                      <Link
+                        href={`/dashboard/lowongan/${job.id}`}
+                        className="p-1.5 rounded-lg bg-app-navy-50 text-app-navy-700 hover:bg-app-navy-700 hover:text-white transition-colors"
+                      >
+                        <ArrowUpRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* EMPTY STATE REKOMENDASI LOWONGAN */
+              <div className="py-8 px-4 text-center space-y-3">
+                <div className="w-10 h-10 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto">
+                  <SlidersHorizontal className="w-5 h-5" />
+                </div>
+                <div className="space-y-1 max-w-md mx-auto">
+                  <p className="text-xs font-bold text-slate-800">
+                    Belum Ada Rekomendasi yang Pas
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Lengkapi preferensi pencarian kerja Anda (lokasi, posisi,
+                    dan ekspektasi gaji) untuk mendapatkan rekomendasi lowongan
+                    yang presisi.
+                  </p>
+                </div>
+                <Link
+                  href="/dashboard/pencaker/preferensi"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-app-navy-700 hover:underline pt-1"
+                >
+                  Atur Preferensi Pekerjaan{" "}
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            )}
           </section>
         </div>
 
@@ -481,29 +619,43 @@ export default function CandidateDashboardPage() {
                   Notifikasi Terbaru
                 </h3>
               </div>
-              <Link
-                href="/dashboard/notifikasi"
-                className="text-[11px] font-bold text-app-navy-700 hover:underline"
-              >
-                Semua
-              </Link>
+              {recentNotifications.length > 0 && (
+                <Link
+                  href="/dashboard/notifikasi"
+                  className="text-[11px] font-bold text-app-navy-700 hover:underline"
+                >
+                  Semua
+                </Link>
+              )}
             </div>
 
-            <div className="space-y-3">
-              {recentNotifications.map((notif) => (
-                <div
-                  key={notif.id}
-                  className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1"
-                >
-                  <p className="text-xs text-slate-700 leading-snug">
-                    {notif.text}
-                  </p>
-                  <span className="text-[10px] text-slate-400 block">
-                    {notif.time}
-                  </span>
+            {recentNotifications.length > 0 ? (
+              <div className="space-y-3">
+                {recentNotifications.map((notif) => (
+                  <div
+                    key={notif.id}
+                    className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1"
+                  >
+                    <p className="text-xs text-slate-700 leading-snug">
+                      {notif.text}
+                    </p>
+                    <span className="text-[10px] text-slate-400 block">
+                      {notif.time}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* EMPTY STATE NOTIFIKASI */
+              <div className="py-6 text-center space-y-2">
+                <div className="w-8 h-8 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto">
+                  <Bell className="w-4 h-4" />
                 </div>
-              ))}
-            </div>
+                <p className="text-xs text-slate-400">
+                  Belum ada pemberitahuan atau kabar baru saat ini.
+                </p>
+              </div>
+            )}
           </section>
 
           {/* 7. TIPS KARIER SINGKAT */}
