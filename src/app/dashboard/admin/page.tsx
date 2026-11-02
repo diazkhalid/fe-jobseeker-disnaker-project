@@ -14,12 +14,19 @@ import {
   UserCheck,
 } from "lucide-react";
 import { ApexOptions } from "apexcharts";
+import { useOptions } from "@/shared/hooks/useOptions.hook";
 
 // Import ApexCharts secara dinamis untuk mencegah error SSR (Server-Side Rendering) di Next.js
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function DashboardAdminPage() {
   const { adminJobSeekerDashboard } = useAdminJobSeeker();
+  const {
+    districtOptions,
+    insdustryOptions,
+    jobCategoryOptions,
+    jobPositionOptions,
+  } = useOptions();
 
   // Helper jika data belum termuat / loading state
   if (!adminJobSeekerDashboard) {
@@ -206,21 +213,21 @@ export default function DashboardAdminPage() {
     },
     {
       title: "Total Wilayah Terjangkau",
-      value: kecamatan.length.toString(),
+      value: districtOptions.length.toString(),
       subtext: "Kecamatan terdata",
       icon: MapPin,
       color: "bg-blue-50 text-blue-600 border-blue-200",
     },
     {
       title: "Kategori Bidang Kerja",
-      value: job_fields.length.toString(),
+      value: jobCategoryOptions.length.toString(),
       subtext: "Bidang keahlian tersedia",
       icon: Briefcase,
       color: "bg-indigo-50 text-indigo-600 border-indigo-200",
     },
     {
       title: "Sektor Industri",
-      value: industri.length.toString(),
+      value: insdustryOptions.length.toString(),
       subtext: "Pilihan industri pencari kerja",
       icon: Building,
       color: "bg-amber-50 text-amber-600 border-amber-200",
