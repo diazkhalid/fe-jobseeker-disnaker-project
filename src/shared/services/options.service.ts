@@ -51,3 +51,13 @@ export async function getDocumentCategoryOptions() {
     return handleServiceError(error);
   }
 }
+
+export async function getMajorOptions() {
+  try {
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.MAJOR);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}

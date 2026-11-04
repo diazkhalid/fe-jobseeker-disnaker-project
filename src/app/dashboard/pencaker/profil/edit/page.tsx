@@ -33,6 +33,7 @@ import { employmentTypeMap } from "@/shared/utils/emplymentTypeMap";
 import { useJobSeekerSkill } from "@/features/profil-pencaker/hooks/useUserSkill.hook";
 import { useJobSeekerCertification } from "@/features/profil-pencaker/hooks/useUserCertification.hook";
 import { formatDateWithMonthName } from "@/shared/utils/formatDate.util";
+import { useOptions } from "@/shared/hooks/useOptions.hook";
 
 export default function CandidateEditProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -93,6 +94,8 @@ export default function CandidateEditProfilePage() {
     handleDeleteJobSeekerCertification,
     resetCreateJobSeekerCertificationForm,
   } = useJobSeekerCertification();
+
+  const { majorOptions } = useOptions();
 
   const { user } = useAuthUser();
   // const [hasNoExperience, setHasNoExperience] = useState(false);
