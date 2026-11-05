@@ -7,6 +7,7 @@ const API_ENDPOINTS = {
     LOGIN: `${baseURL}/auth/login`,
     ME: `${baseURL}/me`,
     LOGOUT: `${baseURL}/auth/logout`,
+    RESEND_VERIFICATION: `${baseURL}/auth/resend-verification`,
   },
   OPTIONS: {
     DISTRICTS: `${baseURL}/option/districts`,
