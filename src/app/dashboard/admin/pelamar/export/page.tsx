@@ -39,6 +39,7 @@ export default function ExportPelamarPage() {
     jobCategoryOptions,
     jobPositionOptions,
     majorOptions,
+    handleSetMajorOptionFilter,
   } = useOptions();
 
   // State Search Query untuk Dropdown Searchable Select
@@ -189,9 +190,10 @@ export default function ExportPelamarPage() {
               </label>
               <select
                 value={adminExportJobSeekerFilter.education_level}
-                onChange={(e) =>
-                  handleFilterChange("education_level", e.target.value)
-                }
+                onChange={(e) => {
+                  handleFilterChange("education_level", e.target.value);
+                  handleSetMajorOptionFilter(e.target.value);
+                }}
                 className="w-full px-3 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-teal-500 text-slate-700"
               >
                 <option value="">Semua Pendidikan</option>

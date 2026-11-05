@@ -1,6 +1,7 @@
 import axios from "axios";
 import { handleServiceError } from "../utils/handleServiceError";
 import API_ENDPOINTS from "../global/api_endpoints";
+import { MajorOptionFilter } from "../types/option.type";
 
 export async function getDistrictOptions() {
   try {
@@ -52,9 +53,11 @@ export async function getDocumentCategoryOptions() {
   }
 }
 
-export async function getMajorOptions() {
+export async function getMajorOptions(filterParams: MajorOptionFilter) {
   try {
-    const response = await axios.get(API_ENDPOINTS.OPTIONS.MAJOR);
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.MAJOR, {
+      params: filterParams,
+    });
     return response;
   } catch (error) {
     console.log(error);
