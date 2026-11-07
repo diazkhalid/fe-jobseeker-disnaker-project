@@ -21,6 +21,7 @@ import {
   User,
   ExternalLink,
 } from "lucide-react";
+import { useAuthUser } from "@/shared/contexts/SessionContext";
 
 export default function DashboardOverviewPage() {
   // Mock Data untuk Statistik Rekrutmen
@@ -174,6 +175,8 @@ export default function DashboardOverviewPage() {
     },
   ];
 
+  const { user } = useAuthUser();
+
   return (
     <div className="space-y-6 w-full font-['Poppins',sans-serif] bg-slate-50/50 min-h-screen">
       {/* SEKSI A & B: GREETING & STATUS PROFIL PERUSAHAAN */}
@@ -188,7 +191,7 @@ export default function DashboardOverviewPage() {
               Terverifikasi
             </span>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-              Selamat datang, PT Samawa Digital Nusantara!
+              Selamat datang, {user?.full_name}!
             </h1>
             <p className="text-slate-300 text-xs sm:text-sm max-w-xl leading-relaxed">
               Kelola lowongan kerja dan temukan kandidat terbaik untuk kebutuhan
@@ -202,7 +205,7 @@ export default function DashboardOverviewPage() {
                 <span className="text-slate-400 block text-[0.65rem]">
                   ID Mitra
                 </span>
-                <span className="font-semibold text-white">SMW-2026-091</span>
+                <span className="font-semibold text-white">{user?.id}</span>
               </div>
               <div className="h-6 w-[1px] bg-slate-700" />
               <div>
