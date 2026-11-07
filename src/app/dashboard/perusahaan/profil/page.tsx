@@ -27,23 +27,28 @@ import {
   Coffee,
   Briefcase,
 } from "lucide-react";
-import AddFacilityModal from "@/features/dashboard-perusahaan/components/AddFacilityModal"; // Sesuaikan path jika perlu
+import AddFacilityModal from "@/features/dashboard-perusahaan/components/AddFacilityModal";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
     "identitas" | "kontak" | "budaya" | "media" | "verifikasi"
   >("identitas");
 
+  // State untuk Logo Perusahaan
+  const [companyLogo, setCompanyLogo] = useState<string | null>(
+    "/images/karir-logo-1.png",
+  );
+
   // State untuk kontrol Modal Tambah Fasilitas
   const [isFacilityModalOpen, setIsFacilityModalOpen] = useState(false);
 
-  // State Dokumen Legalitas (Mendukung simulasi upload pertama kali / belum diunggah)
+  // State Dokumen Legalitas
   const [legalDocuments, setLegalDocuments] = useState([
     {
       id: "nib",
       name: "NIB (Nomor Induk Berusaha)",
       desc: "Resmi diterbitkan melalui sistem OSS Indonesia",
-      status: "verified", // verified | waiting | rejected | empty
+      status: "verified",
       statusLabel: "Disetujui",
       file: "NIB_Samawa_Digital_2024.pdf",
     },
@@ -67,7 +72,7 @@ export default function ProfilePage() {
       id: "domisili",
       name: "Surat Domisili / Bukti Alamat Kantor",
       desc: "Surat keterangan domisili gedung / kantor aktif",
-      status: "empty", // Belum diunggah sama sekali
+      status: "empty",
       statusLabel: "Belum Diunggah",
       file: null,
     },
@@ -75,7 +80,6 @@ export default function ProfilePage() {
 
   // State Form Dummy
   const [formData, setFormData] = useState({
-    // A. Identitas
     companyName: "Samawa Digital Nusantara",
     legalName: "PT Samawa Digital Nusantara",
     companyType: "Perseroan Terbatas (PT)",
@@ -84,8 +88,6 @@ export default function ProfilePage() {
     industry: "Teknologi Informasi & Perangkat Lunak",
     shortDescription:
       "Perusahaan teknologi penyedia solusi transformasi digital dan pengembang perangkat lunak berbasis di Sumbawa.",
-
-    // B. Kontak
     email: "hrd@samawadigital.co.id",
     phone: "+62 812-3456-7890",
     website: "https://samawadigital.co.id",
@@ -95,8 +97,6 @@ export default function ProfilePage() {
     hrContactName: "Rian Hidayat",
     hrContactRole: "Head of People & Culture",
     hrContactEmail: "rian@samawadigital.co.id",
-
-    // C. Budaya
     about:
       "PT Samawa Digital Nusantara adalah penyedia layanan teknologi terdepan yang berfokus pada digitalisasi sektor publik dan swasta. Kami berkomitmen menciptakan dampak nyata melalui inovasi perangkat lunak.",
     vision:
@@ -116,12 +116,26 @@ export default function ProfilePage() {
       "Sponsor Sertifikasi Tech",
       "Tunjangan Kopi & Snack",
     ],
-
-    // D. Media
     socialLinkedin: "https://linkedin.com/company/samawadigital",
     socialInstagram: "https://instagram.com/samawadigital",
     videoUrl: "https://youtube.com/watch?v=sample",
   });
+
+  // Handler Upload Logo Baru
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setCompanyLogo(imageUrl);
+    }
+  };
+
+  // Handler Hapus Logo
+  const handleRemoveLogo = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCompanyLogo(null);
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,19 +161,55 @@ export default function ProfilePage() {
       {/* HEADER PAGE */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div className="flex items-center gap-4">
-          <div className="relative w-16 h-16 rounded-2xl border border-slate-200 bg-slate-50 p-1 shrink-0 overflow-hidden group">
-            <Image
-              src="/images/karir-logo-1.png"
-              alt="Logo Perusahaan"
-              fill
-              className="object-contain p-1"
-            />
-            <label className="absolute inset-0 bg-slate-900/60 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-              <Upload className="w-4 h-4 mb-0.5" />
-              <span className="text-[0.55rem]">Ganti Logo</span>
-              <input type="file" className="hidden" accept="image/*" />
-            </label>
+          {/* AREA LOGO PERUSAHAAN (DENGAN TOMBOL UPLOAD DAN HAPUS LOGO) */}
+          <div className="relative w-20 h-20 rounded-2xl border border-slate-200 bg-slate-50 p-1 shrink-0 overflow-hidden group flex items-center justify-center">
+            {companyLogo ? (
+              <>
+                <Image
+                  src={companyLogo}
+                  alt="Logo Perusahaan"
+                  fill
+                  className="object-contain p-1"
+                />
+                {/* HOVER OVERLAY UNTUK GANTI DAN HAPUS LOGO */}
+                <div className="absolute inset-0 bg-slate-900/75 text-white flex flex-col items-center justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <label className="flex items-center gap-1 text-[0.6rem] font-medium hover:text-teal-300 cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Ganti</span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/png, image/jpeg, image/jpg, image/webp"
+                      onChange={handleLogoChange}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleRemoveLogo}
+                    className="flex items-center gap-1 text-[0.6rem] font-medium text-rose-400 hover:text-rose-300 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Hapus</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* PLACEHOLDER KETIKA LOGO KOSONG / DIHAPUS */
+              <label className="w-full h-full flex flex-col items-center justify-center text-slate-400 hover:text-teal-600 hover:bg-slate-100/70 transition-colors cursor-pointer">
+                <Building2 className="w-6 h-6 mb-0.5" />
+                <span className="text-[0.6rem] font-medium text-center leading-tight">
+                  Unggah Logo
+                </span>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/png, image/jpeg, image/jpg, image/webp"
+                  onChange={handleLogoChange}
+                />
+              </label>
+            )}
           </div>
+
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-bold text-slate-900">
@@ -169,7 +219,7 @@ export default function ProfilePage() {
                 <CheckCircle2 className="w-3 h-3 text-teal-600" /> Terverifikasi
               </span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 mt-0.5">
               {formData.industry} • {formData.regency}
             </p>
           </div>
@@ -603,7 +653,6 @@ export default function ProfilePage() {
                   </span>
                 ))}
 
-                {/* Buka Modal saat tombol diklik */}
                 <button
                   type="button"
                   onClick={() => setIsFacilityModalOpen(true)}
@@ -617,20 +666,18 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* SEKSI D: MEDIA PERUSAHAAN (DENGAN INPUT FILE UNGGAH FOTO) */}
+        {/* SEKSI D: MEDIA PERUSAHAAN */}
         {activeTab === "media" && (
           <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-5 shadow-xs">
             <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
               Foto, Video Profil & Media Sosial
             </h2>
 
-            {/* Upload Foto Kantor dengan Input File Fungsional */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-2">
                 Galeri Foto Kantor & Kegiatan (Maks. 5 Foto)
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {/* Contoh Slot Foto yang sudah terunggah */}
                 <div className="relative aspect-video rounded-xl border border-slate-200 bg-slate-100 overflow-hidden group">
                   <Image
                     src="/images/karir-logo-1.png"
@@ -647,7 +694,6 @@ export default function ProfilePage() {
                   </button>
                 </div>
 
-                {/* Slot Unggah Foto Baru Pertama Kali / Tambahan */}
                 <label className="aspect-video rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100/80 transition-colors flex flex-col items-center justify-center text-slate-400 cursor-pointer">
                   <Upload className="w-5 h-5 mb-1 text-slate-400" />
                   <span className="text-[0.65rem] font-medium">
@@ -736,7 +782,6 @@ export default function ProfilePage() {
               </span>
             </div>
 
-            {/* Detail Ringkas & Catatan Admin */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
                 <span className="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider block">
@@ -774,7 +819,6 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Daftar Dokumen Legalitas & Area Upload */}
             <div>
               <h3 className="text-xs font-bold text-slate-800 mb-3">
                 Kelengkapan Dokumen Legalitas Perusahaan
@@ -831,7 +875,6 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      {/* Kondisi Tombol: Jika kosong tampilkan tombol "Upload Dokumen", jika sudah ada tampilkan "Ganti Berkas" */}
                       <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                         {doc.status === "empty" ? (
                           <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-teal-500 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold cursor-pointer transition-colors shadow-xs">
