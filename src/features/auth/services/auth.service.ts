@@ -71,6 +71,18 @@ export async function logout(token: string) {
   }
 }
 
+export async function emailVerification(params: { token: string }) {
+  try {
+    const response = await axios.get(API_ENDPOINTS.AUTH.EMAIL_VERICATION, {
+      params,
+    });
+    return response;
+  } catch (error: any) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}
+
 export async function resendVerification(email: string) {
   try {
     const formData = new FormData();

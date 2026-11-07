@@ -8,6 +8,7 @@ const API_ENDPOINTS = {
     ME: `${baseURL}/me`,
     LOGOUT: `${baseURL}/auth/logout`,
     RESEND_VERIFICATION: `${baseURL}/auth/resend-verification`,
+    EMAIL_VERICATION: `${baseURL}/auth/verify-email`,
   },
   OPTIONS: {
     DISTRICTS: `${baseURL}/option/districts`,

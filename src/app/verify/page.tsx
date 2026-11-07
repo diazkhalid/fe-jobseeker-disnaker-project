@@ -1,10 +1,38 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, ArrowRight, ShieldCheck } from "lucide-react";
+import { emailVerification } from "@/features/auth/services/auth.service";
+import { useRouter } from "next/navigation";
 
 export default function VerifiedSuccessPage() {
+  const [tokenParams, setTokenParams] = useState<string | null>(null);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const verificationToken = params.get("token");
+    setTokenParams(verificationToken);
+  }, []);
+  useEffect(() => {
+    const fetch = async () => {
+      if (!tokenParams) return;
+      const result = await emailVerification({ token: tokenParams });
+      if (result.status !== 200) {
+        setIsExpired(true);
+        router.push("/verify-expired");
+        return;
+      }
+      setIsLoading(false);
+    };
+    fetch();
+  }, [tokenParams]);
+  if (isLoading) return null;
+
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-3xl border border-slate-200/80 p-8 shadow-sm text-center space-y-3">
