@@ -3,9 +3,8 @@ import { OptionItem } from "@/shared/types/option.type";
 export type WorkSystem = "on_site" | "remote" | "hybrid";
 
 export interface JobSeekerPreference {
-  desiredPositions: OptionItem[]; // Diubah menjadi array objek
-  jobCategory: OptionItem | null;
-  industry: OptionItem | null;
+  desiredPositions: OptionItem[];
+  industries: OptionItem[];
   jobTypes: string[];
   workSystems: WorkSystem[];
   expectedSalaryMin: string;
@@ -15,8 +14,7 @@ export interface JobSeekerPreference {
 }
 
 export interface JobSeekerPreferenceDto {
-  job_field_id: number | null;
-  industry_id: number | null;
+  industry_id: number[];
   preferred_position_id: number[];
   preferred_district_codes: string[];
   job_types: string[];
@@ -29,10 +27,9 @@ export interface JobSeekerPreferenceDto {
 
 export interface JobSeekerPreferenceData {
   user_id: number;
-  job_field_id: number;
-  job_field: string;
-  industry_id: number;
-  industry: string;
+  job_field_id?: number | null;
+  job_field?: string | null;
+  preferred_industries: PreferredIndustry[];
   preferred_positions: PreferredPosition[];
   preferred_districts: PreferredDistrict[];
   job_types: string[];
@@ -43,6 +40,11 @@ export interface JobSeekerPreferenceData {
   job_search_status: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface PreferredIndustry {
+  id: number;
+  name: string;
 }
 
 export interface PreferredPosition {

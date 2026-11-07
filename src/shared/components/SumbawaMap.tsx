@@ -213,10 +213,6 @@ export default function SumbawaMap() {
         </div>
         <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12px;">
           <div style="display: flex; justify-content: space-between;">
-            <span style="color: #64748b;">Kode Wilayah:</span>
-            <strong style="color: #334155;">${f.properties.district_code}</strong>
-          </div>
-          <div style="display: flex; justify-content: space-between;">
             <span style="color: #64748b;">Jumlah Pencari Kerja:</span>
             <strong style="color: #0d9488; background: #f0fdfa; padding: 1px 6px; border-radius: 6px;">${f.properties.jumlah_job_seekers}  Orang</strong>
           </div>

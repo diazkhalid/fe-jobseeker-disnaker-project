@@ -1,45 +1,33 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   Briefcase,
   MapPin,
-  Building2,
   DollarSign,
   Compass,
   Bell,
   Save,
   CheckCircle2,
   X,
-  Plus,
-  ArrowLeft,
-  Sparkles,
   SlidersHorizontal,
   ChevronRight,
   ChevronDown,
   Search,
-  Check,
 } from "lucide-react";
 import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
 import { WorkSystem } from "@/features/preference-pencaker/types/UserPreference.type";
 
 export default function JobPreferencesPage() {
   const {
-    jobSeekerPreference,
     preferences,
     setPreferences,
-    districtList,
     selectedDistrictsList,
-    setSelectedDistrictsList,
     positionSearch,
     setPositionSearch,
     isPositionOpen,
     setIsPositionOpen,
-    jobCategorySearch,
-    setJobCategorySearch,
-    isJobCategoryOpen,
-    setIsJobCategoryOpen,
     industrySearch,
     setIndustrySearch,
     isIndustryOpen,
@@ -50,16 +38,16 @@ export default function JobPreferencesPage() {
     setIsDistrictOpen,
     // Refs masing-masing dropdown
     positionRef,
-    jobCategoryRef,
     industryRef,
     districtRef,
     optionsRef,
     filteredPositions,
-    filteredJobCategories,
     filteredIndustries,
     filteredDistricts,
     handleAddPosition,
     handleRemovePosition,
+    handleAddIndustry,
+    handleRemoveIndustry,
     handleAddDistrict,
     handleRemoveDistrict,
     isSaved,
@@ -124,7 +112,7 @@ export default function JobPreferencesPage() {
       {/* BANNER FUNGSI DATA PREFERENSI */}
       <div className="p-4 bg-gradient-to-r from-app-navy-800 to-app-navy-900 text-white rounded-2xl shadow-sm space-y-3">
         <div className="flex items-center gap-2 text-amber-300 font-bold text-xs uppercase tracking-wider">
-          <Sparkles className="w-4 h-4" />
+          <Compass className="w-4 h-4" />
           <span>Personalisasi Otomatis</span>
         </div>
         <p className="text-xs text-app-navy-100 leading-relaxed">
@@ -195,7 +183,7 @@ export default function JobPreferencesPage() {
                 className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white flex items-center justify-between cursor-pointer min-h-[38px]"
               >
                 <span className="text-slate-400">
-                  {preferences.desiredPositions.length === 0
+                  {preferences.desiredPositions?.length === 0
                     ? "Pilih atau cari posisi..."
                     : "Tambah posisi lain..."}
                 </span>
@@ -234,7 +222,7 @@ export default function JobPreferencesPage() {
               )}
 
               <div className="flex flex-wrap gap-2 mt-2">
-                {preferences.desiredPositions.map((pos) => (
+                {preferences.desiredPositions?.map((pos) => (
                   <span
                     key={pos.id}
                     className="px-3 py-1 bg-app-navy-50 border border-app-navy-200 text-app-navy-800 font-bold text-xs rounded-xl inline-flex items-center gap-1.5"
@@ -252,136 +240,71 @@ export default function JobPreferencesPage() {
               </div>
             </div>
 
-            {/* BIDANG & INDUSTRI */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              {/* BIDANG PEKERJAAN (jobCategoryRef) */}
-              <div ref={jobCategoryRef} className="relative">
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Bidang Pekerjaan
-                </label>
-                <div
-                  onClick={() => setIsJobCategoryOpen(!isJobCategoryOpen)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white flex items-center justify-between cursor-pointer"
-                >
-                  <span
-                    className={
-                      preferences.jobCategory
-                        ? "text-slate-800"
-                        : "text-slate-400"
-                    }
-                  >
-                    {preferences.jobCategory?.name ||
-                      "Pilih bidang pekerjaan..."}
-                  </span>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                </div>
+            {/* INDUSTRI PILIHAN (Multi-select) */}
+            <div ref={industryRef} className="relative pt-2">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Industri Pilihan
+              </label>
 
-                {isJobCategoryOpen && (
-                  <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto p-2">
-                    <div className="flex items-center px-2 py-1.5 border-b border-slate-100 mb-1 sticky top-0 bg-white">
-                      <Search className="w-3.5 h-3.5 text-slate-400 mr-2" />
-                      <input
-                        type="text"
-                        value={jobCategorySearch}
-                        onChange={(e) => setJobCategorySearch(e.target.value)}
-                        placeholder="Cari bidang..."
-                        className="w-full text-xs focus:outline-none bg-transparent"
-                        autoFocus
-                      />
-                    </div>
-                    {filteredJobCategories.length > 0 ? (
-                      filteredJobCategories.map((cat) => (
-                        <div
-                          key={cat.id}
-                          onClick={() => {
-                            setPreferences({
-                              ...preferences,
-                              jobCategory: cat,
-                            });
-                            setIsJobCategoryOpen(false);
-                            setJobCategorySearch("");
-                          }}
-                          className={`px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer flex items-center justify-between ${
-                            preferences.jobCategory?.id === cat.id
-                              ? "font-bold text-app-navy-600 bg-app-navy-50/50"
-                              : "text-slate-700"
-                          }`}
-                        >
-                          {cat.name}
-                          {preferences.jobCategory?.id === cat.id && (
-                            <Check className="w-3.5 h-3.5" />
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-xs text-slate-400 text-center">
-                        Tidak ditemukan
-                      </div>
-                    )}
-                  </div>
-                )}
+              <div
+                onClick={() => setIsIndustryOpen(!isIndustryOpen)}
+                className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white flex items-center justify-between cursor-pointer min-h-[38px]"
+              >
+                <span className="text-slate-400">
+                  {preferences.industries?.length === 0
+                    ? "Pilih atau cari industri..."
+                    : "Tambah industri lain..."}
+                </span>
+                <ChevronDown className="w-4 h-4 text-slate-400" />
               </div>
 
-              {/* INDUSTRI PILIHAN (industryRef) */}
-              <div ref={industryRef} className="relative">
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Industri Pilihan
-                </label>
-                <div
-                  onClick={() => setIsIndustryOpen(!isIndustryOpen)}
-                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-app-navy-600 bg-white flex items-center justify-between cursor-pointer"
-                >
-                  <span
-                    className={
-                      preferences.industry ? "text-slate-800" : "text-slate-400"
-                    }
-                  >
-                    {preferences.industry?.name || "Pilih industri..."}
-                  </span>
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                </div>
-
-                {isIndustryOpen && (
-                  <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto p-2">
-                    <div className="flex items-center px-2 py-1.5 border-b border-slate-100 mb-1 sticky top-0 bg-white">
-                      <Search className="w-3.5 h-3.5 text-slate-400 mr-2" />
-                      <input
-                        type="text"
-                        value={industrySearch}
-                        onChange={(e) => setIndustrySearch(e.target.value)}
-                        placeholder="Cari industri..."
-                        className="w-full text-xs focus:outline-none bg-transparent"
-                        autoFocus
-                      />
-                    </div>
-                    {filteredIndustries.length > 0 ? (
-                      filteredIndustries.map((ind) => (
-                        <div
-                          key={ind.id}
-                          onClick={() => {
-                            setPreferences({ ...preferences, industry: ind });
-                            setIsIndustryOpen(false);
-                            setIndustrySearch("");
-                          }}
-                          className={`px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer flex items-center justify-between ${
-                            preferences.industry?.id === ind.id
-                              ? "font-bold text-app-navy-600 bg-app-navy-50/50"
-                              : "text-slate-700"
-                          }`}
-                        >
-                          {ind.name}
-                          {preferences.industry?.id === ind.id && (
-                            <Check className="w-3.5 h-3.5" />
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-3 py-2 text-xs text-slate-400 text-center">
-                        Tidak ditemukan
-                      </div>
-                    )}
+              {isIndustryOpen && (
+                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-y-auto p-2">
+                  <div className="flex items-center px-2 py-1.5 border-b border-slate-100 mb-1 sticky top-0 bg-white">
+                    <Search className="w-3.5 h-3.5 text-slate-400 mr-2" />
+                    <input
+                      type="text"
+                      value={industrySearch}
+                      onChange={(e) => setIndustrySearch(e.target.value)}
+                      placeholder="Cari industri..."
+                      className="w-full text-xs focus:outline-none bg-transparent"
+                      autoFocus
+                    />
                   </div>
-                )}
+                  {filteredIndustries.length > 0 ? (
+                    filteredIndustries.map((ind) => (
+                      <div
+                        key={ind.id}
+                        onClick={() => handleAddIndustry(ind)}
+                        className="px-3 py-2 text-xs rounded-lg hover:bg-slate-50 cursor-pointer text-slate-700 flex items-center justify-between"
+                      >
+                        {ind.name}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-3 py-2 text-xs text-slate-400 text-center">
+                      Tidak ditemukan
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {preferences.industries?.map((ind) => (
+                  <span
+                    key={ind.id}
+                    className="px-3 py-1 bg-app-navy-50 border border-app-navy-200 text-app-navy-800 font-bold text-xs rounded-xl inline-flex items-center gap-1.5"
+                  >
+                    {ind.name}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveIndustry(ind.id)}
+                      className="text-app-navy-600 hover:text-rose-600"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                ))}
               </div>
             </div>
           </div>
