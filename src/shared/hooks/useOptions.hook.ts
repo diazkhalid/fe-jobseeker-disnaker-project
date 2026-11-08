@@ -9,14 +9,16 @@ import {
 } from "../services/options.service";
 import { Districts } from "../types/districtsList.type";
 import {
+  DocumentCategory,
   MajorOptionFilter,
   MajorOptionItem,
   OptionItem,
 } from "../types/option.type";
+import { useLocalStorage } from "./useLocalStorage";
 export function useOptions() {
   const [districtOptions, setDistrictOptions] = useState<Districts[] | []>([]);
   const [categoryDocumentOptions, setCategoryDocumentOptions] = useState<
-    Districts[] | []
+    DocumentCategory[] | []
   >([]);
   const [insdustryOptions, setIndustryOptions] = useState<OptionItem[] | []>(
     [],
@@ -33,6 +35,8 @@ export function useOptions() {
   const [majorOptionFilter, setMajorOptionFilter] = useState<MajorOptionFilter>(
     { jenjang: "" },
   );
+
+  const [token] = useLocalStorage("access-token", null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -80,14 +84,15 @@ export function useOptions() {
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await getDocumentCategoryOptions();
+      if (!token) return;
+      const result = await getDocumentCategoryOptions(token);
       if (result.status !== 200) {
         return;
       }
       setCategoryDocumentOptions(result.data.data);
     };
     fetch();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     const fetch = async () => {

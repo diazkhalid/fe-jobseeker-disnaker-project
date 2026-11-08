@@ -37,6 +37,7 @@ import APP_CONFIG from "@/shared/global/app_config";
 import { useCompanyFacility } from "@/features/profil-perusahaan/hooks/useCompanyFacility.hook";
 import { UpdateCompanyFacilityItemDto } from "@/features/profil-perusahaan/types/companyFacility.type";
 import { getFacilityIcon } from "@/shared/utils/getFacilityIcon";
+import { useCompanyDocument } from "@/features/profil-perusahaan/hooks/useCompanyDocument.hook";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -62,6 +63,14 @@ export default function ProfilePage() {
     handleDeleteCompanyFacility,
     handleAddFacility,
   } = useCompanyFacility();
+
+  const { categoryDocumentOptions } = useOptions();
+
+  const {
+    companyDocument,
+    // setCompanyDocumentFile,
+    handleUploadCompanyDocument,
+  } = useCompanyDocument();
 
   // State Searchable Dropdown Industri
   const [industrySearch, setIndustrySearch] = useState("");
@@ -89,42 +98,6 @@ export default function ProfilePage() {
 
   // State untuk kontrol Modal Tambah Fasilitas
   const [isFacilityModalOpen, setIsFacilityModalOpen] = useState(false);
-
-  // State Dokumen Legalitas (Dummy sementara)
-  const [legalDocuments, setLegalDocuments] = useState([
-    {
-      id: "nib",
-      name: "NIB (Nomor Induk Berusaha)",
-      desc: "Resmi diterbitkan melalui sistem OSS Indonesia",
-      status: "verified",
-      statusLabel: "Disetujui",
-      file: "NIB_Samawa_Digital_2024.pdf",
-    },
-    {
-      id: "akta",
-      name: "Akta Pendirian PT & Perubahan",
-      desc: "Akta pendirian beserta SK Kemenkumham",
-      status: "verified",
-      statusLabel: "Disetujui",
-      file: "Akta_Pendirian_PT_Samawa.pdf",
-    },
-    {
-      id: "npwp",
-      name: "NPWP Badan Perusahaan",
-      desc: "Nomor Pokok Wajib Pajak atas nama badan usaha",
-      status: "waiting",
-      statusLabel: "Menunggu Review",
-      file: "NPWP_PT_Samawa_Digital.pdf",
-    },
-    {
-      id: "domisili",
-      name: "Surat Domisili / Bukti Alamat Kantor",
-      desc: "Surat keterangan domisili gedung / kantor aktif",
-      status: "empty",
-      statusLabel: "Belum Diunggah",
-      file: null,
-    },
-  ]);
 
   // Ambil data industri terpilih untuk ditampilkan di label UI berdasarkan industry_ids
   const selectedIndustryId = updateCompanyProfileForm.industry_ids[0];
@@ -933,24 +906,34 @@ export default function ProfilePage() {
                 Kelengkapan Dokumen Legalitas Perusahaan
               </h3>
               <div className="space-y-3">
-                {legalDocuments.map((doc, idx) => {
-                  let badgeStyle = "bg-teal-100 text-teal-700 border-teal-200";
-                  let IconStatus = FileCheck;
+                {(categoryDocumentOptions || []).map((doc) => {
+                  // Cari dokumen yang sudah diunggah berdasarkan category_id
+                  const uploadedDoc = companyDocument.find(
+                    (item) => item.category_id === doc.id && item.is_current,
+                  );
 
-                  if (doc.status === "waiting") {
-                    badgeStyle = "bg-amber-100 text-amber-700 border-amber-200";
-                    IconStatus = AlertCircle;
-                  } else if (doc.status === "rejected") {
-                    badgeStyle = "bg-rose-100 text-rose-700 border-rose-200";
-                    IconStatus = AlertCircle;
-                  } else if (doc.status === "empty") {
-                    badgeStyle = "bg-slate-100 text-slate-500 border-slate-200";
-                    IconStatus = AlertCircle;
-                  }
+                  const isRequired = doc.is_required;
+                  const badgeStyle = uploadedDoc
+                    ? "bg-teal-100 text-teal-700 border-teal-200"
+                    : isRequired
+                      ? "bg-amber-100 text-amber-700 border-amber-200"
+                      : "bg-slate-100 text-slate-500 border-slate-200";
+
+                  const statusLabel = uploadedDoc
+                    ? uploadedDoc.review_status === "approved"
+                      ? "Disetujui"
+                      : uploadedDoc.review_status === "rejected"
+                        ? "Ditolak"
+                        : "Menunggu Review"
+                    : isRequired
+                      ? "Wajib Diunggah"
+                      : "Opsional";
+
+                  const IconStatus = uploadedDoc ? FileCheck : AlertCircle;
 
                   return (
                     <div
-                      key={idx}
+                      key={doc.id}
                       className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 bg-white gap-3 transition-all hover:border-slate-300"
                     >
                       <div className="flex items-start gap-3">
@@ -965,16 +948,20 @@ export default function ProfilePage() {
                             <span
                               className={`inline-flex items-center gap-1 text-[0.6rem] font-bold px-2 py-0.5 rounded-md border ${badgeStyle}`}
                             >
-                              <IconStatus className="w-3 h-3" />{" "}
-                              {doc.statusLabel}
+                              <IconStatus className="w-3 h-3" /> {statusLabel}
                             </span>
                           </div>
                           <p className="text-[0.65rem] text-slate-500 mt-0.5">
-                            {doc.desc} •{" "}
-                            {doc.file ? (
-                              <span className="text-slate-700 font-medium">
-                                {doc.file}
-                              </span>
+                            Preview:{" "}
+                            {uploadedDoc ? (
+                              <a
+                                href={`${APP_CONFIG.STORAGE_URL}${uploadedDoc.file_url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-teal-600 font-medium hover:underline"
+                              >
+                                {uploadedDoc.original_filename}
+                              </a>
                             ) : (
                               <span className="text-rose-500 font-medium italic">
                                 Belum ada berkas terlampir
@@ -985,27 +972,23 @@ export default function ProfilePage() {
                       </div>
 
                       <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                        {doc.status === "empty" ? (
-                          <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-teal-500 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold cursor-pointer transition-colors shadow-xs">
-                            <Upload className="w-3.5 h-3.5 text-teal-600" />
-                            <span>Unggah Dokumen</span>
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept=".pdf,.jpg,.jpeg,.png"
-                            />
-                          </label>
-                        ) : (
-                          <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer transition-colors">
-                            <Upload className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Ganti Berkas</span>
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept=".pdf,.jpg,.jpeg,.png"
-                            />
-                          </label>
-                        )}
+                        <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-teal-500 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold cursor-pointer transition-colors shadow-xs">
+                          <Upload className="w-3.5 h-3.5 text-teal-600" />
+                          <span>
+                            {uploadedDoc ? "Ganti Berkas" : "Unggah Dokumen"}
+                          </span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                await handleUploadCompanyDocument(doc.id, file);
+                              }
+                            }}
+                          />
+                        </label>
                       </div>
                     </div>
                   );

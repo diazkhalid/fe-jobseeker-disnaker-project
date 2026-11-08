@@ -14,6 +14,7 @@ import {
 } from "../services/document.service";
 import { JobSeekerDocumentCategoryData } from "../types/documentCategory.type";
 import { getJobSeekerDocumentCategories } from "../services/documentCategory.service";
+import { DocumentCategory } from "@/shared/types/option.type";
 
 export function useJobSeekerDocument() {
   const [jobSeekerDocument, setJobSeekerDocument] = useState<
@@ -36,7 +37,7 @@ export function useJobSeekerDocument() {
     });
 
   const [documentCategories, setDocumentCategories] = useState<
-    JobSeekerDocumentCategoryData[] | []
+    DocumentCategory[] | []
   >([]);
 
   const [triggerUpdate, setTriggerUpdate] = useState(true);

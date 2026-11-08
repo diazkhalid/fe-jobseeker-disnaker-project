@@ -43,9 +43,11 @@ export async function getJobPositionOptions() {
   }
 }
 
-export async function getDocumentCategoryOptions() {
+export async function getDocumentCategoryOptions(token: string) {
   try {
-    const response = await axios.get(API_ENDPOINTS.OPTIONS.DOCUMENT_CATEGORY);
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.DOCUMENT_CATEGORY, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response;
   } catch (error) {
     console.log(error);

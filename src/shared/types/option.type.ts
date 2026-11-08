@@ -12,3 +12,13 @@ export interface MajorOptionItem {
 export interface MajorOptionFilter {
   jenjang: string;
 }
+
+export interface DocumentCategory {
+  id: number;
+  name: string;
+  applies_to: "company" | "individual";
+  is_required: boolean;
+  allows_multiple: boolean;
+  allows_primary: boolean;
+  display_order: number;
+}
