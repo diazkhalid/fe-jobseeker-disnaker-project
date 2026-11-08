@@ -72,6 +72,13 @@ const API_ENDPOINTS = {
       MAP: `${baseURL}/admin/dashboard/job-seekers/map`,
     },
   },
+  COMPANY: {
+    PROFILE: {
+      GET_BY_AUTH: `${baseURL}/company-profiles/me`,
+      UPDATE: `${baseURL}/company-profiles/me`,
+      UPDATE_PICTURE: `${baseURL}/profiles/me/photo`,
+    },
+  },
 };
 
 export default API_ENDPOINTS;
