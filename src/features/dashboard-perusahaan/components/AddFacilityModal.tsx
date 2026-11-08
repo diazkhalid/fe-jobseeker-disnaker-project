@@ -11,12 +11,11 @@ import {
   Car,
   Plane,
   Gift,
-  Smile,
   Plus,
 } from "lucide-react";
 import Modal from "@/shared/components/Modal";
+import { UpdateCompanyFacilityItemDto } from "@/features/profil-perusahaan/types/companyFacility.type";
 
-// Pilihan Icon untuk Fasilitas
 const ICON_OPTIONS = [
   { name: "Coffee", icon: Coffee, label: "Fasilitas Kantor / Konsumsi" },
   {
@@ -36,7 +35,7 @@ const ICON_OPTIONS = [
 interface AddFacilityModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddFacility: (facilityName: string) => void;
+  onAddFacility: (facility: UpdateCompanyFacilityItemDto) => Promise<void>;
 }
 
 export default function AddFacilityModal({
@@ -50,15 +49,22 @@ export default function AddFacilityModal({
   );
   const [selectedIcon, setSelectedIcon] = useState("Coffee");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!facilityName.trim()) return;
 
-    // Menambahkan fasilitas baru
-    onAddFacility(facilityName.trim());
+    // Kirim data lengkap sesuai DTO
+    await onAddFacility({
+      facility_name: facilityName.trim(),
+      display_order: 0, // Nilai sementara, akan disesuaikan di halaman utama
+      benefit_category: selectedCategory,
+      icon_key: selectedIcon,
+    });
 
     // Reset form & tutup modal
     setFacilityName("");
+    setSelectedCategory("Kesehatan & Kesejahteraan");
+    setSelectedIcon("Coffee");
     onClose();
   };
 

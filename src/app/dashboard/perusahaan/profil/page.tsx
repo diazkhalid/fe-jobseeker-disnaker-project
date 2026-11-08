@@ -34,6 +34,9 @@ import AddFacilityModal from "@/features/dashboard-perusahaan/components/AddFaci
 import { useCompanyProfile } from "@/features/profil-perusahaan/hooks/useCompanyProfile.hook";
 import { useOptions } from "@/shared/hooks/useOptions.hook";
 import APP_CONFIG from "@/shared/global/app_config";
+import { useCompanyFacility } from "@/features/profil-perusahaan/hooks/useCompanyFacility.hook";
+import { UpdateCompanyFacilityItemDto } from "@/features/profil-perusahaan/types/companyFacility.type";
+import { getFacilityIcon } from "@/shared/utils/getFacilityIcon";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -50,6 +53,15 @@ export default function ProfilePage() {
     setCompanyProfilePictureFile,
     handleUpdateCompanyProfilePicture,
   } = useCompanyProfile();
+
+  const {
+    companyFacilities,
+    updateCompanyFacilityForm,
+    setUpdateCompanyFacilityForm,
+    handleUpdateCompanyFacility,
+    handleDeleteCompanyFacility,
+    handleAddFacility,
+  } = useCompanyFacility();
 
   // State Searchable Dropdown Industri
   const [industrySearch, setIndustrySearch] = useState("");
@@ -126,24 +138,6 @@ export default function ProfilePage() {
     await handleUpdateCompanyProfile();
     await handleUpdateCompanyProfilePicture();
   };
-
-  const handleAddFacility = (newFacility: string) => {
-    const currentFacilities = updateCompanyProfileForm.workplace_culture
-      ? updateCompanyProfileForm.workplace_culture.split(",")
-      : [];
-    const updatedFacilities = [...currentFacilities, newFacility].join(",");
-    setUpdateCompanyProfileForm({
-      ...updateCompanyProfileForm,
-      workplace_culture: updatedFacilities,
-    });
-  };
-
-  const facilitiesList = updateCompanyProfileForm.workplace_culture
-    ? updateCompanyProfileForm.workplace_culture
-        .split(",")
-        .map((f) => f.trim())
-        .filter(Boolean)
-    : [];
 
   return (
     <div className="w-full space-y-6 mx-auto">
@@ -752,30 +746,30 @@ export default function ProfilePage() {
                 Fasilitas & Benefit Karyawan
               </label>
               <div className="flex flex-wrap gap-2">
-                {facilitiesList.map((fac, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-800 text-xs font-medium"
-                  >
-                    <Coffee className="w-3.5 h-3.5 text-teal-600" />
-                    <span>{fac}</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = facilitiesList
-                          .filter((_, i) => i !== idx)
-                          .join(",");
-                        setUpdateCompanyProfileForm({
-                          ...updateCompanyProfileForm,
-                          workplace_culture: updated,
-                        });
-                      }}
-                      className="text-teal-600 hover:text-rose-600 ml-1"
+                {companyFacilities.map((fac, idx) => {
+                  const Icon = getFacilityIcon(fac.icon_key);
+
+                  return (
+                    <span
+                      key={fac.id ?? idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 border border-teal-200/80 text-teal-800 text-xs font-medium"
                     >
-                      ×
-                    </button>
-                  </span>
-                ))}
+                      <Icon className="w-3.5 h-3.5 text-teal-600" />
+
+                      <span>{fac.facility_name}</span>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handleDeleteCompanyFacility(fac.id);
+                        }}
+                        className="text-teal-600 hover:text-rose-600 ml-1 cursor-pointer"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                })}
 
                 <button
                   type="button"

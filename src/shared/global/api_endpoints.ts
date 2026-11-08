@@ -77,6 +77,12 @@ const API_ENDPOINTS = {
       GET_BY_AUTH: `${baseURL}/company-profiles/me`,
       UPDATE: `${baseURL}/company-profiles/me`,
       UPDATE_PICTURE: `${baseURL}/profiles/me/photo`,
+      FACILITY: {
+        GET: `${baseURL}/company-profiles/me/facilities`,
+        UPDATE: `${baseURL}/company-profiles/me/facilities`,
+        DELETE: (id: string) =>
+          `${baseURL}/company-profiles/me/facilities/${id}`,
+      },
     },
   },
 };
