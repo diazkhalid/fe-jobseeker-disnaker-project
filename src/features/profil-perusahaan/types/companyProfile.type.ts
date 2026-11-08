@@ -63,6 +63,9 @@ export interface UpdateCompanyProfileDto {
   company_description: string;
   company_vision: string;
   company_mission: string;
+  profile_video_url: string;
+  linkedin_url: string;
+  instagram_url: string;
 }
 
 export interface UpdateCompanyProfilePictureDto {

@@ -43,6 +43,9 @@ export function useCompanyProfile() {
       company_description: "",
       company_vision: "",
       company_mission: "",
+      profile_video_url: "",
+      linkedin_url: "",
+      instagram_url: "",
     });
 
   const [token] = useLocalStorage("access-token", null);
@@ -88,6 +91,9 @@ export function useCompanyProfile() {
         company_description: profileData.company_description || "",
         company_vision: profileData.company_vision || "",
         company_mission: profileData.company_mission || "",
+        profile_video_url: profileData.profile_video_url || "",
+        linkedin_url: profileData.linkedin_url || "",
+        instagram_url: profileData.instagram_url || "",
       });
     };
     fetch();

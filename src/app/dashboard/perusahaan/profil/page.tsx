@@ -817,8 +817,13 @@ export default function ProfilePage() {
                 </label>
                 <input
                   type="text"
-                  value={companyProfile?.profile_video_url || ""}
-                  disabled
+                  value={updateCompanyProfileForm?.profile_video_url || ""}
+                  onChange={(e) => {
+                    setUpdateCompanyProfileForm({
+                      ...updateCompanyProfileForm,
+                      profile_video_url: e.target.value,
+                    });
+                  }}
                   placeholder="https://youtube.com/watch?v=..."
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
                 />
@@ -830,8 +835,13 @@ export default function ProfilePage() {
                 </label>
                 <input
                   type="text"
-                  value={companyProfile?.linkedin_url || ""}
-                  disabled
+                  onChange={(e) => {
+                    setUpdateCompanyProfileForm({
+                      ...updateCompanyProfileForm,
+                      linkedin_url: e.target.value,
+                    });
+                  }}
+                  value={updateCompanyProfileForm?.linkedin_url || ""}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
                 />
               </div>
@@ -842,8 +852,13 @@ export default function ProfilePage() {
                 </label>
                 <input
                   type="text"
-                  value={companyProfile?.instagram_url || ""}
-                  disabled
+                  onChange={(e) => {
+                    setUpdateCompanyProfileForm({
+                      ...updateCompanyProfileForm,
+                      instagram_url: e.target.value,
+                    });
+                  }}
+                  value={updateCompanyProfileForm?.instagram_url || ""}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
                 />
               </div>
