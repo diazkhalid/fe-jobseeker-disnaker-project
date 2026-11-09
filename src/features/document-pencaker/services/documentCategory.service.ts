@@ -2,9 +2,11 @@ import API_ENDPOINTS from "@/shared/global/api_endpoints";
 import { handleServiceError } from "@/shared/utils/handleServiceError";
 import axios from "axios";
 
-export async function getJobSeekerDocumentCategories() {
+export async function getJobSeekerDocumentCategories(token: string) {
   try {
-    const response = await axios.get(API_ENDPOINTS.OPTIONS.DOCUMENT_CATEGORY);
+    const response = await axios.get(API_ENDPOINTS.OPTIONS.DOCUMENT_CATEGORY, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response;
   } catch (error) {
     console.log(error);

@@ -80,14 +80,15 @@ export function useJobSeekerDocument() {
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await getJobSeekerDocumentCategories();
+      if (!token) return;
+      const result = await getJobSeekerDocumentCategories(token);
       if (result.status !== 200) {
         return;
       }
       setDocumentCategories(result.data.data);
     };
     fetch();
-  }, []);
+  }, [token]);
 
   const resetCreateJobSeekerDocumentForm = () => {
     setCreateJobSeekerDocumentForm({
