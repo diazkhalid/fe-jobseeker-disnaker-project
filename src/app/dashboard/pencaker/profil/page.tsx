@@ -46,6 +46,7 @@ import { useJobSeekerSkill } from "@/features/profil-pencaker/hooks/useUserSkill
 import { useJobSeekerCertification } from "@/features/profil-pencaker/hooks/useUserCertification.hook";
 import { useJobSeekerPreference } from "@/features/preference-pencaker/hooks/useUserPreference.hook";
 import { useJobSeekerProfileCompletionRate } from "@/features/profil-pencaker/hooks/useUserProfileCompletionRate";
+import { formatCapitalEachWord } from "@/shared/utils/formatCapitalEachWord";
 
 export default function CandidateProfilePage() {
   const [activeTab, setActiveTab] = useState<"detail" | "history">("detail");
@@ -430,7 +431,12 @@ export default function CandidateProfilePage() {
                         Industri Pilihan
                       </p>
                       <p className="font-bold text-slate-800">
-                        {jobSeekerPreference.industry || "-"}
+                        {jobSeekerPreference?.preferred_industries &&
+                        jobSeekerPreference.preferred_industries.length > 0
+                          ? jobSeekerPreference.preferred_industries
+                              .map((item) => formatCapitalEachWord(item.name))
+                              .join(", ")
+                          : "-"}
                       </p>
                     </div>
                   </div>

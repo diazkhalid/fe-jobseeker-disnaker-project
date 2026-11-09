@@ -50,6 +50,7 @@ export function useAdminJobSeeker() {
       position_id: null,
       willing_to_relocate: null,
       is_fresh_graduate: null,
+      major_id: null,
     });
 
   const [adminExportJobSeeker, setAdminExportJobSeeker] = useState<

@@ -77,7 +77,7 @@ export interface JobSeekerPreference {
   job_field_id: number;
   job_field: string;
   industry_id: number;
-  industry: string;
+  preferred_industries: PreferredIndustries[];
   preferred_positions: PreferredPosition[];
   preferred_districts: PreferredDistrict[];
   job_types: string[];
@@ -88,6 +88,11 @@ export interface JobSeekerPreference {
   job_search_status: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface PreferredIndustries {
+  id: number;
+  name: string;
 }
 
 export interface PreferredPosition {
@@ -162,7 +167,7 @@ export interface AdminExportJobSeekerResult {
 
 export interface AdminExportJobSeekerFilter {
   education_level: string;
-  major_id: number;
+  major_id: number | null;
   gender: string;
   job_field_id: number | null;
   job_type: string;

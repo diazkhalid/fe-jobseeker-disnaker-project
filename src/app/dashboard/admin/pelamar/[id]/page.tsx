@@ -371,10 +371,18 @@ export default function AdminDetailPelamarPage() {
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                         Industri Pilihan
                       </p>
-                      {preference?.industry ? (
-                        <span className="inline-block text-xs font-semibold text-slate-700 bg-white px-2.5 py-1 rounded border border-slate-200 mt-1">
-                          {formatCapitalEachWord(preference.industry)}
-                        </span>
+                      {preference?.preferred_industries &&
+                      preference.preferred_industries.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {preference.preferred_industries.map((item) => (
+                            <span
+                              key={item.id}
+                              className="inline-block text-xs font-semibold text-slate-700 bg-white px-2.5 py-1 rounded border border-slate-200"
+                            >
+                              {formatCapitalEachWord(item.name)}
+                            </span>
+                          ))}
+                        </div>
                       ) : (
                         <p className="text-slate-400 italic text-[11px] pt-1">
                           Tidak ada industri yang dipilih.
