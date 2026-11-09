@@ -29,6 +29,7 @@ import {
   Search,
   ChevronDown,
   Check,
+  Clock,
 } from "lucide-react";
 import AddFacilityModal from "@/features/dashboard-perusahaan/components/AddFacilityModal";
 import { useCompanyProfile } from "@/features/profil-perusahaan/hooks/useCompanyProfile.hook";
@@ -180,8 +181,7 @@ export default function ProfilePage() {
                   }}
                 />
               </label>
-              {companyProfilePictureFile ||
-              companyProfile?.profile_image_url ? (
+              {companyProfilePictureFile ? (
                 <button
                   type="button"
                   onClick={(e) => {
@@ -203,9 +203,25 @@ export default function ProfilePage() {
               <h1 className="text-lg font-bold text-slate-900">
                 {updateCompanyProfileForm.brand_name || "Nama Perusahaan"}
               </h1>
-              <span className="inline-flex items-center gap-1 text-[0.65rem] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-700">
-                <CheckCircle2 className="w-3 h-3 text-teal-600" />{" "}
-                {companyProfile?.verification_status || "Terverifikasi"}
+              <span
+                className={`inline-flex items-center gap-1 text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${
+                  companyProfile?.verification_status?.toLowerCase() ===
+                  "verified"
+                    ? "bg-teal-100 text-teal-700"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {companyProfile?.verification_status?.toLowerCase() ===
+                "verified" ? (
+                  <CheckCircle2 className="w-3 h-3 text-teal-600" />
+                ) : (
+                  <Clock className="w-3 h-3 text-amber-600" />
+                )}
+
+                {companyProfile?.verification_status
+                  ? companyProfile.verification_status.charAt(0).toUpperCase() +
+                    companyProfile.verification_status.slice(1).toLowerCase()
+                  : "Belum Terverifikasi"}
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -246,7 +262,10 @@ export default function ProfilePage() {
             id: "verifikasi",
             label: "Status Verifikasi",
             icon: ShieldCheck,
-            badge: "Terverifikasi",
+            // badge:
+            //   companyProfile?.verification_status?.toLowerCase() === "verified"
+            //     ? "Verified"
+            //     : "Unverified",
           },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -265,11 +284,11 @@ export default function ProfilePage() {
                 className={`w-4 h-4 ${isActive ? "text-teal-600" : "text-slate-400"}`}
               />
               <span>{tab.label}</span>
-              {tab.badge && (
+              {/* {tab.badge && (
                 <span className="px-1.5 py-0.2 text-[0.55rem] font-bold rounded-md bg-teal-100 text-teal-700">
                   {tab.badge}
                 </span>
-              )}
+              )} */}
             </button>
           );
         })}
@@ -991,9 +1010,25 @@ export default function ProfilePage() {
                   mendapatkan lencana terverifikasi resmi.
                 </p>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-bold w-fit">
-                <ShieldCheck className="w-4 h-4 text-teal-600" />{" "}
-                {companyProfile?.verification_status || "Terverifikasi Resmi"}
+              <span
+                className={`inline-flex items-center gap-1 text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${
+                  companyProfile?.verification_status?.toLowerCase() ===
+                  "verified"
+                    ? "bg-teal-100 text-teal-700"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {companyProfile?.verification_status?.toLowerCase() ===
+                "verified" ? (
+                  <CheckCircle2 className="w-3 h-3 text-teal-600" />
+                ) : (
+                  <Clock className="w-3 h-3 text-amber-600" />
+                )}
+
+                {companyProfile?.verification_status
+                  ? companyProfile.verification_status.charAt(0).toUpperCase() +
+                    companyProfile.verification_status.slice(1).toLowerCase()
+                  : "Belum Terverifikasi"}
               </span>
             </div>
 
@@ -1010,8 +1045,12 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Status Keseluruhan:</span>
-                  <span className="font-semibold text-teal-600 capitalize">
-                    {companyProfile?.verification_status || "Unverified"}
+                  <span
+                    className={`font-semibold ${companyProfile?.verification_status === "verified" ? "text-teal-600" : "text-amber-600"}  capitalize`}
+                  >
+                    {companyProfile?.verification_status === "verified"
+                      ? "Verified"
+                      : "Unverified"}
                   </span>
                 </div>
               </div>

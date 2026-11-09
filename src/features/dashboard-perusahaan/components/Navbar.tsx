@@ -23,6 +23,7 @@ import { accountTypeMap } from "@/shared/utils/userAccountTypeMap";
 import { logout } from "@/features/auth/services/auth.service";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import { useToast } from "@/shared/contexts/ToastContext";
+import APP_CONFIG from "@/shared/global/app_config";
 
 interface NavbarProps {
   onToggleMobileSidebar?: () => void;
@@ -186,12 +187,18 @@ export default function Navbar({ onToggleMobileSidebar }: NavbarProps) {
             className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
           >
             <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
-              <Image
-                src="/images/karir-logo-1.png"
-                alt="Avatar Perusahaan"
-                fill
-                className="object-cover"
-              />
+              {user?.profile?.profile_photo_url ? (
+                <Image
+                  src={`${APP_CONFIG.STORAGE_URL}${user.profile?.profile_photo_url}`}
+                  alt="Foto Profil"
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <span className="flex h-full flex-col justify-center text-sm font-medium items-center text-slate-500">
+                  {user?.full_name.charAt(0)}
+                </span>
+              )}
             </div>
 
             <div className="hidden md:flex flex-col text-left">
