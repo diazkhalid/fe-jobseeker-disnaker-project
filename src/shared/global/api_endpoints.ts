@@ -83,6 +83,11 @@ const API_ENDPOINTS = {
         DELETE: (id: string) =>
           `${baseURL}/company-profiles/me/facilities/${id}`,
       },
+      GALLERY: {
+        GET: `${baseURL}/company-profiles/me/photos`,
+        CREATE: `${baseURL}/company-profiles/me/photos`,
+        DELETE: (id: string) => `${baseURL}/company-profiles/me/photos/${id}`,
+      },
       DOCUMENT: {
         GET_BY_AUTH: `${baseURL}/company/profile/documents`,
         CREATE: `${baseURL}/company/profile/documents`,

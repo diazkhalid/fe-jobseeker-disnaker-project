@@ -38,6 +38,7 @@ import { useCompanyFacility } from "@/features/profil-perusahaan/hooks/useCompan
 import { UpdateCompanyFacilityItemDto } from "@/features/profil-perusahaan/types/companyFacility.type";
 import { getFacilityIcon } from "@/shared/utils/getFacilityIcon";
 import { useCompanyDocument } from "@/features/profil-perusahaan/hooks/useCompanyDocument.hook";
+import { useCompanyGallery } from "@/features/profil-perusahaan/hooks/useCompanyGallery.hook";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState<
@@ -71,6 +72,15 @@ export default function ProfilePage() {
     // setCompanyDocumentFile,
     handleUploadCompanyDocument,
   } = useCompanyDocument();
+
+  const {
+    companyGallery,
+    companyGalleryForm,
+    handleAddPhotos,
+    handleRemovePhoto,
+    handleCreateCompanyGallery,
+    handleDeleteCompanyGallery,
+  } = useCompanyGallery();
 
   // State Searchable Dropdown Industri
   const [industrySearch, setIndustrySearch] = useState("");
@@ -765,49 +775,111 @@ export default function ProfilePage() {
             </h2>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-2">
-                Galeri Foto Kantor & Kegiatan (Maks. 5 Foto)
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Galeri Foto Kantor & Kegiatan
+                </label>
+                <span className="text-[0.65rem] text-slate-400 font-medium">
+                  {companyGallery.length} Foto Tersimpan
+                </span>
+              </div>
+
+              {/* GRID GALERI FOTO */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {companyProfile?.profile_image_url && (
-                  <div className="relative aspect-video rounded-xl border border-slate-200 bg-slate-100 overflow-hidden group">
+                {/* 1. Foto-foto yang sudah ada dari API GET */}
+                {companyGallery.map((item) => (
+                  <div
+                    key={item.id}
+                    className="relative aspect-video rounded-xl border border-slate-200 bg-slate-100 overflow-hidden group shadow-xs"
+                  >
                     <Image
                       src={
-                        companyProfile.profile_image_url.startsWith("http")
-                          ? companyProfile.profile_image_url
-                          : `${APP_CONFIG.STORAGE_URL}${companyProfile.profile_image_url}`
+                        item.photo_url.startsWith("http")
+                          ? item.photo_url
+                          : `${APP_CONFIG.STORAGE_URL}${item.photo_url}`
                       }
-                      alt="Kantor 1"
+                      alt={`Foto Galeri ${item.id}`}
                       fill
                       className="object-cover"
                     />
                     <button
                       type="button"
-                      className="absolute top-2 right-2 p-1.5 bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                      title="Hapus foto"
+                      onClick={() => handleDeleteCompanyGallery(item.id)}
+                      className="absolute top-2 right-2 p-1.5 bg-rose-600/90 hover:bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-xs"
+                      title="Hapus foto dari server"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                )}
+                ))}
 
-                <label className="aspect-video rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100/80 transition-colors flex flex-col items-center justify-center text-slate-400 cursor-pointer">
-                  <Upload className="w-5 h-5 mb-1 text-slate-400" />
-                  <span className="text-[0.65rem] font-medium">
-                    Unggah Foto
+                {/* 2. Preview Foto Baru yang Akan Di-upload (Lokal) */}
+                {companyGalleryForm.photo.map((file, idx) => (
+                  <div
+                    key={idx}
+                    className="relative aspect-video rounded-xl border-2 border-teal-500 bg-teal-50/30 overflow-hidden group shadow-xs"
+                  >
+                    <Image
+                      src={URL.createObjectURL(file)}
+                      alt={`Preview ${file.name}`}
+                      fill
+                      className="object-cover opacity-90"
+                    />
+                    {/* Badge Draf */}
+                    <span className="absolute top-2 left-2 bg-teal-600 text-white text-[0.6rem] font-bold px-1.5 py-0.5 rounded shadow-xs">
+                      Baru
+                    </span>
+                    {/* Hapus dari antrean lokal */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePhoto(idx)}
+                      className="absolute top-2 right-2 p-1.5 bg-rose-600/90 hover:bg-rose-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all cursor-pointer shadow-xs"
+                      title="Batal pilih foto"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+
+                {/* 3. Input untuk Memilih Foto Baru */}
+                <label className="aspect-video rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 hover:bg-slate-100/80 transition-colors flex flex-col items-center justify-center text-slate-400 cursor-pointer group">
+                  <Upload className="w-5 h-5 mb-1 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                  <span className="text-[0.65rem] font-medium group-hover:text-teal-600 transition-colors">
+                    Pilih Foto Baru
                   </span>
                   <input
                     type="file"
                     className="hidden"
-                    accept="image/png, image/jpeg, image/jpg"
+                    accept="image/png, image/jpeg, image/jpg, image/webp"
                     multiple
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        handleAddPhotos(e.target.files);
+                      }
+                    }}
                   />
                 </label>
               </div>
-              <p className="text-[0.65rem] text-slate-400 mt-1.5">
-                Format yang didukung: JPG, JPEG, PNG. Ukuran maksimal per foto
-                5MB.
-              </p>
+
+              {/* BARIS TOMBOL SUBMIT FOTO BARU & CATATAN */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-3">
+                <p className="text-[0.65rem] text-slate-400">
+                  Format yang didukung: JPG, JPEG, PNG, WEBP. Ukuran maksimal
+                  per foto 5MB.
+                </p>
+
+                {/* Tombol Terpisah untuk Hit API Upload Foto */}
+                {companyGalleryForm.photo.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleCreateCompanyGallery}
+                    className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-teal-600 hover:bg-teal-700 shadow-xs shadow-teal-600/20 transition-all cursor-pointer shrink-0"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload {companyGalleryForm.photo.length} Foto</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
