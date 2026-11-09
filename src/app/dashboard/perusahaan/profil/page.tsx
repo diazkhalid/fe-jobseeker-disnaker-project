@@ -65,7 +65,7 @@ export default function ProfilePage() {
     handleAddFacility,
   } = useCompanyFacility();
 
-  const { categoryDocumentOptions } = useOptions();
+  const { categoryDocumentOptions, districtOptions } = useOptions();
 
   const {
     companyDocument,
@@ -452,6 +452,46 @@ export default function ProfilePage() {
                   <option value="50 - 100 Karyawan">50 - 100 Karyawan</option>
                   <option value="100 - 500 Karyawan">100 - 500 Karyawan</option>
                   <option value="500+ Karyawan">500+ Karyawan</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Nomor Induk Berusaha (NIB)
+                </label>
+                <input
+                  type="text"
+                  value={updateCompanyProfileForm.nib}
+                  onChange={(e) =>
+                    setUpdateCompanyProfileForm({
+                      ...updateCompanyProfileForm,
+                      nib: e.target.value,
+                    })
+                  }
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:bg-white focus:border-teal-500 focus:outline-none"
+                />
+              </div>
+              {/* Kecamatan */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Kecamatan
+                </label>
+                <select
+                  value={updateCompanyProfileForm.district_code ?? ""}
+                  name="district_code"
+                  onChange={(e) =>
+                    setUpdateCompanyProfileForm({
+                      ...updateCompanyProfileForm,
+                      district_code: e.target.value,
+                    })
+                  }
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-app-navy-600"
+                >
+                  <option value="">Pilih Kecamatan</option>
+                  {districtOptions?.map((district) => (
+                    <option key={`${district.code}`} value={`${district.code}`}>
+                      {district.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
