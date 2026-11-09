@@ -71,6 +71,12 @@ const API_ENDPOINTS = {
       DASHBOARD: `${baseURL}/admin/dashboard/job-seekers`,
       MAP: `${baseURL}/admin/dashboard/job-seekers/map`,
     },
+    COMPANY: {
+      INDEX: `${baseURL}/admin/companies`,
+      DETAIL: (id: string) => `${baseURL}/admin/companies/${id}`,
+      DOCUMENT_REVIEW: (id: string) =>
+        `${baseURL}/admin/company-documents/${id}/review`,
+    },
   },
   COMPANY: {
     PROFILE: {
