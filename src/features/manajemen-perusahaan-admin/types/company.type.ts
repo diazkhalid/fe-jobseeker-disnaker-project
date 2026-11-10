@@ -75,6 +75,8 @@ export interface CompanyProfileDetailData {
 export interface CompanyDocumentData {
   id: number;
   category_id: number;
+  document_name: string;
+  code: string;
   original_filename: string;
   file_url: string;
   mime_type: string;
@@ -103,7 +105,7 @@ export interface CompanyFacilityData {
   icon_key: string;
 }
 
-export interface AdminCompanyDetailResponse {
+export interface AdminCompanyDetail {
   account: CompanyAccountData;
   profile: CompanyProfileDetailData;
   documents: CompanyDocumentData[];
@@ -112,6 +114,6 @@ export interface AdminCompanyDetailResponse {
 }
 
 export interface AdminCompanyDocumentReviewDto {
-  review_status: "approve" | "rejected" | "pending";
+  review_status: "approved" | "rejected" | "pending_review";
   admin_note: string;
 }

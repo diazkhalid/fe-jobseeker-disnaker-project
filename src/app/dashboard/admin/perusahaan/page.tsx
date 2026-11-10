@@ -424,7 +424,7 @@ export default function CompaniesPage() {
                     <td className="py-3.5 px-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          href={`/dashboard/admin/perusahaan/${company.profile_id}`}
+                          href={`/dashboard/admin/perusahaan/${company.user_id}`}
                           className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[0.7rem] font-semibold"
                           title="Lihat Detail Perusahaan"
                         >
