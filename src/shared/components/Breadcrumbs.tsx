@@ -25,6 +25,10 @@ export default function Breadcrumbs() {
   // Pisahkan path berdasarkan garis miring '/' dan buang string kosong
   const segments = pathname.split("/").filter((segment) => segment !== "");
 
+  // Cek apakah jalur diawali dengan /dashboard/admin
+  const isAdminDashboard =
+    segments[0] === "dashboard" && segments[1] === "admin";
+
   return (
     <nav
       aria-label="Breadcrumb"
@@ -49,10 +53,23 @@ export default function Breadcrumbs() {
         const url = `/${segments.slice(0, index + 1).join("/")}`;
         const isLast = index === segments.length - 1;
 
-        // Cari label kustom dari kamus, atau ubah format slug (huruf kapital & hapus tanda hubung)
-        const formattedLabel =
-          ROUTE_LABELS[segment] ||
-          segment.replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+        // Logika kustom untuk /dashboard/admin/[perusahaan|pencaker|admin]
+        let formattedLabel = "";
+
+        if (
+          isAdminDashboard &&
+          index === 2 &&
+          ["perusahaan", "pencaker", "admin"].includes(segment)
+        ) {
+          const capitalized =
+            segment.charAt(0).toUpperCase() + segment.slice(1);
+          formattedLabel = `Manajemen ${capitalized}`;
+        } else {
+          // Cari label kustom dari kamus, atau ubah format slug (huruf kapital & hapus tanda hubung)
+          formattedLabel =
+            ROUTE_LABELS[segment] ||
+            segment.replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+        }
 
         if (segment === "dashboard") return null;
 

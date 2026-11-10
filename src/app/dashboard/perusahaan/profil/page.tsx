@@ -1080,7 +1080,11 @@ export default function ProfilePage() {
 
                   const isRequired = doc.is_required;
                   const badgeStyle = uploadedDoc
-                    ? "bg-teal-100 text-teal-700 border-teal-200"
+                    ? uploadedDoc.review_status === "approved"
+                      ? "bg-teal-100 text-teal-700 border-teal-200"
+                      : uploadedDoc.review_status === "rejected"
+                        ? "bg-rose-100 text-rose-700 border-rose-200"
+                        : "bg-amber-100 text-amber-700 border-amber-200"
                     : isRequired
                       ? "bg-amber-100 text-amber-700 border-amber-200"
                       : "bg-slate-100 text-slate-500 border-slate-200";
@@ -1100,62 +1104,94 @@ export default function ProfilePage() {
                   return (
                     <div
                       key={doc.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200 bg-white gap-3 transition-all hover:border-slate-300"
+                      className="p-4 rounded-xl border border-slate-200 bg-white space-y-3 transition-all hover:border-slate-300"
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-teal-600 shrink-0 mt-0.5">
-                          <FileText className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-xs font-bold text-slate-900">
-                              {doc.name}
-                            </p>
-                            <span
-                              className={`inline-flex items-center gap-1 text-[0.6rem] font-bold px-2 py-0.5 rounded-md border ${badgeStyle}`}
-                            >
-                              <IconStatus className="w-3 h-3" /> {statusLabel}
-                            </span>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-teal-600 shrink-0 mt-0.5">
+                            <FileText className="w-4 h-4" />
                           </div>
-                          <p className="text-[0.65rem] text-slate-500 mt-0.5">
-                            Preview:{" "}
-                            {uploadedDoc ? (
-                              <a
-                                href={`${APP_CONFIG.STORAGE_URL}${uploadedDoc.file_url}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-teal-600 font-medium hover:underline"
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-xs font-bold text-slate-900">
+                                {doc.name}
+                              </p>
+                              <span
+                                className={`inline-flex items-center gap-1 text-[0.6rem] font-bold px-2 py-0.5 rounded-md border ${badgeStyle}`}
                               >
-                                {uploadedDoc.original_filename}
-                              </a>
-                            ) : (
-                              <span className="text-rose-500 font-medium italic">
-                                Belum ada berkas terlampir
+                                <IconStatus className="w-3 h-3" /> {statusLabel}
                               </span>
-                            )}
-                          </p>
+                            </div>
+                            <p className="text-[0.65rem] text-slate-500 mt-0.5">
+                              Preview:{" "}
+                              {uploadedDoc ? (
+                                <a
+                                  href={`${APP_CONFIG.STORAGE_URL}${uploadedDoc.file_url}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-teal-600 font-medium hover:underline"
+                                >
+                                  {uploadedDoc.original_filename}
+                                </a>
+                              ) : (
+                                <span className="text-rose-500 font-medium italic">
+                                  Belum ada berkas terlampir
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                          <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-teal-500 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold cursor-pointer transition-colors shadow-xs">
+                            <Upload className="w-3.5 h-3.5 text-teal-600" />
+                            <span>
+                              {uploadedDoc ? "Ganti Berkas" : "Unggah Dokumen"}
+                            </span>
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept=".pdf,.jpg,.jpeg,.png"
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  await handleUploadCompanyDocument(
+                                    doc.id,
+                                    file,
+                                  );
+                                }
+                              }}
+                            />
+                          </label>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                        <label className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-teal-500 bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-semibold cursor-pointer transition-colors shadow-xs">
-                          <Upload className="w-3.5 h-3.5 text-teal-600" />
-                          <span>
-                            {uploadedDoc ? "Ganti Berkas" : "Unggah Dokumen"}
-                          </span>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept=".pdf,.jpg,.jpeg,.png"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                await handleUploadCompanyDocument(doc.id, file);
-                              }
-                            }}
+                      {/* AREA ADMIN NOTE DOKUMEN */}
+                      {uploadedDoc && uploadedDoc.admin_note && (
+                        <div
+                          className={`p-3 rounded-lg text-xs flex items-start gap-2 border ${
+                            uploadedDoc.review_status === "rejected"
+                              ? "bg-rose-50/70 border-rose-200 text-rose-800"
+                              : "bg-slate-50 border-slate-200 text-slate-700"
+                          }`}
+                        >
+                          <AlertCircle
+                            className={`w-4 h-4 shrink-0 mt-0.5 ${
+                              uploadedDoc.review_status === "rejected"
+                                ? "text-rose-600"
+                                : "text-slate-500"
+                            }`}
                           />
-                        </label>
-                      </div>
+                          <div>
+                            <span className="font-bold block text-[0.65rem] uppercase tracking-wider mb-0.5">
+                              Catatan Verifikator:
+                            </span>
+                            <p className="text-[0.7rem] leading-relaxed">
+                              {uploadedDoc.admin_note}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
