@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   AdminCompanyDocumentReviewDto,
   AdminCompanyIndexParams,
+  AdminCompanyVerificationDto,
 } from "../types/company.type";
 
 export async function indexAdminCompany(
@@ -46,6 +47,24 @@ export async function reviewAdminCompanyDocument(
       {
         headers: { Authorization: `Bearer ${token}` },
       },
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+    return handleServiceError(error);
+  }
+}
+
+export async function verificationAdminCompany(
+  token: string,
+  id: string,
+  data: AdminCompanyVerificationDto,
+) {
+  try {
+    const response = await axios.put(
+      API_ENDPOINTS.ADMIN.COMPANY.VERIFICATION(id),
+      data,
+      { headers: { Authorization: `Bearer ${token}` } },
     );
     return response;
   } catch (error) {

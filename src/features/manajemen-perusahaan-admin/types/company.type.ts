@@ -117,3 +117,14 @@ export interface AdminCompanyDocumentReviewDto {
   review_status: "approved" | "rejected" | "pending_review";
   admin_note: string;
 }
+
+export interface AdminCompanyVerificationDto {
+  verification_status: CompanyVerificationStatus;
+  verification_notes: string;
+}
+
+export type CompanyVerificationStatus =
+  | "verified"
+  | "revision"
+  | "rejected"
+  | "unverified";

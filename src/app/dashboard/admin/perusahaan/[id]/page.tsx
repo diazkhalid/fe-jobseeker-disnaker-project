@@ -38,6 +38,7 @@ import APP_CONFIG from "@/shared/global/app_config";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 import Breadcrumbs from "@/shared/components/Breadcrumbs";
 import { getFacilityIcon } from "@/shared/utils/getFacilityIcon";
+import { CompanyVerificationStatus } from "@/features/manajemen-perusahaan-admin/types/company.type";
 
 export default function CompanyDetailPage() {
   const params = useParams();
@@ -50,11 +51,11 @@ export default function CompanyDetailPage() {
     setCompanyDocumentReviewForm,
     handleReviewCompanyDocument,
     handleSetSelectedDocument,
+    handleCompanyVerification,
   } = useAdminCompany();
 
-  const [actionType, setActionType] = useState<
-    "approve" | "revision" | "reject" | null
-  >(null);
+  const [actionType, setActionType] =
+    useState<CompanyVerificationStatus | null>(null);
   const [reason, setReason] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [token] = useLocalStorage("access-token", null);
@@ -96,27 +97,6 @@ export default function CompanyDetailPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedPhotoIndex, adminCompanyDetail]);
 
-  const handleProcessVerification = () => {
-    if (!actionType) return;
-
-    if (
-      (actionType === "revision" || actionType === "reject") &&
-      !reason.trim()
-    ) {
-      alert("Harap masukkan alasan penolakan atau rincian catatan perbaikan.");
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setActionType(null);
-      setReason("");
-      alert("Status verifikasi perusahaan berhasil diperbarui.");
-    }, 600);
-  };
-
   const handleSubmitDocReview = async (docId: number) => {
     setIsReviewingDoc(true);
     await handleReviewCompanyDocument(docId.toString());
@@ -151,6 +131,29 @@ export default function CompanyDetailPage() {
 
   const { account, profile, documents, photos, facilities } =
     adminCompanyDetail;
+
+  const handleProcessVerification = async () => {
+    if (!actionType || !companyId) return;
+
+    if (
+      (actionType === "unverified" || actionType === "rejected") &&
+      !reason.trim()
+    ) {
+      alert("Harap masukkan alasan penolakan atau rincian catatan perbaikan.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    await handleCompanyVerification(companyId, {
+      verification_status: actionType,
+      verification_notes: reason,
+    });
+
+    setIsSubmitting(false);
+    setActionType(null);
+    setReason("");
+  };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -202,12 +205,17 @@ export default function CompanyDetailPage() {
                   {profile?.verification_status === "verified" ? (
                     <>
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Terverifikasi</span>
+                      <span>Verified</span>
+                    </>
+                  ) : profile?.verification_status === "unverified" ? (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Unverified</span>
                     </>
                   ) : (
                     <>
-                      <Clock className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Belum Terverifikasi</span>
+                      <Clock className="w-3.5 h-3.5 text-orange-400" />
+                      <span>Revision</span>
                     </>
                   )}
                 </span>
@@ -791,9 +799,9 @@ export default function CompanyDetailPage() {
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => setActionType("approve")}
+                onClick={() => setActionType("verified")}
                 className={`py-2 px-1 rounded-2xl text-[0.7rem] font-bold flex flex-col items-center justify-center gap-1 transition-all border cursor-pointer ${
-                  actionType === "approve"
+                  actionType === "verified"
                     ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
                     : "bg-emerald-50/50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
                 }`}
@@ -817,9 +825,9 @@ export default function CompanyDetailPage() {
 
               <button
                 type="button"
-                onClick={() => setActionType("reject")}
+                onClick={() => setActionType("rejected")}
                 className={`py-2 px-1 rounded-2xl text-[0.7rem] font-bold flex flex-col items-center justify-center gap-1 transition-all border cursor-pointer ${
-                  actionType === "reject"
+                  actionType === "rejected"
                     ? "bg-rose-600 text-white border-rose-600 shadow-sm"
                     : "bg-rose-50/50 text-rose-700 border-rose-200 hover:bg-rose-100"
                 }`}
@@ -832,9 +840,9 @@ export default function CompanyDetailPage() {
             {actionType && (
               <div className="space-y-2.5 pt-1">
                 <label className="block text-[0.7rem] font-bold text-slate-700">
-                  {actionType === "approve"
+                  {actionType === "verified"
                     ? "Catatan Opsional Verifikator"
-                    : actionType === "revision"
+                    : actionType === "unverified"
                       ? "Catatan Dokumen yang Wajib Diperbaiki *"
                       : "Alasan Penolakan Perusahaan *"}
                 </label>

@@ -76,6 +76,8 @@ const API_ENDPOINTS = {
       DETAIL: (id: string) => `${baseURL}/admin/companies/${id}`,
       DOCUMENT_REVIEW: (id: string) =>
         `${baseURL}/admin/company-documents/${id}/review`,
+      VERIFICATION: (id: string) =>
+        `${baseURL}/admin/companies/${id}/verification`,
     },
   },
   COMPANY: {

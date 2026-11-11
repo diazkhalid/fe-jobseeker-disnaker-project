@@ -4,6 +4,7 @@ import {
   AdminCompanyDetail,
   AdminCompanyDocumentReviewDto,
   AdminCompanyIndexParams,
+  AdminCompanyVerificationDto,
   CompanyDocumentData,
 } from "../types/company.type";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
@@ -12,6 +13,7 @@ import {
   detailAdminCompany,
   indexAdminCompany,
   reviewAdminCompanyDocument,
+  verificationAdminCompany,
 } from "../services/company.service";
 import { Pagination } from "@/shared/types/pagination.type";
 
@@ -23,6 +25,11 @@ export function useAdminCompany() {
     useState<AdminCompanyDocumentReviewDto>({
       review_status: "pending_review",
       admin_note: "",
+    });
+  const [adminCompanyVerificationForm, setAdminCompanyVerificationForm] =
+    useState<AdminCompanyVerificationDto>({
+      verification_status: "unverified",
+      verification_notes: "",
     });
 
   const [token] = useLocalStorage("access-token", null);
@@ -95,6 +102,20 @@ export function useAdminCompany() {
     });
   }, [selectedDocument]);
 
+  const handleCompanyVerification = async (
+    id: string,
+    data: AdminCompanyVerificationDto,
+  ) => {
+    if (!token) return;
+    const result = await verificationAdminCompany(token, id, data);
+    if (result.status !== 200) {
+      addToast("Gagal mengubah status perusahaan!", "warning");
+      return;
+    }
+    addToast("Berhasil mengubah status perusahaan!", "success");
+    setTriggerUpdate(!triggerUpdate);
+  };
+
   return {
     adminCompany,
     setAdminCompany,
@@ -108,5 +129,6 @@ export function useAdminCompany() {
     setCompanyDocumentReviewForm,
     handleReviewCompanyDocument,
     handleSetSelectedDocument,
+    handleCompanyVerification,
   };
 }
