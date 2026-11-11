@@ -1,3 +1,5 @@
+import { CompanyVerificationStatus } from "@/features/manajemen-perusahaan-admin/types/company.type";
+
 interface Industry {
   id: string;
   name: string;
@@ -16,7 +18,8 @@ export interface CompanyProfileData {
   address: string | null;
   city: string | null;
   province: string | null;
-  verification_status: "unverified" | "pending" | "verified" | "rejected";
+  verification_status: CompanyVerificationStatus;
+  verification_notes: string;
   verified_at: string | null;
   created_at: string;
   updated_at: string;

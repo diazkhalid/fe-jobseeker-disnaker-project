@@ -136,7 +136,9 @@ export default function CompanyDetailPage() {
     if (!actionType || !companyId) return;
 
     if (
-      (actionType === "unverified" || actionType === "rejected") &&
+      (actionType === "unverified" ||
+        actionType === "revision" ||
+        actionType === "rejected") &&
       !reason.trim()
     ) {
       alert("Harap masukkan alasan penolakan atau rincian catatan perbaikan.");
@@ -154,6 +156,8 @@ export default function CompanyDetailPage() {
     setActionType(null);
     setReason("");
   };
+
+  const vStatus = profile?.verification_status?.toLowerCase();
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -197,25 +201,34 @@ export default function CompanyDetailPage() {
                 {/* Badge Status Verifikasi Dynamic */}
                 <span
                   className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md transition-all ${
-                    profile?.verification_status === "verified"
+                    vStatus === "verified"
                       ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-                      : "bg-amber-500/15 text-amber-300 border-amber-500/30"
+                      : vStatus === "revision"
+                        ? "bg-orange-500/15 text-orange-300 border-orange-500/30"
+                        : vStatus === "rejected"
+                          ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                          : "bg-amber-500/15 text-amber-300 border-amber-500/30"
                   }`}
                 >
-                  {profile?.verification_status === "verified" ? (
+                  {vStatus === "verified" ? (
                     <>
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Verified</span>
                     </>
-                  ) : profile?.verification_status === "unverified" ? (
-                    <>
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Unverified</span>
-                    </>
-                  ) : (
+                  ) : vStatus === "revision" ? (
                     <>
                       <Clock className="w-3.5 h-3.5 text-orange-400" />
                       <span>Revision</span>
+                    </>
+                  ) : vStatus === "rejected" ? (
+                    <>
+                      <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                      <span>Rejected</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Unverified</span>
                     </>
                   )}
                 </span>
@@ -815,8 +828,8 @@ export default function CompanyDetailPage() {
                 onClick={() => setActionType("revision")}
                 className={`py-2 px-1 rounded-2xl text-[0.7rem] font-bold flex flex-col items-center justify-center gap-1 transition-all border cursor-pointer ${
                   actionType === "revision"
-                    ? "bg-amber-600 text-white border-amber-600 shadow-sm"
-                    : "bg-amber-50/50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                    ? "bg-orange-600 text-white border-orange-600 shadow-sm"
+                    : "bg-orange-50/50 text-orange-700 border-orange-200 hover:bg-orange-100"
                 }`}
               >
                 <AlertTriangle className="w-4 h-4" />
@@ -842,7 +855,7 @@ export default function CompanyDetailPage() {
                 <label className="block text-[0.7rem] font-bold text-slate-700">
                   {actionType === "verified"
                     ? "Catatan Opsional Verifikator"
-                    : actionType === "unverified"
+                    : actionType === "revision"
                       ? "Catatan Dokumen yang Wajib Diperbaiki *"
                       : "Alasan Penolakan Perusahaan *"}
                 </label>

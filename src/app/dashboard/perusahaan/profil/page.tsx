@@ -30,6 +30,7 @@ import {
   ChevronDown,
   Check,
   Clock,
+  XCircle,
 } from "lucide-react";
 import AddFacilityModal from "@/features/dashboard-perusahaan/components/AddFacilityModal";
 import { useCompanyProfile } from "@/features/profil-perusahaan/hooks/useCompanyProfile.hook";
@@ -123,6 +124,8 @@ export default function ProfilePage() {
     await handleUpdateCompanyProfilePicture();
   };
 
+  const vStatus = companyProfile?.verification_status?.toLowerCase();
+
   return (
     <div className="w-full space-y-6 mx-auto">
       {/* MODAL TAMBAH FASILITAS */}
@@ -205,15 +208,21 @@ export default function ProfilePage() {
               </h1>
               <span
                 className={`inline-flex items-center gap-1 text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${
-                  companyProfile?.verification_status?.toLowerCase() ===
-                  "verified"
-                    ? "bg-teal-100 text-teal-700"
-                    : "bg-amber-100 text-amber-700"
+                  vStatus === "verified"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : vStatus === "revision"
+                      ? "bg-orange-100 text-orange-700"
+                      : vStatus === "rejected"
+                        ? "bg-rose-100 text-rose-700"
+                        : "bg-amber-100 text-amber-700"
                 }`}
               >
-                {companyProfile?.verification_status?.toLowerCase() ===
-                "verified" ? (
-                  <CheckCircle2 className="w-3 h-3 text-teal-600" />
+                {vStatus === "verified" ? (
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                ) : vStatus === "revision" ? (
+                  <AlertCircle className="w-3 h-3 text-orange-600" />
+                ) : vStatus === "rejected" ? (
+                  <XCircle className="w-3 h-3 text-rose-600" />
                 ) : (
                   <Clock className="w-3 h-3 text-amber-600" />
                 )}
@@ -262,10 +271,6 @@ export default function ProfilePage() {
             id: "verifikasi",
             label: "Status Verifikasi",
             icon: ShieldCheck,
-            // badge:
-            //   companyProfile?.verification_status?.toLowerCase() === "verified"
-            //     ? "Verified"
-            //     : "Unverified",
           },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -284,11 +289,6 @@ export default function ProfilePage() {
                 className={`w-4 h-4 ${isActive ? "text-teal-600" : "text-slate-400"}`}
               />
               <span>{tab.label}</span>
-              {/* {tab.badge && (
-                <span className="px-1.5 py-0.2 text-[0.55rem] font-bold rounded-md bg-teal-100 text-teal-700">
-                  {tab.badge}
-                </span>
-              )} */}
             </button>
           );
         })}
@@ -1012,15 +1012,21 @@ export default function ProfilePage() {
               </div>
               <span
                 className={`inline-flex items-center gap-1 text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${
-                  companyProfile?.verification_status?.toLowerCase() ===
-                  "verified"
-                    ? "bg-teal-100 text-teal-700"
-                    : "bg-amber-100 text-amber-700"
+                  vStatus === "verified"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : vStatus === "revision"
+                      ? "bg-orange-100 text-orange-700"
+                      : vStatus === "rejected"
+                        ? "bg-rose-100 text-rose-700"
+                        : "bg-amber-100 text-amber-700"
                 }`}
               >
-                {companyProfile?.verification_status?.toLowerCase() ===
-                "verified" ? (
-                  <CheckCircle2 className="w-3 h-3 text-teal-600" />
+                {vStatus === "verified" ? (
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                ) : vStatus === "revision" ? (
+                  <AlertCircle className="w-3 h-3 text-orange-600" />
+                ) : vStatus === "rejected" ? (
+                  <XCircle className="w-3 h-3 text-rose-600" />
                 ) : (
                   <Clock className="w-3 h-3 text-amber-600" />
                 )}
@@ -1032,8 +1038,8 @@ export default function ProfilePage() {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+            <div className="flex flex-row gap-4">
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2 w-full">
                 <span className="text-[0.65rem] font-bold text-slate-400 uppercase tracking-wider block">
                   Detail Ringkas Verifikasi
                 </span>
@@ -1046,25 +1052,38 @@ export default function ProfilePage() {
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500">Status Keseluruhan:</span>
                   <span
-                    className={`font-semibold ${companyProfile?.verification_status === "verified" ? "text-teal-600" : "text-amber-600"}  capitalize`}
+                    className={`font-semibold ${
+                      vStatus === "verified"
+                        ? "text-emerald-600"
+                        : vStatus === "revision"
+                          ? "text-orange-600"
+                          : vStatus === "rejected"
+                            ? "text-rose-600"
+                            : "text-amber-600"
+                    } capitalize`}
                   >
-                    {companyProfile?.verification_status === "verified"
-                      ? "Verified"
+                    {companyProfile?.verification_status
+                      ? companyProfile.verification_status
+                          .charAt(0)
+                          .toUpperCase() +
+                        companyProfile.verification_status
+                          .slice(1)
+                          .toLowerCase()
                       : "Unverified"}
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 space-y-2">
-                <span className="text-[0.65rem] font-bold text-amber-800 uppercase tracking-wider block">
-                  Catatan Administrator
-                </span>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  {
-                    "Pastikan seluruh dokumen legalitas perusahaan telah sesuai agar proses verifikasi berjalan lancar."
-                  }
-                </p>
-              </div>
+              {companyProfile?.verification_status !== "verified" && (
+                <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/40 space-y-2 w-full">
+                  <span className="text-[0.65rem] font-bold text-amber-800 uppercase tracking-wider block">
+                    Catatan Administrator
+                  </span>
+                  <p className="text-xs text-slate-600 leading-relaxed italic font-sans font-bold">
+                    {companyProfile?.verification_notes ?? ""}
+                  </p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -1081,7 +1100,7 @@ export default function ProfilePage() {
                   const isRequired = doc.is_required;
                   const badgeStyle = uploadedDoc
                     ? uploadedDoc.review_status === "approved"
-                      ? "bg-teal-100 text-teal-700 border-teal-200"
+                      ? "bg-emerald-100 text-emerald-700 border-emerald-200"
                       : uploadedDoc.review_status === "rejected"
                         ? "bg-rose-100 text-rose-700 border-rose-200"
                         : "bg-amber-100 text-amber-700 border-amber-200"

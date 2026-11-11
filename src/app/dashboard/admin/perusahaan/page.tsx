@@ -15,6 +15,8 @@ import {
   Check,
   ChevronRight,
   ChevronLeft,
+  AlertCircle,
+  XCircle,
 } from "lucide-react";
 import { useAdminCompany } from "@/features/manajemen-perusahaan-admin/hooks/useAdminCompany.hook";
 import { useOptions } from "@/shared/hooks/useOptions.hook";
@@ -177,8 +179,10 @@ export default function CompaniesPage() {
               className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 focus:outline-none focus:border-teal-500 transition-all"
             >
               <option value="">Semua Status Verifikasi</option>
-              <option value="verified">Terverifikasi</option>
-              <option value="unverified">Belum Terverifikasi</option>
+              <option value="verified">Verified</option>
+              <option value="unverified">Unverified</option>
+              <option value="revision">Revision</option>
+              <option value="rejected">Rejected</option>
             </select>
           </div>
 
@@ -357,84 +361,99 @@ export default function CompaniesPage() {
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
               {adminCompany.length > 0 ? (
-                adminCompany.map((company) => (
-                  <tr
-                    key={company.profile_id}
-                    className="hover:bg-slate-50/80 transition-colors"
-                  >
-                    {/* Perusahaan & NIB */}
-                    <td className="py-3.5 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 text-teal-700 flex items-center justify-center font-bold shrink-0">
-                          <Building className="w-4 h-4" />
+                adminCompany.map((company) => {
+                  const status = company.verification_status?.toLowerCase();
+                  return (
+                    <tr
+                      key={company.profile_id}
+                      className="hover:bg-slate-50/80 transition-colors"
+                    >
+                      {/* Perusahaan & NIB */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 text-teal-700 flex items-center justify-center font-bold shrink-0">
+                            <Building className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <Link
+                              href={`/dashboard/admin/perusahaan/${company.profile_id}`}
+                              className="font-bold text-slate-900 hover:text-teal-600 transition-colors block"
+                            >
+                              {company.brand_name}
+                            </Link>
+                            <span className="text-[0.65rem] text-slate-400 font-mono">
+                              NIB: {company.nib || "-"}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <Link
-                            href={`/dashboard/admin/perusahaan/${company.profile_id}`}
-                            className="font-bold text-slate-900 hover:text-teal-600 transition-colors block"
-                          >
-                            {company.brand_name}
-                          </Link>
-                          <span className="text-[0.65rem] text-slate-400 font-mono">
-                            NIB: {company.nib || "-"}
+                      </td>
+
+                      {/* Lokasi & Wilayah */}
+                      <td className="py-3.5 px-4">
+                        <p className="font-semibold text-slate-800">
+                          {company.district_name || company.city || "-"}
+                        </p>
+                        <p className="text-[0.65rem] text-slate-500 flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3 text-slate-400" />
+                          {company.city || "-"}
+                        </p>
+                      </td>
+
+                      {/* Status Verifikasi */}
+                      <td className="py-3.5 px-4">
+                        {status === "verified" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <ShieldCheck className="w-3 h-3 text-emerald-600" />{" "}
+                            Verified
                           </span>
+                        ) : status === "revision" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-orange-50 text-orange-700 border border-orange-200">
+                            <AlertCircle className="w-3 h-3 text-orange-600" />{" "}
+                            Revision
+                          </span>
+                        ) : status === "rejected" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                            <XCircle className="w-3 h-3 text-rose-600" />{" "}
+                            Rejected
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                            <Clock className="w-3 h-3 text-amber-600" />{" "}
+                            Unverified
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Tanggal Bergabung */}
+                      <td className="py-3.5 px-4 text-slate-600">
+                        {company.registered_at
+                          ? new Date(company.registered_at).toLocaleDateString(
+                              "id-ID",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )
+                          : "-"}
+                      </td>
+
+                      {/* Aksi */}
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/dashboard/admin/perusahaan/${company.user_id}`}
+                            className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[0.7rem] font-semibold"
+                            title="Lihat Detail Perusahaan"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Detail</span>
+                          </Link>
                         </div>
-                      </div>
-                    </td>
-
-                    {/* Lokasi & Wilayah */}
-                    <td className="py-3.5 px-4">
-                      <p className="font-semibold text-slate-800">
-                        {company.district_name || company.city || "-"}
-                      </p>
-                      <p className="text-[0.65rem] text-slate-500 flex items-center gap-1 mt-0.5">
-                        <MapPin className="w-3 h-3 text-slate-400" />
-                        {company.city || "-"}
-                      </p>
-                    </td>
-
-                    {/* Status Verifikasi */}
-                    <td className="py-3.5 px-4">
-                      {company.verification_status === "verified" ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <ShieldCheck className="w-3 h-3" /> Terverifikasi
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[0.65rem] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                          <Clock className="w-3 h-3" /> Belum Terverifikasi
-                        </span>
-                      )}
-                    </td>
-
-                    {/* Tanggal Bergabung */}
-                    <td className="py-3.5 px-4 text-slate-600">
-                      {company.registered_at
-                        ? new Date(company.registered_at).toLocaleDateString(
-                            "id-ID",
-                            {
-                              day: "numeric",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          )
-                        : "-"}
-                    </td>
-
-                    {/* Aksi */}
-                    <td className="py-3.5 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/dashboard/admin/perusahaan/${company.user_id}`}
-                          className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors flex items-center gap-1 text-[0.7rem] font-semibold"
-                          title="Lihat Detail Perusahaan"
-                        >
-                          <Eye className="w-4 h-4" />
-                          <span>Detail</span>
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 /* EMPTY STATE */
                 <tr>

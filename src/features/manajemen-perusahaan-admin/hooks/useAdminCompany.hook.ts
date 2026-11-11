@@ -113,7 +113,7 @@ export function useAdminCompany() {
       return;
     }
     addToast("Berhasil mengubah status perusahaan!", "success");
-    setTriggerUpdate(!triggerUpdate);
+    await handleGetCompanyDetail(token, id);
   };
 
   return {

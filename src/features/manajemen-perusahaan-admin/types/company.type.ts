@@ -7,13 +7,14 @@ export interface AdminCompanyData {
   district_code: string;
   district_name: string;
   city: string;
-  verification_status: "verified" | "unverified";
+  verification_status: CompanyVerificationStatus;
+  verification_notes: string;
   registered_at: string;
 }
 
 export interface AdminCompanyIndexParams {
   search: string;
-  verification_status: "verified" | "unverified" | "";
+  verification_status: CompanyVerificationStatus | "";
   industry_id: number;
   location: string;
   page: number;
@@ -48,7 +49,8 @@ export interface CompanyProfileDetailData {
   address: string;
   city: string;
   province: string;
-  verification_status: "verified" | "unverified";
+  verification_status: CompanyVerificationStatus;
+  verification_notes: string;
   verified_at: string | null;
   created_at: string;
   updated_at: string;
